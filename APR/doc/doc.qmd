@@ -1,9 +1,49 @@
 ---
 title: "Annual Progress Review"
 author: "Thomas Boughen"
-format: pdf
+format: 
+  pdf:
+    margin-left: 2cm
+    margin-right: 2cm
+    margin-bottom: 2cm
 editor: visual
+bibliography: references.bib
 ---
+
+```{r, echo=F, warning=F, message=F}
+library(networkdata)
+library(igraph)
+source('../scripts/functions.R')
+source('../scripts/new_functions.R')
+# library(mvtnorm)
+#loading data############################
+x=degree(atp[[1]],mode='in')
+x=x[x>0]
+tennis = as.data.frame(table(x))
+tennis[,1] = as.numeric(as.character(tennis[,1]))
+
+harvard = read.csv('../data/harvard.txt')
+colnames(harvard) = c('x', 'Freq')
+
+data("protein", package='networkdata')
+x = degree(protein)
+protein.dat = as.data.frame(table(x[x>0]))
+protein.dat[,1] = as.numeric(as.character(protein.dat[,1]))/2
+colnames(protein.dat) = c('x', 'Freq')
+
+
+df = load_data('../data/rpkg_20190129.csv')
+df0 = df-1
+x = df0$depends[df0$depends>0]
+depends = as.data.frame(table(x))
+depends[,1] = as.numeric(as.character(depends[,1]))
+set.seed(123)
+G = barabasi.game(3e4)
+x = degree(G, mode='in')
+x=x[x>0]
+sim = as.data.frame(table(x))
+sim[,1] = as.numeric(as.character(sim[,1]))
+```
 
 # Research Progress
 
@@ -11,4 +51,39 @@ This research has been focused on networks and modelling how they grow. The main
 
 ## Degree Distribution of Real Networks
 
-The research began by looking at the degree distributions of real networks, with the aim of gaining some insight to how they may have grown and will continue to. Looking at \[figure\] it is clear that the degree distribution of networks can have various different shapes. Some look almost linear, but others look more concave.
+The research began by looking at the degree distributions of real networks, with the aim of gaining some insight to how they may have grown and will continue to. Looking at @fig-survs it is clear that the degree distribution of networks can have various different shapes. Some look almost linear, but others look more concave.
+
+```{r, echo=F, warning=F, message=F, fig.hold=T, fig.asp=0.2, fig.width=50, out.width="90%"}
+#| label: fig-survs
+#| fig.cap: Survival function of the degrees.
+tennis.surv= plot.surv(tennis) +ggtitle('Tennis')+theme(text = element_text(size=35))+theme(plot.title = element_text(hjust = 0.5))
+harvard.surv = plot.surv(harvard) + ggtitle('Harvard')+theme(text = element_text(size=35))+theme(plot.title = element_text(hjust = 0.5))
+protein.surv = plot.surv(protein.dat) + ggtitle('Protein')+theme(text = element_text(size=35))+theme(plot.title = element_text(hjust = 0.5))
+depends.surv = plot.surv(depends)+ggtitle('CRAN')+theme(text = element_text(size=35))+theme(plot.title = element_text(hjust = 0.5))
+
+plot.list = list(tennis.surv,
+harvard.surv,
+protein.surv,
+depends.surv)
+
+marrangeGrob(plot.list, nrow=1, ncol=4, top='')
+
+```
+
+Network generation is a complex subject and so finding a fairly simple way of modelling how real networks might have grown is very attractive and the one of the reasons for the popularity of the Barabási-Albert model.
+
+### Barabási-Albert Model
+
+First introduced by @Barabasi99, this is a simple network growth model whereby, when a vertex is added to the network it connects to those already in the network with probability proportional to their degree. More formally, starting with $m_0$ nodes , the edges between them chosen arbitrarily such that each node has at least one link. The network then develops using two steps:
+
+1.  Growth
+
+    At each time step, add a node to the network that will connect to $m\le m_0$ nodes (already in the network) with $m$ edges.
+
+2.  Preferential Attachment
+
+    The probability that an edge from the new node connects to node $i$ is proportional to its current degree $k_i$ i.e $k_i/\sum_{j}k_j$.
+
+{{< pagebreak >}}
+
+# References {.unnumbered}
