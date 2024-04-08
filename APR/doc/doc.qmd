@@ -1,0 +1,14 @@
+---
+title: "Annual Progress Review"
+author: "Thomas Boughen"
+format: pdf
+editor: visual
+---
+
+# Research Progress
+
+This research has been focused on networks and modelling how they grow. The main focus has so far been the degree distribution of both real world networks as well as networks simulated from various models.
+
+## Degree Distribution of Real Networks
+
+The research began by looking at the degree distributions of real networks, with the aim of gaining some insight to how they may have grown and will continue to. Looking at \[figure\] it is clear that the degree distribution of networks can have various different shapes. Some look almost linear, but others look more concave.
