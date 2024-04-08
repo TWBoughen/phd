@@ -5,7 +5,8 @@ author:
     affiliations: 
       - name: Newcastle University
         department: School of Mathematics, Statistics and Physics
-    
+number-sections: true
+number-depth: 2
 format: 
   pdf:
     documentclass: scrreprt
@@ -25,18 +26,26 @@ format:
       - ignorehead
       - ignorefoot
       - heightrounded
-pdf-engine: xelatex
+    output-file: 'doc'
+    output-ext: 'pdf'
+  html: 
+    output-file: 'index'
+    page-layout: full
+    toc: true
 editor: visual
 bibliography: references.bib
 ---
 
 ```{r, echo=F, warning=F, message=F}
+#compile using this line of code in console
+#quarto::quarto_render("doc.qmd", output_format = "all")
 library(networkdata)
 library(igraph)
 source('../scripts/functions.R')
 source('../scripts/new_functions.R')
 # library(mvtnorm)
 #loading data############################
+
 x=degree(atp[[1]],mode='in')
 x=x[x>0]
 tennis = as.data.frame(table(x))
@@ -89,6 +98,8 @@ depends.surv)
 marrangeGrob(plot.list, nrow=1, ncol=4, top='')
 
 ```
+
+## Generative Network Models
 
 Network generation is a complex subject and so finding a fairly simple way of modelling how real networks might have grown is very attractive and the one of the reasons for the popularity of the Barabási-Albert model.
 
