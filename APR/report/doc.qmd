@@ -80,7 +80,7 @@ This research has been focused on networks and modelling how they grow. The main
 
 ## Degree Distribution of Real Networks
 
-The research began by looking at the degree distributions of real networks, with the aim of gaining some insight to how they may have grown and will continue to. Looking at @fig-survs it is clear that the degree distribution of networks can have various different shapes. Some look almost linear, but others look more concave.
+The research began by looking at the degree distributions of real networks, with the aim of gaining some insight to how they may have grown and will continue to. Looking at @fig-survs it is clear that the degree distribution of networks can have various different shapes on a log-log scale. Some look almost linear, but others look more concave.
 
 ```{r, echo=F, warning=F, message=F, fig.hold=T, fig.asp=0.2, fig.width=50, out.width="90%"}
 #| label: fig-survs
@@ -114,6 +114,16 @@ First introduced by @Barabasi99, this is a simple network growth model whereby, 
 2.  Preferential Attachment
 
     The probability that an edge from the new node connects to node $i$ is proportional to its current degree $k_i$ i.e $k_i/\sum_{j}k_j$.
+
+This model has been proven through various means to produce a network that follows a power law with exponent 3. The method used in @BARABASI1999173 is unclear and it is not stated where some of the equations used come from. So, as part of reviewing the literature, we set out to make the proof of this more thorough with the idea of applying the method to more complex models.
+
+### Degree Distribution of the Barabási-Albert Model
+
+We first consider the degree of a particular vertex in the network $k_i$, and notice that at any given time step the degree of vertex $i$ can gain up to $m$ edges with each edge connecting with probability $p_i(t) = k_i/\sum_{j}k_j$. This means that the number of edges gained by vertex $i$ at time $t$ can be modeled by a binomial random variable $R_i(t)$.
+
+Consider the Hawkes' process with random intensity at time $t$ given by $R_i(t) \sim \text{Bin}(m, p_i(t))$ such that:
+
+\[LOOK AT VIANEY'S NOTES\]
 
 {{< pagebreak >}}
 
