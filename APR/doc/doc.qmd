@@ -1,11 +1,31 @@
 ---
-title: "Annual Progress Review"
-author: "Thomas Boughen"
+title: Annual Progress Review
+author: 
+  - name:  Thomas William Boughen
+    affiliations: 
+      - name: Newcastle University
+        department: School of Mathematics, Statistics and Physics
+    
 format: 
   pdf:
-    margin-left: 2cm
-    margin-right: 2cm
-    margin-bottom: 2cm
+    documentclass: scrreprt
+    papersize: a4
+    fontsize: 10pt
+    include-in-header: include-in-header.tex
+    template-partials:
+      - before-body.tex
+    geometry:
+      - inner=3cm
+      - outer=4cm
+      - top=3cm
+      - bottom=4cm
+      - headsep=22pt
+      - headheight=11pt
+      - footskip=33pt
+      - ignorehead
+      - ignorefoot
+      - heightrounded
+pdf-engine: xelatex
 editor: visual
 bibliography: references.bib
 ---
