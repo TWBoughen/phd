@@ -6,7 +6,7 @@ author:
       - name: Newcastle University
         department: School of Mathematics, Statistics and Physics
 number-sections: true
-number-depth: 2
+number-depth: 1
 format: 
   pdf:
     documentclass: scrreprt
@@ -15,11 +15,12 @@ format:
     include-in-header: include-in-header.tex
     template-partials:
       - before-body.tex
+    indent: truef
     geometry:
-      - inner=3cm
-      - outer=4cm
-      - top=3cm
-      - bottom=4cm
+      - inner=2cm
+      - outer=2cm
+      - top=2cm
+      - bottom=2cm
       - headsep=22pt
       - headheight=11pt
       - footskip=33pt
@@ -123,7 +124,65 @@ We first consider the degree of a particular vertex in the network $k_i$, and no
 
 Consider the Hawkes' process with random intensity at time $t$ given by $R_i(t) \sim \text{Bin}(m, p_i(t))$ such that:
 
-\[LOOK AT VIANEY'S NOTES\]
+\[USE RESULTS FROM BOOK\]
+
+### General Preferential Attachment Model (GPA)
+
+The Barabási-Albert (BA) model produces a power law degree distribution with exponent 3 for any choice of $m$, it is not possible to modify the parameters in the model to produce a heavier or lighter tailed degree distribution. This leads us to consider a modification of the BA model through the generalisation of the preferential attachment function, instead of weighting each existing vertex proportional to their degree we instead weight them by a function of their degree.
+
+1.  Growth
+
+    At each time step, add a node to the network that will connect to $1\leq m\le m_0$ nodes (already in the network) with $m$ edges.
+
+2.  Preferential Attachment
+
+    The probability that an edge from the new node connects to node $i$ is proportional to a function of its current degree $k_i$ i.e $g(k_i)/\sum_{j}g(k_j)$.
+
+For some $g: \mathbb{Z^+} \rightarrow \mathbb{R}^+$.
+
+### Results for GPA model
+
+Through the same thought process as the proof for the BA model we can obtain the differential equation:
+
+$$
+\frac{dk_i}{dt} = \frac{mg(k_i)}{\sum_j g(k_j)}
+$$
+
+However where in the case of the BA model, the denominator can be simplified to $2mt$, the same does not apply for the GPA model since $g$ could take many forms that don't allow the sum to be simpilfied. To attempt to deal with this issue we require some additional tools.
+
+#### Useful Result
+
+-   **Generating distribution via differential equation.**
+
+    Consider a process where vertices, labelled $i \in \mathbb Z^+$,with degree $K_i$ are added to a network at times $T_i\sim U(0,t)$ such that $K_i$ is asymptotically distributed with cumulative distribution function $F$ and probability distribution function $f$. Then we can write that:
+
+    $$
+    (1-F)^{-1}(t_i/t) = k_i \sim F
+    $$Differentiating this with respect to $k_i$, we can obtain:
+
+    $$
+    \frac{dk_i}{dt} = \frac{1}{th(k_i)}
+    $$Where $h$ is the hazard function associated with $F$.
+
+We now have two different formulae for the derivative of $k_i$ with respect to time which can be obtained to find to get a form for the asymptotic hazard function of $k_i$.
+
+$$
+h(k_i) = \frac{\sum_jg(k_j)}{mtg(k_i)}
+$$
+
+Unfortunately we are still left with the quantity $\sum_j g(k_j)$, which as previously mentioned cannot be evaluated analytically. This is where we looked to approximate it by noticing that there is an alternate form:
+
+$$
+\sum_j g(k_j) = N_t\sum_k p_t(k)g(k)
+$$
+
+where $N_t$ is the total number of vertices in the network at time $t$, $p_t(k)$ is the proportion of these vertices with degree $k$ at time $t$, and the sum is now over all unique degrees instead of all unique vertices. Given that we start with $m_0$ vertices in the network and are adding one vertex at every time step, we can write that $N_t = m_0+t$.
+
+If we now look at the asymptotic behaviour of the denominator we see that:
+
+$$
+\sum_jg(k_j) = (m_0+t)\sum_kp_t(k)g(k)\rightarrow t\sum_kf(k)g(k) = t\mathbb E_f[g(K)], \quad \text{as } t\rightarrow\infty
+$$
 
 {{< pagebreak >}}
 
