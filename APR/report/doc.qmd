@@ -38,7 +38,7 @@ bibliography: references.bib
 ---
 
 ```{r, echo=F, warning=F, message=F}
-#compile using this line of code in console
+#compile using this line of code in console in same folder as this file
 #quarto::quarto_render("doc.qmd", output_format = "all")
 library(networkdata)
 library(igraph)
