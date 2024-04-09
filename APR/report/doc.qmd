@@ -40,6 +40,9 @@ bibliography: references.bib
 ```{r, echo=F, warning=F, message=F}
 #compile using this line of code in console in same folder as this file
 #quarto::quarto_render("doc.qmd", output_format = "all")
+
+#pdftotext APR/report/doc.pdf - | wc -w 
+#for word count
 library(networkdata)
 library(igraph)
 source('../scripts/functions.R')
