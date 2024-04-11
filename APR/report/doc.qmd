@@ -304,6 +304,12 @@ $$
 
 ## Discrete Extreme Value Theory
 
+\[STILL NEED TO WRITE THIS SECTION\] but here are two plots that may be included. The first showing the value of $\Omega(k)$ for preferential attachment functions of the form $g(k) = k^\alpha$ for $\alpha \in(0.7,1.3)$. The second shows the value of $\frac{\bar F(tk)}{\bar F(k)}$ for functions of the same form but for $\alpha \in (1,2)$ this time.
+
+![](imgs/OmegaPlot.png)
+
+![](imgs/SVplot.png)
+
 {{< pagebreak >}}
 
 # References {.unnumbered}
