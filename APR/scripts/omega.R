@@ -185,8 +185,6 @@ ggplot(df, aes(k,value))+geom_line(aes(colour = a),linewidth=1) + scale_x_log10(
   scale_color_manual(values=pal)
 
 #seems to imply that CCDF is slowly varying for any a>1
-
-
 # -------------------------------------------------------------------------
 
 

@@ -282,7 +282,7 @@ The next step of this was to find out exactly how approximate this is, but it wa
 # definitions of super heavy tails
 ```
 
-#### Degree Distribution of the GPA Model 
+#### Degree Distribution of the GPA Model
 
 Let $g(k)$ be the weight of a vertex with degree $k$ which will act as the preferential attachment function. The tree evolves by attaching the $(t+1)$st vertex to vertex $i$ with probability proportional to $g(k_i(t) - 1)$ where $k_i(t)$ is the degree of vertex $i$ at time $t$.
 
