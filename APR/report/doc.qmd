@@ -76,6 +76,65 @@ x = degree(G, mode='in')
 x=x[x>0]
 sim = as.data.frame(table(x))
 sim[,1] = as.numeric(as.character(sim[,1]))
+
+```
+
+```{r, echo=F, warning=F, message=F}
+g = function(s,a=1){
+  return((s+1)^0.1)
+}
+f = Vectorize(function(k,lambda,g,a=1){
+  if(k==0){
+    return(lambda/(lambda+g(k,a)))
+  }
+  ks = 0:(k-1)
+  fracs = 1 - (lambda/(lambda+g(ks,a)))
+  return(lambda/(lambda+g(k,a)) * prod(fracs))
+}, vectorize.args = 'k')
+
+
+f_rat = Vectorize(function(k,t,lambda,g,a=1){
+  return(log(f(t*k, lambda, g,a))-log(f(k,lambda, g,a)))
+}, vectorize.args = 'k')
+
+CDF = Vectorize(function(k,lambda,g,a=1){
+  return(sum(f(0:(k-1), lambda, g,a)))
+}, vectorize.args='k')
+CCDF_rat = Vectorize(function(k,t,lambda, g,a=1){
+ return((1-CDF(t*k, lambda, g,a))/(1-CDF(k, lambda, g,a))) 
+}, vectorize.args = 'k')
+
+
+omega = Vectorize(function(k,lambda,g,a=1){
+  p1 = log((1-CDF(k+1,lambda,g,a))/(1-CDF(k+2,lambda,g,a)))^-1
+  p2 = log((1-CDF(k,lambda,g,a))/(1-CDF(k+1,lambda,g,a)))^-1
+  return(p1-p2)
+}, vectorize.args = c('k','a'))
+omega.vec = function(k,g,a=1){
+  lambda = uniroot(cond.b, interval=c(0,30), g=g)$root
+  return(omega(k,lambda,g,a))
+}
+
+
+# omega.vec(1:100, g)
+
+cond.b = Vectorize(function(lambda, g){
+  vals = 0:1e4
+  fracs = g(vals)/(lambda+g(vals))
+  out = 0
+  for(n in 1:length(vals)){
+    eps = prod(fracs[1:n])
+    # print(eps)
+    out = out + eps
+    if(eps<1e-4){
+      return(out-1)
+    }
+  }
+  return(out-1)
+}, vectorize.args = 'lambda')
+
+
+
 ```
 
 # Research Progress
@@ -185,7 +244,65 @@ If we now look at the asymptotic behaviour of the denominator we see that:
 
 $$
 \sum_jg(k_j) = (m_0+t)\sum_kp_t(k)g(k)\rightarrow t\sum_kf(k)g(k) = t\mathbb E_f[g(K)], \quad \text{as } t\rightarrow\infty
+$$ This means that the hazard function can be approximated by:
+
 $$
+h(k_i) \approx \frac{\mathbb E_f[g(K)]}{mg(k_i)} = \frac{\lambda^*}{mg(k_i)}
+$$
+
+Using this we can use standard results for discrete distributions to obtain an approximation of $f$. That is:
+
+$$
+f(k_i) = h(k_i)\prod_{j=1}^{k_i-1}(1-h(k_i)) \approx \frac{\lambda^*}{mg(k_i)}\prod_{j=1}^{k_i-1}\frac{mg(j) - \lambda^*}{mg(j)}
+$$
+
+where $\lambda^*$ is the solution, if it exists, to:
+
+$$
+ m = \sum_{k=1}^\infty\prod_{j=1}^{k-1}\frac{mg(j) - \lambda}{mg(j)}
+$$
+
+The next step of this was to find out exactly how approximate this is, but it was at this point that we came across \[NETWORKS BOOK\] which contained the following result that looks similar to the one that we have obtained. Instead of considering any possible $m$, this result is only for $m=1$ which will generate a tree.
+
+```{r,echo=FALSE}
+# Result from book
+# 
+# comparision with my approximation and differences graph
+# 
+# say using this instead as more accurate
+# 
+# results about heavy tailedness of the model for various functions 
+# 
+# omega plot
+# 
+# no results for diverging omega
+# 
+# perhaps super heavy
+# 
+# definitions of super heavy tails
+```
+
+#### Degree Distribution of the GPA Model 
+
+Let $g(k)$ be the weight of a vertex with degree $k$ which will act as the preferential attachment function. The tree evolves by attaching the $(t+1)$st vertex to vertex $i$ with probability proportional to $g(k_i(t) - 1)$ where $k_i(t)$ is the degree of vertex $i$ at time $t$.
+
+Then letting $\lambda^*$ be the solution, if it exists, to the equation:
+
+$$
+1 = \sum_{n=1}^\infty\prod_{i=0}^{n-1}\frac{g(i)}{g(i)+\lambda}
+$$
+
+The degree distribution converges to $(p_k)_{k\ge0}$, as proved by \[RUDAS\], where:
+
+$$
+p_k = \frac{\lambda^*}{g(k)+\lambda^*}\prod_{i=0}^{k-1}\frac{g(i)}{g(i)+\lambda^*}
+$$
+
+#### Comparison of two formulas
+
+\[FIGURE\] shows that for almost all forms of preferential attachment function the formula from \[BOOK\] is much more accurate that the approximation that we have derived. Knowing this, from now on we will use this formula when investigating the effects of changing the preferential attachment function on the heavy tailedness of the degree distribution.
+
+## Discrete Extreme Value Theory
 
 {{< pagebreak >}}
 

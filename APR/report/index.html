@@ -77,6 +77,7 @@ div.csl-indent {
   <li><a href="#general-preferential-attachment-model-gpa" id="toc-general-preferential-attachment-model-gpa" class="nav-link" data-scroll-target="#general-preferential-attachment-model-gpa">General Preferential Attachment Model (GPA)</a></li>
   <li><a href="#results-for-gpa-model" id="toc-results-for-gpa-model" class="nav-link" data-scroll-target="#results-for-gpa-model">Results for GPA model</a></li>
   </ul></li>
+  <li><a href="#discrete-extreme-value-theory" id="toc-discrete-extreme-value-theory" class="nav-link" data-scroll-target="#discrete-extreme-value-theory">Discrete Extreme Value Theory</a></li>
   </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
@@ -193,10 +194,41 @@ h(k_i) = \frac{\sum_jg(k_j)}{mtg(k_i)}
 <p>If we now look at the asymptotic behaviour of the denominator we see that:</p>
 <p><span class="math display">\[
 \sum_jg(k_j) = (m_0+t)\sum_kp_t(k)g(k)\rightarrow t\sum_kf(k)g(k) = t\mathbb E_f[g(K)], \quad \text{as } t\rightarrow\infty
+\]</span> This means that the hazard function can be approximated by:</p>
+<p><span class="math display">\[
+h(k_i) \approx \frac{\mathbb E_f[g(K)]}{mg(k_i)} = \frac{\lambda^*}{mg(k_i)}
 \]</span></p>
+<p>Using this we can use standard results for discrete distributions to obtain an approximation of <span class="math inline">\(f\)</span>. That is:</p>
+<p><span class="math display">\[
+f(k_i) = h(k_i)\prod_{j=1}^{k_i-1}(1-h(k_i)) \approx \frac{\lambda^*}{mg(k_i)}\prod_{j=1}^{k_i-1}\frac{mg(j) - \lambda^*}{mg(j)}
+\]</span></p>
+<p>where <span class="math inline">\(\lambda^*\)</span> is the solution, if it exists, to:</p>
+<p><span class="math display">\[
+m = \sum_{k=1}^\infty\prod_{j=1}^{k-1}\frac{mg(j) - \lambda}{mg(j)}
+\]</span></p>
+<p>The next step of this was to find out exactly how approximate this is, but it was at this point that we came across [NETWORKS BOOK] which contained the following result that looks similar to the one that we have obtained. Instead of considering any possible <span class="math inline">\(m\)</span>, this result is only for <span class="math inline">\(m=1\)</span> which will generate a tree.</p>
+</section>
+<section id="degree-distribution-of-the-gpa-model" class="level4">
+<h4 class="anchored" data-anchor-id="degree-distribution-of-the-gpa-model">Degree Distribution of the GPA Model</h4>
+<p>Let <span class="math inline">\(g(k)\)</span> be the weight of a vertex with degree <span class="math inline">\(k\)</span> which will act as the preferential attachment function. The tree evolves by attaching the <span class="math inline">\((t+1)\)</span>st vertex to vertex <span class="math inline">\(i\)</span> with probability proportional to <span class="math inline">\(g(k_i(t) - 1)\)</span> where <span class="math inline">\(k_i(t)\)</span> is the degree of vertex <span class="math inline">\(i\)</span> at time <span class="math inline">\(t\)</span>.</p>
+<p>Then letting <span class="math inline">\(\lambda^*\)</span> be the solution, if it exists, to the equation:</p>
+<p><span class="math display">\[
+1 = \sum_{n=1}^\infty\prod_{i=0}^{n-1}\frac{g(i)}{g(i)+\lambda}
+\]</span></p>
+<p>The degree distribution converges to <span class="math inline">\((p_k)_{k\ge0}\)</span>, as proved by [RUDAS], where:</p>
+<p><span class="math display">\[
+p_k = \frac{\lambda^*}{g(k)+\lambda^*}\prod_{i=0}^{k-1}\frac{g(i)}{g(i)+\lambda^*}
+\]</span></p>
+</section>
+<section id="comparison-of-two-formulas" class="level4">
+<h4 class="anchored" data-anchor-id="comparison-of-two-formulas">Comparison of two formulas</h4>
+<p>[FIGURE] shows that for almost all forms of preferential attachment function the formula from [BOOK] is much more accurate that the approximation that we have derived. Knowing this, from now on we will use this formula when investigating the effects of changing the preferential attachment function on the heavy tailedness of the degree distribution.</p>
+</section>
+</section>
+</section>
+<section id="discrete-extreme-value-theory" class="level2">
+<h2 class="anchored" data-anchor-id="discrete-extreme-value-theory">Discrete Extreme Value Theory</h2>
 <div style="page-break-after: always;"></div>
-</section>
-</section>
 </section>
 </section>
 <section id="references" class="level1 unnumbered">
