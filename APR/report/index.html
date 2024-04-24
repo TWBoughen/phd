@@ -67,17 +67,10 @@ div.csl-indent {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#research-progress" id="toc-research-progress" class="nav-link active" data-scroll-target="#research-progress"><span class="header-section-number">1</span> Research Progress</a>
+  <li><a href="#extreme-value-theory" id="toc-extreme-value-theory" class="nav-link active" data-scroll-target="#extreme-value-theory"><span class="header-section-number">1</span> Extreme Value Theory</a>
   <ul class="collapse">
-  <li><a href="#degree-distribution-of-real-networks" id="toc-degree-distribution-of-real-networks" class="nav-link" data-scroll-target="#degree-distribution-of-real-networks">Degree Distribution of Real Networks</a></li>
-  <li><a href="#generative-network-models" id="toc-generative-network-models" class="nav-link" data-scroll-target="#generative-network-models">Generative Network Models</a>
-  <ul class="collapse">
-  <li><a href="#barabási-albert-model" id="toc-barabási-albert-model" class="nav-link" data-scroll-target="#barabási-albert-model">Barabási-Albert Model</a></li>
-  <li><a href="#degree-distribution-of-the-barabási-albert-model" id="toc-degree-distribution-of-the-barabási-albert-model" class="nav-link" data-scroll-target="#degree-distribution-of-the-barabási-albert-model">Degree Distribution of the Barabási-Albert Model</a></li>
-  <li><a href="#general-preferential-attachment-model-gpa" id="toc-general-preferential-attachment-model-gpa" class="nav-link" data-scroll-target="#general-preferential-attachment-model-gpa">General Preferential Attachment Model (GPA)</a></li>
-  <li><a href="#results-for-gpa-model" id="toc-results-for-gpa-model" class="nav-link" data-scroll-target="#results-for-gpa-model">Results for GPA model</a></li>
-  </ul></li>
-  <li><a href="#discrete-extreme-value-theory" id="toc-discrete-extreme-value-theory" class="nav-link" data-scroll-target="#discrete-extreme-value-theory">Discrete Extreme Value Theory</a></li>
+  <li><a href="#standard-theory" id="toc-standard-theory" class="nav-link" data-scroll-target="#standard-theory">Standard Theory</a></li>
+  <li><a href="#discrete-extremes" id="toc-discrete-extremes" class="nav-link" data-scroll-target="#discrete-extremes">Discrete Extremes</a></li>
   </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
@@ -115,122 +108,63 @@ div.csl-indent {
 
 </header>
 
-<section id="research-progress" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Research Progress</h1>
-<p>This research has been focused on networks and modelling how they grow. The main focus has so far been the degree distribution of both real world networks as well as networks simulated from various models.</p>
-<section id="degree-distribution-of-real-networks" class="level2">
-<h2 class="anchored" data-anchor-id="degree-distribution-of-real-networks">Degree Distribution of Real Networks</h2>
-<p>The research began by looking at the degree distributions of real networks, with the aim of gaining some insight to how they may have grown and will continue to. Looking at <a href="#fig-survs">Figure&nbsp;1</a> it is clear that the degree distribution of networks can have various different shapes on a log-log scale. Some look almost linear, but others look more concave.</p>
-<div class="cell" data-fig.hold="true" data-fig.asp="0.2">
-<div class="cell-output-display">
-<div id="fig-survs" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="doc_files/figure-html/fig-survs-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;1: Survival function of the degrees.</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="generative-network-models" class="level2">
-<h2 class="anchored" data-anchor-id="generative-network-models">Generative Network Models</h2>
-<p>Network generation is a complex subject and so finding a fairly simple way of modelling how real networks might have grown is very attractive and the one of the reasons for the popularity of the Barabási-Albert model.</p>
-<section id="barabási-albert-model" class="level3">
-<h3 class="anchored" data-anchor-id="barabási-albert-model">Barabási-Albert Model</h3>
-<p>First introduced by <span class="citation" data-cites="Barabasi99">Barabási and Albert (<a href="#ref-Barabasi99" role="doc-biblioref">1999</a>)</span>, this is a simple network growth model whereby, when a vertex is added to the network it connects to those already in the network with probability proportional to their degree. More formally, starting with <span class="math inline">\(m_0\)</span> nodes , the edges between them chosen arbitrarily such that each node has at least one link. The network then develops using two steps:</p>
-<ol type="1">
-<li><p>Growth</p>
-<p>At each time step, add a node to the network that will connect to <span class="math inline">\(m\le m_0\)</span> nodes (already in the network) with <span class="math inline">\(m\)</span> edges.</p></li>
-<li><p>Preferential Attachment</p>
-<p>The probability that an edge from the new node connects to node <span class="math inline">\(i\)</span> is proportional to its current degree <span class="math inline">\(k_i\)</span> i.e <span class="math inline">\(k_i/\sum_{j}k_j\)</span>.</p></li>
-</ol>
-<p>This model has been proven through various means to produce a network that follows a power law with exponent 3. The method used in <span class="citation" data-cites="BARABASI1999173">Barabási, Albert, and Jeong (<a href="#ref-BARABASI1999173" role="doc-biblioref">1999</a>)</span> is unclear and it is not stated where some of the equations used come from. So, as part of reviewing the literature, we set out to make the proof of this more thorough with the idea of applying the method to more complex models.</p>
-</section>
-<section id="degree-distribution-of-the-barabási-albert-model" class="level3">
-<h3 class="anchored" data-anchor-id="degree-distribution-of-the-barabási-albert-model">Degree Distribution of the Barabási-Albert Model</h3>
-<p>We first consider the degree of a particular vertex in the network <span class="math inline">\(k_i\)</span>, and notice that at any given time step the degree of vertex <span class="math inline">\(i\)</span> can gain up to <span class="math inline">\(m\)</span> edges with each edge connecting with probability <span class="math inline">\(p_i(t) = k_i/\sum_{j}k_j\)</span>. This means that the number of edges gained by vertex <span class="math inline">\(i\)</span> at time <span class="math inline">\(t\)</span> can be modeled by a binomial random variable <span class="math inline">\(R_i(t)\)</span>.</p>
-<p>Consider the Hawkes’ process with random intensity at time <span class="math inline">\(t\)</span> given by <span class="math inline">\(R_i(t) \sim \text{Bin}(m, p_i(t))\)</span> such that:</p>
-<p>[USE RESULTS FROM BOOK]</p>
-</section>
-<section id="general-preferential-attachment-model-gpa" class="level3">
-<h3 class="anchored" data-anchor-id="general-preferential-attachment-model-gpa">General Preferential Attachment Model (GPA)</h3>
-<p>The Barabási-Albert (BA) model produces a power law degree distribution with exponent 3 for any choice of <span class="math inline">\(m\)</span>, it is not possible to modify the parameters in the model to produce a heavier or lighter tailed degree distribution. This leads us to consider a modification of the BA model through the generalisation of the preferential attachment function, instead of weighting each existing vertex proportional to their degree we instead weight them by a function of their degree.</p>
-<ol type="1">
-<li><p>Growth</p>
-<p>At each time step, add a node to the network that will connect to <span class="math inline">\(1\leq m\le m_0\)</span> nodes (already in the network) with <span class="math inline">\(m\)</span> edges.</p></li>
-<li><p>Preferential Attachment</p>
-<p>The probability that an edge from the new node connects to node <span class="math inline">\(i\)</span> is proportional to a function of its current degree <span class="math inline">\(k_i\)</span> i.e <span class="math inline">\(g(k_i)/\sum_{j}g(k_j)\)</span>.</p></li>
-</ol>
-<p>For some <span class="math inline">\(g: \mathbb{Z^+} \rightarrow \mathbb{R}^+\)</span>.</p>
-</section>
-<section id="results-for-gpa-model" class="level3">
-<h3 class="anchored" data-anchor-id="results-for-gpa-model">Results for GPA model</h3>
-<p>Through the same thought process as the proof for the BA model we can obtain the differential equation:</p>
+<section id="extreme-value-theory" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Extreme Value Theory</h1>
+<p>Extreme value theory is a field focused on studying properties at the tail ends of distributions where real world data may be scarce and hard to make inferences from. A lot of the standard theory assumes continuous distributions and that is what will be introduced first before looking at what has been done relating to discrete distributions.</p>
+<section id="standard-theory" class="level2">
+<h2 class="anchored" data-anchor-id="standard-theory">Standard Theory</h2>
+<p>One approach for modelling the extreme values is to look at modelling the block maxima of independent and identically distributed random variables <span class="math inline">\(X_1,X_2 \ldots\)</span> that all have a common cumulative distribution function (CDF) <span class="math inline">\(F\)</span>. The block maxima <span class="math inline">\(M_n\)</span> being defined as <span class="math inline">\(M_n = \max\{X_1,\ldots,X_n\}\)</span> has its own CDF defined by:</p>
 <p><span class="math display">\[
-\frac{dk_i}{dt} = \frac{mg(k_i)}{\sum_j g(k_j)}
+\Pr(M_n\le x) = F_n(x)
 \]</span></p>
-<p>However where in the case of the BA model, the denominator can be simplified to <span class="math inline">\(2mt\)</span>, the same does not apply for the GPA model since <span class="math inline">\(g\)</span> could take many forms that don’t allow the sum to be simpilfied. To attempt to deal with this issue we require some additional tools.</p>
-<section id="useful-result" class="level4">
-<h4 class="anchored" data-anchor-id="useful-result">Useful Result</h4>
+<p><span class="math inline">\(F\)</span> is in the domain of attraction of an extreme value CDF <span class="math inline">\(G\)</span>, if and only if the normalised version of <span class="math inline">\(M_n\)</span>’s CDF converges to a non degenerate <span class="math inline">\(G\)</span>, that is, there exists some sequence of <span class="math inline">\(a_n&gt;0\)</span> and <span class="math inline">\(b_n \in \mathbb R\)</span> such that:</p>
+<p><span class="math display">\[
+\Pr\left(\frac{M_n-b_n}{a_n}\le x\right) = F^n(a_nx+b_n) \rightarrow G(x),\qquad \text{as }n\rightarrow\infty
+\]</span></p>
+<p>If this holds, then <span class="math inline">\(F\)</span> is in the domain of attraction of <span class="math inline">\(G\)</span> which we will write as <span class="math inline">\(F\in\mathcal D(G)\)</span>. The extreme value theorem states that is limit CDF <span class="math inline">\(G\)</span> can be catagorised into one of three types:</p>
 <ul>
-<li><p><strong>Generating distribution via differential equation.</strong></p>
-<p>Consider a process where vertices, labelled <span class="math inline">\(i \in \mathbb Z^+\)</span>,with degree <span class="math inline">\(K_i\)</span> are added to a network at times <span class="math inline">\(T_i\sim U(0,t)\)</span> such that <span class="math inline">\(K_i\)</span> is asymptotically distributed with cumulative distribution function <span class="math inline">\(F\)</span> and probability distribution function <span class="math inline">\(f\)</span>. Then we can write that:</p>
-<p><span class="math display">\[
-(1-F)^{-1}(t_i/t) = k_i \sim F
-\]</span>Differentiating this with respect to <span class="math inline">\(k_i\)</span>, we can obtain:</p>
-<p><span class="math display">\[
-\frac{dk_i}{dt} = \frac{1}{th(k_i)}
-\]</span>Where <span class="math inline">\(h\)</span> is the hazard function associated with <span class="math inline">\(F\)</span>.</p></li>
+<li><p>Gumbel: <span class="math inline">\(\Lambda(x) = \exp\{-\exp(-x)\},\quad x\in \mathbb R\)</span></p></li>
+<li><p>Fréchet: <span class="math inline">\(\Phi_a(x) = \exp\{-x^{-\alpha}\},\quad x\ge 0,\alpha&gt;0\)</span></p></li>
+<li><p>Weibull: <span class="math inline">\(\Psi_\alpha(x) = \exp\{-x^{-a}\},\quad x&lt;0,\alpha&gt;0\)</span></p></li>
 </ul>
-<p>We now have two different formulae for the derivative of <span class="math inline">\(k_i\)</span> with respect to time which can be obtained to find to get a form for the asymptotic hazard function of <span class="math inline">\(k_i\)</span>.</p>
+<div id="def-gev" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1 (Generalised Extreme Value Distribution) </strong></span>These three types of distribution can be combined into one single distribution called the Generalised Extreme Value (<strong>GEV</strong>) Distribution which has CDF:</p>
 <p><span class="math display">\[
-h(k_i) = \frac{\sum_jg(k_j)}{mtg(k_i)}
+G(x) = \exp\left\{-\left(1+\frac{\xi(x-\mu)}{\sigma}\right)^{-1/\xi}\right\}
 \]</span></p>
-<p>Unfortunately we are still left with the quantity <span class="math inline">\(\sum_j g(k_j)\)</span>, which as previously mentioned cannot be evaluated analytically. This is where we looked to approximate it by noticing that there is an alternate form:</p>
-<p><span class="math display">\[
-\sum_j g(k_j) = N_t\sum_k p_t(k)g(k)
-\]</span></p>
-<p>where <span class="math inline">\(N_t\)</span> is the total number of vertices in the network at time <span class="math inline">\(t\)</span>, <span class="math inline">\(p_t(k)\)</span> is the proportion of these vertices with degree <span class="math inline">\(k\)</span> at time <span class="math inline">\(t\)</span>, and the sum is now over all unique degrees instead of all unique vertices. Given that we start with <span class="math inline">\(m_0\)</span> vertices in the network and are adding one vertex at every time step, we can write that <span class="math inline">\(N_t = m_0+t\)</span>.</p>
-<p>If we now look at the asymptotic behaviour of the denominator we see that:</p>
-<p><span class="math display">\[
-\sum_jg(k_j) = (m_0+t)\sum_kp_t(k)g(k)\rightarrow t\sum_kf(k)g(k) = t\mathbb E_f[g(K)], \quad \text{as } t\rightarrow\infty
-\]</span> This means that the hazard function can be approximated by:</p>
-<p><span class="math display">\[
-h(k_i) \approx \frac{\mathbb E_f[g(K)]}{mg(k_i)} = \frac{\lambda^*}{mg(k_i)}
-\]</span></p>
-<p>Using this we can use standard results for discrete distributions to obtain an approximation of <span class="math inline">\(f\)</span>. That is:</p>
-<p><span class="math display">\[
-f(k_i) = h(k_i)\prod_{j=1}^{k_i-1}(1-h(k_i)) \approx \frac{\lambda^*}{mg(k_i)}\prod_{j=1}^{k_i-1}\frac{mg(j) - \lambda^*}{mg(j)}
-\]</span></p>
-<p>where <span class="math inline">\(\lambda^*\)</span> is the solution, if it exists, to:</p>
-<p><span class="math display">\[
-m = \sum_{k=1}^\infty\prod_{j=1}^{k-1}\frac{mg(j) - \lambda}{mg(j)}
-\]</span></p>
-<p>The next step of this was to find out exactly how approximate this is, but it was at this point that we came across [NETWORKS BOOK] which contained the following result that looks similar to the one that we have obtained. Instead of considering any possible <span class="math inline">\(m\)</span>, this result is only for <span class="math inline">\(m=1\)</span> which will generate a tree.</p>
+<p>denoted <span class="math inline">\(\text{GEV}(\mu, \sigma, \xi)\)</span> for some <span class="math inline">\(\mu\in\mathbb R,\sigma&gt;0, \xi \in \mathbb R\)</span> and has support on <span class="math inline">\(\{x\in \mathbb R:1+\xi(x-\mu)/\sigma &gt; 0\}\)</span> with each of the three types being obtained from changing the values of each of the parameters with <span class="math inline">\(\xi=0\)</span> taken as the limit:</p>
+<ul>
+<li><p>Gumbel: <span class="math inline">\(\text{GEV}(\mu, \sigma,0)\)</span></p></li>
+<li><p>Fréchet: <span class="math inline">\(\text{GEV}(1, 1,1/\alpha)\)</span></p></li>
+<li><p>Weibull: <span class="math inline">\(\text{GEV}(-1, -1,-1/\alpha)\)</span></p></li>
+</ul>
+<p>The most important parameter here is <span class="math inline">\(\xi\)</span> which will be referred to as the shape parameter as it controls the tail behaviour of the distribution allowing it to occupy the three domains of attraction.</p>
+</div>
+<div id="def-heavy" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2 (Heavy Tails) </strong></span>There are a few definitions that can be used to define a distribution that has heavy tails, one that will not be used here is that the tails of the distribution function are heavier than an exponential. Here, a distribution with CDF <span class="math inline">\(F\)</span> will be said to have heavy tails if it is in the Fréchet domain of attraction with tail index <span class="math inline">\(\alpha\)</span>, or it is in the Gumbel domain of attraction.</p>
+</div>
+<div id="def-GPD" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3 (Generalised Pareto Distribution) </strong></span>A related distribution called the Generalised Pareto (<strong>GP</strong>) Distribution is also often used to model the probability distribution of threshold excesses, it has the CDF: <span class="math display">\[
+H(x) = 1-\left(1+\frac{\xi x}{\sigma}\right)^{-1/\xi}
+\]</span> denoted <span class="math inline">\(\text{GP}(\sigma,\xi)\)</span> for some <span class="math inline">\(\sigma&gt;0, \xi\in \mathbb R\)</span> it has support on either <span class="math inline">\((0,\infty)\)</span> when <span class="math inline">\(\xi \ge 0\)</span> or <span class="math inline">\((0,-\sigma/\xi)\)</span> when <span class="math inline">\(\xi&lt;0\)</span>.</p>
+</div>
+<p>This distribution of often used to model the conditional probability of iid random variables exceeding some cut-off <span class="math inline">\(u\)</span>. However, like most of the theory above, it requires iid discrete random variable; in the case of networks and modelling the degrees of their vertices the focus is on discrete data so tools to aid in modelling discrete data are required.</p>
 </section>
-<section id="degree-distribution-of-the-gpa-model" class="level4">
-<h4 class="anchored" data-anchor-id="degree-distribution-of-the-gpa-model">Degree Distribution of the GPA Model</h4>
-<p>Let <span class="math inline">\(g(k)\)</span> be the weight of a vertex with degree <span class="math inline">\(k\)</span> which will act as the preferential attachment function. The tree evolves by attaching the <span class="math inline">\((t+1)\)</span>st vertex to vertex <span class="math inline">\(i\)</span> with probability proportional to <span class="math inline">\(g(k_i(t) - 1)\)</span> where <span class="math inline">\(k_i(t)\)</span> is the degree of vertex <span class="math inline">\(i\)</span> at time <span class="math inline">\(t\)</span>.</p>
-<p>Then letting <span class="math inline">\(\lambda^*\)</span> be the solution, if it exists, to the equation:</p>
-<p><span class="math display">\[
-1 = \sum_{n=1}^\infty\prod_{i=0}^{n-1}\frac{g(i)}{g(i)+\lambda}
+<section id="discrete-extremes" class="level2">
+<h2 class="anchored" data-anchor-id="discrete-extremes">Discrete Extremes</h2>
+<p>Since the focus of this report is discrete data, theory on discrete extremes will need to be examined starting with a discrete alternative to the GP distribution.</p>
+<div id="def-igp" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 4 (Integrated Generalised Pareto Distribution) </strong></span>Roughly following <span class="citation" data-cites="Rohrbeck_2018">Rohrbeck et al. (<a href="#ref-Rohrbeck_2018" role="doc-biblioref">2018</a>)</span>, the integrated generalised pareto (<strong>IGP</strong>) distribution can be defined by considering modelling the random variable <span class="math inline">\(Y = \lceil X\rceil\)</span> for some continuous random variable <span class="math inline">\(X\)</span> with support on the positive real line such that <span class="math inline">\(X|X&gt;u \sim \text{GPD}(\sigma_0+\xi u, \xi)\)</span> for <span class="math inline">\(\xi\in\mathbb R,u\in\mathbb R^+\)</span>. The probability mass function (PMF) of the IGP distribution can then be defined as:</p>
+<p>For values <span class="math inline">\(y = \lfloor u \rfloor, \lfloor u \rfloor+1, \ldots\)</span> and <span class="math inline">\(\xi \in \mathbb R\)</span> and <span class="math inline">\(u,\sigma_0 \in\mathbb R^+\)</span>:</p>
+<span class="math display">\[\begin{align*}
+\Pr(Y=y | Y&gt;u) &amp;= \Pr(X&lt;y|X&gt;\lfloor u\rfloor) - \Pr(X&lt;y-1|X&gt;\lfloor u\rfloor) \\
+&amp;=\left(1+\frac{\xi(y-\lfloor u\rfloor)}{\sigma_0 + \xi \lfloor u \rfloor}\right)_+^{-1/\xi} - \left(1+\frac{\xi(y-1-\lfloor u\rfloor)}{\sigma_0 + \xi \lfloor u \rfloor}\right)_+^{-1/\xi}
+\end{align*}\]</span>
+<p>By modelling the ceiling of a continuous random variable, it is also suggested that one could instead model the floor of a continuous random variable instead. Indeed, that is what will be done from here on out. Consider modelling the random variable <span class="math inline">\(Y=\lfloor X\rfloor\)</span>, the PMF of the IGP then becomes:</p>
+<p>For values <span class="math inline">\(y=\lceil u \rceil,\lceil u \rceil +1,\ldots\)</span> and <span class="math inline">\(\xi \in \mathbb R\)</span> and <span class="math inline">\(u,\sigma_0 \in\mathbb R^+\)</span>: <span class="math display">\[
+\Pr(Y=y | Y&gt;u) = \left(1+\frac{\xi(y+1-\lceil u\rceil)}{\sigma_0 + \xi \lceil u \rceil}\right)_+^{-1/\xi} - \left(1+\frac{\xi(y-\lceil u\rceil)}{\sigma_0 + \xi \lceil u \rceil}\right)_+^{-1/\xi}
 \]</span></p>
-<p>The degree distribution converges to <span class="math inline">\((p_k)_{k\ge0}\)</span>, as proved by [RUDAS], where:</p>
-<p><span class="math display">\[
-p_k = \frac{\lambda^*}{g(k)+\lambda^*}\prod_{i=0}^{k-1}\frac{g(i)}{g(i)+\lambda^*}
-\]</span></p>
-</section>
-<section id="comparison-of-two-formulas" class="level4">
-<h4 class="anchored" data-anchor-id="comparison-of-two-formulas">Comparison of two formulas</h4>
-<p>[FIGURE] shows that for almost all forms of preferential attachment function the formula from [BOOK] is much more accurate that the approximation that we have derived. Knowing this, from now on we will use this formula when investigating the effects of changing the preferential attachment function on the heavy tailedness of the degree distribution.</p>
-</section>
-</section>
-</section>
-<section id="discrete-extreme-value-theory" class="level2">
-<h2 class="anchored" data-anchor-id="discrete-extreme-value-theory">Discrete Extreme Value Theory</h2>
-<p>[STILL NEED TO WRITE THIS SECTION] but here are two plots that may be included. The first showing the value of <span class="math inline">\(\Omega(k)\)</span> for preferential attachment functions of the form <span class="math inline">\(g(k) = k^\alpha\)</span> for <span class="math inline">\(\alpha \in(0.7,1.3)\)</span>. The second shows the value of <span class="math inline">\(\frac{\bar F(tk)}{\bar F(k)}\)</span> for functions of the same form but for <span class="math inline">\(\alpha \in (1,2)\)</span> this time.</p>
-<p><img src="imgs/OmegaPlot.png" class="img-fluid"></p>
-<p><img src="imgs/SVplot.png" class="img-fluid"></p>
+</div>
 <div style="page-break-after: always;"></div>
 </section>
 </section>
@@ -240,11 +174,8 @@ p_k = \frac{\lambda^*}{g(k)+\lambda^*}\prod_{i=0}^{k-1}\frac{g(i)}{g(i)+\lambda^
 </section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
-<div id="ref-Barabasi99" class="csl-entry" role="listitem">
-Barabási, Albert-László, and Réka Albert. 1999. <span>“Emergence of Scaling in Random Networks.”</span> <em>Science</em> 286 (5439): 509–12. <a href="https://doi.org/10.1126/science.286.5439.509">https://doi.org/10.1126/science.286.5439.509</a>.
-</div>
-<div id="ref-BARABASI1999173" class="csl-entry" role="listitem">
-Barabási, Albert-László, Réka Albert, and Hawoong Jeong. 1999. <span>“Mean-Field Theory for Scale-Free Random Networks.”</span> <em>Physica A: Statistical Mechanics and Its Applications</em> 272 (1): 173–87. https://doi.org/<a href="https://doi.org/10.1016/S0378-4371(99)00291-5">https://doi.org/10.1016/S0378-4371(99)00291-5</a>.
+<div id="ref-Rohrbeck_2018" class="csl-entry" role="listitem">
+Rohrbeck, Christian, Emma F. Eastoe, Arnoldo Frigessi, and Jonathan A. Tawn. 2018. <span>“<span class="nocase">Extreme value modelling of water-related insurance claims</span>.”</span> <em>The Annals of Applied Statistics</em> 12 (1): 246–82. <a href="https://doi.org/10.1214/17-AOAS1081">https://doi.org/10.1214/17-AOAS1081</a>.
 </div>
 </div></section></div></main>
 <!-- /main column -->

@@ -163,9 +163,9 @@ If this holds, then $F$ is in the domain of attraction of $G$ which we will writ
 
 -   Weibull: $\Psi_\alpha(x) = \exp\{-x^{-a}\},\quad x<0,\alpha>0$
 
-
 ::: {#def-gev}
 ## Generalised Extreme Value Distribution
+
 These three types of distribution can be combined into one single distribution called the Generalised Extreme Value (**GEV**) Distribution which has CDF:
 
 $$
@@ -183,7 +183,6 @@ denoted $\text{GEV}(\mu, \sigma, \xi)$ for some $\mu\in\mathbb R,\sigma>0, \xi \
 The most important parameter here is $\xi$ which will be referred to as the shape parameter as it controls the tail behaviour of the distribution allowing it to occupy the three domains of attraction.
 :::
 
-
 ::: {#def-heavy}
 ## Heavy Tails
 
@@ -193,13 +192,10 @@ There are a few definitions that can be used to define a distribution that has h
 ::: {#def-GPD}
 ## Generalised Pareto Distribution
 
-A related distribution called the Generalised Pareto (**GP**) Distribution is also often used to model the probability distribution of threshold excesses, it has the CDF:
-$$
+A related distribution called the Generalised Pareto (**GP**) Distribution is also often used to model the probability distribution of threshold excesses, it has the CDF: $$
 H(x) = 1-\left(1+\frac{\xi x}{\sigma}\right)^{-1/\xi}
-$$
-denoted $\text{GP}(\sigma,\xi)$ for some $\sigma>0, \xi\in \mathbb R$ it has support on either $(0,\infty)$ when $\xi \ge 0$ or $(0,-\sigma/\xi)$ when $\xi<0$.
+$$ denoted $\text{GP}(\sigma,\xi)$ for some $\sigma>0, \xi\in \mathbb R$ it has support on either $(0,\infty)$ when $\xi \ge 0$ or $(0,-\sigma/\xi)$ when $\xi<0$.
 :::
-
 
 This distribution of often used to model the conditional probability of iid random variables exceeding some cut-off $u$. However, like most of the theory above, it requires iid discrete random variable; in the case of networks and modelling the degrees of their vertices the focus is on discrete data so tools to aid in modelling discrete data are required.
 
@@ -213,6 +209,7 @@ Since the focus of this report is discrete data, theory on discrete extremes wil
 Roughly following @Rohrbeck_2018, the integrated generalised pareto (**IGP**) distribution can be defined by considering modelling the random variable $Y = \lceil X\rceil$ for some continuous random variable $X$ with support on the positive real line such that $X|X>u \sim \text{GPD}(\sigma_0+\xi u, \xi)$ for $\xi\in\mathbb R,u\in\mathbb R^+$. The probability mass function (PMF) of the IGP distribution can then be defined as:
 
 For values $y = \lfloor u \rfloor, \lfloor u \rfloor+1, \ldots$ and $\xi \in \mathbb R$ and $u,\sigma_0 \in\mathbb R^+$:
+
 ```{=tex}
 \begin{align*}
 \Pr(Y=y | Y>u) &= \Pr(X<y|X>\lfloor u\rfloor) - \Pr(X<y-1|X>\lfloor u\rfloor) \\
@@ -221,15 +218,12 @@ For values $y = \lfloor u \rfloor, \lfloor u \rfloor+1, \ldots$ and $\xi \in \ma
 ```
 By modelling the ceiling of a continuous random variable, it is also suggested that one could instead model the floor of a continuous random variable instead. Indeed, that is what will be done from here on out. Consider modelling the random variable $Y=\lfloor X\rfloor$, the PMF of the IGP then becomes:
 
-For values $y=\lceil u \rceil,\lceil u \rceil +1,\ldots$ and $\xi \in \mathbb R$ and $u,\sigma_0 \in\mathbb R^+$:
-$$
+For values $y=\lceil u \rceil,\lceil u \rceil +1,\ldots$ and $\xi \in \mathbb R$ and $u,\sigma_0 \in\mathbb R^+$: $$
 \Pr(Y=y | Y>u) = \left(1+\frac{\xi(y+1-\lceil u\rceil)}{\sigma_0 + \xi \lceil u \rceil}\right)_+^{-1/\xi} - \left(1+\frac{\xi(y-\lceil u\rceil)}{\sigma_0 + \xi \lceil u \rceil}\right)_+^{-1/\xi}
 $$
 :::
 
-
-
-
+This is a good
 
 {{< pagebreak >}}
 
