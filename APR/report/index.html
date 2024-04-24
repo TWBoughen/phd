@@ -72,6 +72,12 @@ div.csl-indent {
   <li><a href="#standard-theory" id="toc-standard-theory" class="nav-link" data-scroll-target="#standard-theory">Standard Theory</a></li>
   <li><a href="#discrete-extremes" id="toc-discrete-extremes" class="nav-link" data-scroll-target="#discrete-extremes">Discrete Extremes</a></li>
   </ul></li>
+  <li><a href="#networks" id="toc-networks" class="nav-link" data-scroll-target="#networks"><span class="header-section-number">2</span> Networks</a>
+  <ul class="collapse">
+  <li><a href="#mathematical-definition" id="toc-mathematical-definition" class="nav-link" data-scroll-target="#mathematical-definition">Mathematical Definition</a></li>
+  <li><a href="#analysis-of-real-world-networks" id="toc-analysis-of-real-world-networks" class="nav-link" data-scroll-target="#analysis-of-real-world-networks">Analysis of Real World Networks</a></li>
+  <li><a href="#network-generative-models" id="toc-network-generative-models" class="nav-link" data-scroll-target="#network-generative-models">Network Generative Models</a></li>
+  </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="doc.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
@@ -158,12 +164,62 @@ H(x) = 1-\left(1+\frac{\xi x}{\sigma}\right)^{-1/\xi}
 <p>For values <span class="math inline">\(y = \lfloor u \rfloor, \lfloor u \rfloor+1, \ldots\)</span> and <span class="math inline">\(\xi \in \mathbb R\)</span> and <span class="math inline">\(u,\sigma_0 \in\mathbb R^+\)</span>:</p>
 <span class="math display">\[\begin{align*}
 \Pr(Y=y | Y&gt;u) &amp;= \Pr(X&lt;y|X&gt;\lfloor u\rfloor) - \Pr(X&lt;y-1|X&gt;\lfloor u\rfloor) \\
-&amp;=\left(1+\frac{\xi(y-\lfloor u\rfloor)}{\sigma_0 + \xi \lfloor u \rfloor}\right)_+^{-1/\xi} - \left(1+\frac{\xi(y-1-\lfloor u\rfloor)}{\sigma_0 + \xi \lfloor u \rfloor}\right)_+^{-1/\xi}
+&amp;=\left(1+\frac{\xi(y-1-\lfloor u\rfloor)}{\sigma_0 + \xi \lfloor u \rfloor}\right)_+^{-1/\xi} - \left(1+\frac{\xi(y-\lfloor u\rfloor)}{\sigma_0 + \xi \lfloor u \rfloor}\right)_+^{-1/\xi}
 \end{align*}\]</span>
 <p>By modelling the ceiling of a continuous random variable, it is also suggested that one could instead model the floor of a continuous random variable instead. Indeed, that is what will be done from here on out. Consider modelling the random variable <span class="math inline">\(Y=\lfloor X\rfloor\)</span>, the PMF of the IGP then becomes:</p>
-<p>For values <span class="math inline">\(y=\lceil u \rceil,\lceil u \rceil +1,\ldots\)</span> and <span class="math inline">\(\xi \in \mathbb R\)</span> and <span class="math inline">\(u,\sigma_0 \in\mathbb R^+\)</span>: <span class="math display">\[
-\Pr(Y=y | Y&gt;u) = \left(1+\frac{\xi(y+1-\lceil u\rceil)}{\sigma_0 + \xi \lceil u \rceil}\right)_+^{-1/\xi} - \left(1+\frac{\xi(y-\lceil u\rceil)}{\sigma_0 + \xi \lceil u \rceil}\right)_+^{-1/\xi}
+<p>For values <span class="math inline">\(y=\lceil u \rceil,\lceil u \rceil +1,\ldots\)</span> and <span class="math inline">\(\xi \in \mathbb R\)</span> and <span class="math inline">\(u,\sigma_0 \in\mathbb R^+\)</span>: par<span class="math display">\[
+\Pr(Y=y | Y&gt;u) = \left(1+\frac{\xi(y-\lceil u\rceil)}{\sigma_0 + \xi \lceil u \rceil}\right)_+^{-1/\xi} - \left(1+\frac{\xi(y+1-\lceil u\rceil)}{\sigma_0 + \xi \lceil u \rceil}\right)_+^{-1/\xi}
 \]</span></p>
+</div>
+<p>If this is to be used as a discrete alternative to the GP distribution, it needs to be verified that the parameter <span class="math inline">\(\xi\)</span> affects the tail behaviour in the same way. The results from <span class="citation" data-cites="shimura12">Shimura (<a href="#ref-shimura12" role="doc-biblioref">2012</a>)</span> can be used to show that this distribution will indeed belong to the same domain of attraction as the GP distribution for any given value of <span class="math inline">\(\xi\)</span>. <span class="citation" data-cites="shimura12">Shimura (<a href="#ref-shimura12" role="doc-biblioref">2012</a>)</span> also introduces an important quantity that will be useful in finding what domain of attraction a discrete distribution belongs to, namely:</p>
+<p><span class="math display">\[
+\Omega(F,n) = \left(\log\frac{\bar F(n+1)}{\bar F(n+2)}\right)^{-1} -\left(\log\frac{\bar F(n)}{\bar F(n+1)}\right)^{-1}
+\]</span></p>
+<p>where <span class="math inline">\(\bar F\)</span> is the survival function of a discrete random variable.</p>
+<p>While a lot of distributions may be just be heavy tails, it will be useful to define what is means for a distribution to have super heavy tails. There are several definitions being used but here the one from [SUPER HEAVY ref] will be used.</p>
+<div id="def-superheavy" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5 (Super Heavy Tails) </strong></span>A distribution with <span class="math inline">\(f,F,\bar F\)</span> as its pdf, cdf, and survival respectively is said to have super heavy tails if the survival function <span class="math inline">\(\bar F\)</span> is slowly varying. That is: <span class="math display">\[
+\lim_{x\rightarrow\infty}\frac{\bar F(cx)}{\bar F(x)} = 1, \qquad\forall c \in \mathbb{R^+}
+\]</span> It should be noted that this condition is sufficient but not necessary and does not capture all distributions with super heavy tails.</p>
+</div>
+</section>
+</section>
+<section id="networks" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Networks</h1>
+<p>In the previous section an overview of extreme value theory was given, in this section context will be given as to what distributions are in the scope of this research and what they arise from.</p>
+<section id="mathematical-definition" class="level2">
+<h2 class="anchored" data-anchor-id="mathematical-definition">Mathematical Definition</h2>
+<p>The networks being analysed will be treated as mathematical graphs that consist of two kinds of objects, vertices that usually represent the individual components in a complex system, and edges that represent the relationships between these components. The focus, for now, will be on undirected networks and therefore undirected graphs.</p>
+<div id="def-graph" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 6 (Undirected Graph) </strong></span>An undirected graph <span class="math inline">\(G\)</span> consists of a set of vertices <span class="math inline">\(V\)</span> and a set of edges between these vertices say <span class="math inline">\(E\)</span>, this will be denoted as <span class="math inline">\(G = (V,E)\)</span> where <span class="math inline">\(V\)</span> is usually a subset of <span class="math inline">\(\mathbb N\)</span> and <span class="math inline">\(E\)</span> is a subset of the set of unordered pairs of <span class="math inline">\(V\)</span>.</p>
+</div>
+<div id="def-deg" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 7 (Degree) </strong></span>A vertex <span class="math inline">\(i\)</span> has degree <span class="math inline">\(k_i\)</span>, where <span class="math inline">\(k_i\)</span> is the number of appearances of <span class="math inline">\(i\)</span> in the set <span class="math inline">\(E\)</span>. That is, the degree of a vertx is the number of edges that connect to it.</p>
+</div>
+</section>
+<section id="analysis-of-real-world-networks" class="level2">
+<h2 class="anchored" data-anchor-id="analysis-of-real-world-networks">Analysis of Real World Networks</h2>
+<p>Before looking at what has and could be used to model the growth of real networks, it will be useful to analyse some examples. The property of focus here will be the degree distribution of real world networks, more specifically the tail behaviour. <a href="#fig-survs">Figure&nbsp;1</a> shows the survival function of the degree distribution for four examples of real world networks that represent: game results between top tennis players, facebook friends of Harvard students and alumni, interactions between proteins in cells, and the dependencies of R packages.</p>
+<div class="cell" data-fig.hold="true" data-fig.asp="0.2">
+<div class="cell-output-display">
+<div id="fig-survs" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="doc_files/figure-html/fig-survs-1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;1: Survival function of the degrees.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="network-generative-models" class="level2">
+<h2 class="anchored" data-anchor-id="network-generative-models">Network Generative Models</h2>
+<p>The way in which vertices and edges are added and removed from networks over time is of great interest as it can lead to inferences about the underlying mechanics of a complex system and allow for theorising what may happen to the network in the future. To that end, finding a model that is both simple enough and leads to properties that match real world networks is of utmost importance. Below are some definitions of increasingly general network generative models.</p>
+<div id="def-uniform" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 8 (Uniform attachment model) </strong></span>Consider an initial graph <span class="math inline">\(G_0\)</span> with vertex set <span class="math inline">\(V_0=\{1,2,\ldots,m_0\}\)</span> and edge set <span class="math inline">\(E_0=\emptyset\)</span>. Starting at <span class="math inline">\(t=1\)</span> repeat the steps below:</p>
+<ol type="1">
+<li>Add a vertex to the network, <span class="math inline">\(V_t=V_{t-1}\cup\{m_0+t\}\)</span></li>
+<li>Add <span class="math inline">\(m\le m_0\)</span> edges to the network connecting the new vertex to those in already in the network. With the existing vertices to be chosen uniformly at random from <span class="math inline">\(V_{t-1}\)</span> with replacement.</li>
+</ol>
 </div>
 <div style="page-break-after: always;"></div>
 </section>
@@ -176,6 +232,9 @@ H(x) = 1-\left(1+\frac{\xi x}{\sigma}\right)^{-1/\xi}
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-Rohrbeck_2018" class="csl-entry" role="listitem">
 Rohrbeck, Christian, Emma F. Eastoe, Arnoldo Frigessi, and Jonathan A. Tawn. 2018. <span>“<span class="nocase">Extreme value modelling of water-related insurance claims</span>.”</span> <em>The Annals of Applied Statistics</em> 12 (1): 246–82. <a href="https://doi.org/10.1214/17-AOAS1081">https://doi.org/10.1214/17-AOAS1081</a>.
+</div>
+<div id="ref-shimura12" class="csl-entry" role="listitem">
+Shimura, Takaaki. 2012. <span>“Discretization of Distributions in the Maximum Domain of Attraction.”</span> <em>Extremes</em> 15 (September): 1–19. <a href="https://doi.org/10.1007/s10687-011-0137-7">https://doi.org/10.1007/s10687-011-0137-7</a>.
 </div>
 </div></section></div></main>
 <!-- /main column -->
