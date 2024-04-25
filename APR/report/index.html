@@ -75,12 +75,15 @@ div.csl-indent {
   <li><a href="#networks" id="toc-networks" class="nav-link" data-scroll-target="#networks"><span class="header-section-number">2</span> Networks</a>
   <ul class="collapse">
   <li><a href="#mathematical-definition" id="toc-mathematical-definition" class="nav-link" data-scroll-target="#mathematical-definition">Mathematical Definition</a></li>
-  <li><a href="#analysis-of-real-world-networks" id="toc-analysis-of-real-world-networks" class="nav-link" data-scroll-target="#analysis-of-real-world-networks">Analysis of Real World Networks</a></li>
+  <li><a href="#analysis-of-real-world-networks" id="toc-analysis-of-real-world-networks" class="nav-link" data-scroll-target="#analysis-of-real-world-networks">Analysis of Real World Networks</a>
+  <ul class="collapse">
+  <li><a href="#power-law-igp-mixture-model-pl-igp" id="toc-power-law-igp-mixture-model-pl-igp" class="nav-link" data-scroll-target="#power-law-igp-mixture-model-pl-igp">Power Law IGP Mixture Model (PL-IGP)</a></li>
+  </ul></li>
   <li><a href="#network-generative-models" id="toc-network-generative-models" class="nav-link" data-scroll-target="#network-generative-models">Network Generative Models</a></li>
   </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
-<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="doc.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="doc.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li><li><a href="doc.odt"><i class="bi bi-file"></i>OpenOffice</a></li></ul></div></nav>
 </div>
 <main class="content column-page-left" id="quarto-document-content">
 
@@ -149,7 +152,7 @@ G(x) = \exp\left\{-\left(1+\frac{\xi(x-\mu)}{\sigma}\right)^{-1/\xi}\right\}
 <div id="def-heavy" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 2 (Heavy Tails) </strong></span>There are a few definitions that can be used to define a distribution that has heavy tails, one that will not be used here is that the tails of the distribution function are heavier than an exponential. Here, a distribution with CDF <span class="math inline">\(F\)</span> will be said to have heavy tails if it is in the Fréchet domain of attraction with tail index <span class="math inline">\(\alpha\)</span>, or it is in the Gumbel domain of attraction.</p>
 </div>
-<div id="def-GPD" class="theorem definition">
+<div id="def-gp" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 3 (Generalised Pareto Distribution) </strong></span>A related distribution called the Generalised Pareto (<strong>GP</strong>) Distribution is also often used to model the probability distribution of threshold excesses, it has the CDF: <span class="math display">\[
 H(x) = 1-\left(1+\frac{\xi x}{\sigma}\right)^{-1/\xi}
 \]</span> denoted <span class="math inline">\(\text{GP}(\sigma,\xi)\)</span> for some <span class="math inline">\(\sigma&gt;0, \xi\in \mathbb R\)</span> it has support on either <span class="math inline">\((0,\infty)\)</span> when <span class="math inline">\(\xi \ge 0\)</span> or <span class="math inline">\((0,-\sigma/\xi)\)</span> when <span class="math inline">\(\xi&lt;0\)</span>.</p>
@@ -199,7 +202,7 @@ H(x) = 1-\left(1+\frac{\xi x}{\sigma}\right)^{-1/\xi}
 </section>
 <section id="analysis-of-real-world-networks" class="level2">
 <h2 class="anchored" data-anchor-id="analysis-of-real-world-networks">Analysis of Real World Networks</h2>
-<p>Before looking at what has and could be used to model the growth of real networks, it will be useful to analyse some examples. The property of focus here will be the degree distribution of real world networks, more specifically the tail behaviour. <a href="#fig-survs">Figure&nbsp;1</a> shows the survival function of the degree distribution for four examples of real world networks that represent: game results between top tennis players, facebook friends of Harvard students and alumni, interactions between proteins in cells, and the dependencies of R packages.</p>
+<p>Before looking at what has and could be used to model the growth of real networks, it will be useful to analyse some examples. The property of focus here will be the degree distribution of real world networks, more specifically the tail behaviour. <a href="#fig-survs">Figure&nbsp;1</a> shows the survival function of the degree distribution (on a log-log plot) for four examples of real world networks that represent: game results between top tennis players, facebook friends of Harvard students and alumni, interactions between proteins in cells, and the dependencies of R packages.</p>
 <div class="cell" data-fig.hold="true" data-fig.asp="0.2">
 <div class="cell-output-display">
 <div id="fig-survs" class="quarto-figure quarto-figure-center anchored">
@@ -210,12 +213,25 @@ H(x) = 1-\left(1+\frac{\xi x}{\sigma}\right)^{-1/\xi}
 </div>
 </div>
 </div>
+<p>The shapes of the curves in <a href="#fig-survs">Figure&nbsp;1</a> are all fairly different but, they all seem to start with what looks like one power law and then begins to deviate after a certain point indicating the while the bulk of the data follows the one power law the right tail does not necessarily exhibit the same behaviour. Seeing this and with the aim of investigating the tail-heaviness of networks degree distributions, fitting a model that uses a power law for the bulk of the data and the IGP distribution (<a href="#def-igp">Definition&nbsp;4</a>) for the right tail above a certain threshold should allow for estimation of the tail-index.</p>
+<section id="power-law-igp-mixture-model-pl-igp" class="level3">
+<h3 class="anchored" data-anchor-id="power-law-igp-mixture-model-pl-igp">Power Law IGP Mixture Model (PL-IGP)</h3>
+<p>A traditional way of modelling continuous extreme values often involves using the GP distribution (<a href="#def-gp">Definition&nbsp;3</a>) to model the conditional distribution of the largest values however here the data is discrete and so instead the IGP will be used as an alternative. For the bulk of the data a truncated power law distribution will be used which is defined in <a href="#def-tpl">Definition&nbsp;8</a> below, and for the right tail the IGP will be used.</p>
+<div id="def-tpl" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 8 (Truncated Power Law) </strong></span>The truncated power law distribution has two parameters <span class="math inline">\(\alpha \in \mathbb R\)</span>,<span class="math inline">\(v \in \mathbb Z^+\)</span> and has support of <span class="math inline">\((1,v)\)</span>. The pdf of this distribution is: <span class="math display">\[
+f(x) = \begin{cases}
+\frac{x^{-(\alpha+1)}}{\sum_{i=1}^v i^{-(\alpha+1)}}&amp;,x=1,2,\ldots,v\\
+0&amp;,\text{otherwise}
+\end{cases}
+\]</span></p>
+</div>
+</section>
 </section>
 <section id="network-generative-models" class="level2">
 <h2 class="anchored" data-anchor-id="network-generative-models">Network Generative Models</h2>
-<p>The way in which vertices and edges are added and removed from networks over time is of great interest as it can lead to inferences about the underlying mechanics of a complex system and allow for theorising what may happen to the network in the future. To that end, finding a model that is both simple enough and leads to properties that match real world networks is of utmost importance. Below are some definitions of increasingly general network generative models.</p>
+<p>The way in which vertices and edges are added and removed from networks over time is of great interest as it can lead to inferences about the underlying mechanics of a complex system and allow for theorising what may happen to the network in the future. To that end, finding a model that is both simple enough and leads to properties that match real world networks is of utmost importance. Next, the degree distribution of various network models are analysed starting fairly simple and gradualling getting more complex.</p>
 <div id="def-uniform" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 8 (Uniform attachment model) </strong></span>Consider an initial graph <span class="math inline">\(G_0\)</span> with vertex set <span class="math inline">\(V_0=\{1,2,\ldots,m_0\}\)</span> and edge set <span class="math inline">\(E_0=\emptyset\)</span>. Starting at <span class="math inline">\(t=1\)</span> repeat the steps below:</p>
+<p><span class="theorem-title"><strong>Definition 9 (Uniform attachment model) </strong></span>Consider an initial graph <span class="math inline">\(G_0\)</span> with vertex set <span class="math inline">\(V_0=\{1,2,\ldots,m_0\}\)</span> and edge set <span class="math inline">\(E_0=\emptyset\)</span>. Starting at <span class="math inline">\(t=1\)</span> repeat the steps below:</p>
 <ol type="1">
 <li>Add a vertex to the network, <span class="math inline">\(V_t=V_{t-1}\cup\{m_0+t\}\)</span></li>
 <li>Add <span class="math inline">\(m\le m_0\)</span> edges to the network connecting the new vertex to those in already in the network. With the existing vertices to be chosen uniformly at random from <span class="math inline">\(V_{t-1}\)</span> with replacement.</li>
