@@ -1,3 +1,9 @@
 \addtokomafont{disposition}{\rmfamily}
 \usepackage{ragged2e}
-\usepackage{blindtext}
+\usepackage{blindtext}\usepackage{amsthm}
+\usepackage{amsthm}
+\newtheorem{thm}{Theorem}[subsection]
+\renewcommand{\thethm}{\arabic{subsection}.\arabic{thm}}
+\newcommand{\GEV}{\text{GEV}}
+\newcommand{\GP}{\text{GP}}
+\newcommand{\IGP}{\text{IGP}}
