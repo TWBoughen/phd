@@ -144,7 +144,7 @@ cond.b = Vectorize(function(lambda, g){
 # Intuition {#sec-int}
 
 
-# Extremes
+# Extremes {#sec-ext}
 Since the aim is to gain understanding about the behaviour of the degree distribution of networks at the right tail, it seems natural to look to using methods from extreme value theory. However, networks by their nature are discrete and so it may not be best to be using methods that are usually used in relation to continuous random variables. For this reason, this section starts with a review of what theory exists for modelling the extreme values of continuous random variables before moving to details what can be used when instead considering discrete random variables as is the case for the degree distributions of random networks.
 
 ## Continuous Extremes {#sec-ce}
@@ -251,12 +251,52 @@ Where $\mathcal L$ is the set of long-tailed distributions that have the propert
 $$
 \lim_{x\rightarrow \infty}\frac{\overline F(x+1)}{\overline F(x)} = 1   
 $$
-
 :::
+In addition to this theorem, Shimura also introduces a quantity that will become useful when deciding what domain of attraction a discrete distribution belongs to. In this report we will simply refer to it as the Omega function and is defined below:
+
+:::{#def-omega}
+
+## Omega Function
+
+For a distribution $F$ with survival function $\overline F$ and some $n\in\mathbb Z^+$ let:
+
+$$
+\Omega(F,n) = \left(\log\frac{\overline F (n+1)}{\overline F (n+2)}\right)^{-1} - \left(\log\frac{\overline F (n)}{\overline F (n+1)}\right)^{-1}
+$$
+:::
+This quantity will play an important role in @sec-meth when determining what kinds of degree distributions different network generative models are expected to lead to.
+
+[ADD COMMENTS HERE ABOUT WHAT EXISTS IN THE DISCRETE EXTREMES FIELD]
 
 # Networks
 
+Networks are the structures that will be the source of data that the results from @sec-ext will be used to analyse. Networks appear across a wide range of fields when attempting to represent complex systems and the relationships between the components within, showing up in anything from micro-biology (e.g. protein interactions in cells) to sociology (e.g. the social network of Harvard graduates). 
+
+This makes networks a valuable source of data and understanding the mechanics of the network generation process can provide insights to the components themselves and into the networks future.
+
 ## Mathematical Definitions
+
+Networks on the face of it are fairly simple objects, nothing more than a collection of objects with connections between each other. Here, graphs constructed from vertices and edges will be used as an analogue for these networks. 
+
+:::{#def-net}
+
+## Graph/Network
+
+A graph $G = (V,E)$ is constructed from a vertex set $V\in\mathbb Z^+$ and an edge set $E$. The edge set can take on one of two forms depending on if the graph is directed or un-directed. If the graph is directed then $E\subseteq V^2$ i.e the edge set is contained within the set of ordered pairs of vertices, whereas if the graph is **un-directed** then $E\subseteq [V]^2$ i.e. the edge set is contained within the set of un-ordered pairs of vertices. The focus from now on will be on un-directed networks and graphs.
+:::
+
+Throughout this section and the next the concept of a vertices "degree" will come up, and in fact the main focus of @sec-meth is the degree distribution of networks.
+
+:::{#def-deg}
+
+## Degree
+
+For an un-directed graph a vertex's degree denoted $d(v)$ or $k_v$ for $v\in V$ is the number of edges that are connected to vertex $v$:
+$$
+d(v) = |\{\{e_1, e_2\}\in E : e_1=v \cup e_2=v\}|
+$$
+Directed graphs have something analogous, called the in-degree $d_{in}$, out-degree $d_{out}$ and total degree $d_tot$
+:::
 
 ## Network Generative Models
 
@@ -267,7 +307,7 @@ $$
 ### General Preferential Attachment (GPA)
 
 
-# Methods
+# Methods {#sec-meth}
 
 
 
