@@ -147,7 +147,7 @@ cond.b = Vectorize(function(lambda, g){
 # Extremes
 Since the aim is to gain understanding about the behaviour of the degree distribution of networks at the right tail, it seems natural to look to using methods from extreme value theory. However, networks by their nature are discrete and so it may not be best to be using methods that are usually used in relation to continuous random variables. For this reason, this section starts with a review of what theory exists for modelling the extreme values of continuous random variables before moving to details what can be used when instead considering discrete random variables as is the case for the degree distributions of random networks.
 
-## Continuous Extremes
+## Continuous Extremes {#sec-ce}
 
 Studying the properties of the right tail of the distribution of a continuous random variable, means that the focus is on the largest values that the random variable can take. So, a natural place to start is to consider the distribution of the block maxima of such a random variable. That is, for a set of iid random variables $\{X_1,\ldots,X_n\}$ with common cumulative density function (cdf) $F$ what is the distribution of $M_n = \max\{X_1,\ldots,X_n\}$? This question is answered by the Fisher–Tippett–Gnedenko theorem [REF](or more simply the extreme value theorem).
 
@@ -237,7 +237,43 @@ The vast majority of this theory is appropriate only for continuous data, and si
 
 ## Discrete Extremes
 
+Moving to modelling extremes in a discrete has the potential to cause some issues when describing how heavy the tails of a distribution are and what domain of attraction belongs to. For example, the exponential distribution belongs to the Gumbel domain $\mathcal D(\Lambda)$ but its discrete counterpart (the geometric distribution)  does not belong to the Gumbel domain. So, care needs to be taken when attempting to discretise the results from @sec-ce. 
+
+@shimura12 provides conditions for a discrete distribution to belong to the domain of attraction. In particular the following theorem which corresponds to Theorem 1 in @shimura12.
+
+:::{#thm-shimura1}
+
+## Discrete Domains of Attraction
+(a) Every discretisation of distribution in $\mathcal D(\Phi_\alpha)$ remains in $\mathcal D(\Phi_\alpha)$.
+(b) The discretisation of a distribution remains in $\mathcal D(\Lambda)$ if and only if the original is in $\mathcal D(\Lambda)\cap \mathcal L$. 
+
+Where $\mathcal L$ is the set of long-tailed distributions that have the property:
+$$
+\lim_{x\rightarrow \infty}\frac{\overline F(x+1)}{\overline F(x)} = 1   
+$$
+
+:::
+
 # Networks
+
+## Mathematical Definitions
+
+## Network Generative Models
+
+### Uniform Attachment (UA)
+
+### Barabási-Albert (BA)
+
+### General Preferential Attachment (GPA)
+
+
+# Methods
+
+
+
+# Next Steps
+
+
 
 {{< pagebreak >}}
 # References {.unnumbered}

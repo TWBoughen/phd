@@ -78,6 +78,29 @@
 \makeatletter
 \def\fps@figure{htbp}
 \makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newlength{\cslentryspacingunit} % times entry-spacing
+\setlength{\cslentryspacingunit}{\parskip}
+\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
+ {% don't indent paragraphs
+  \setlength{\parindent}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+  \let\oldpar\par
+  \def\par{\hangindent=\cslhangindent\oldpar}
+  \fi
+  % set entry spacing
+  \setlength{\parskip}{#2\cslentryspacingunit}
+ }%
+ {}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
 \addtokomafont{disposition}{\rmfamily}
 \usepackage{ragged2e}
@@ -197,7 +220,7 @@
 %of the degree of Doctor of Philosophy \par}
 %}
 \justifying
-\noindent\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, interior hidden, boxrule=0pt, frame hidden, enhanced, sharp corners, borderline west={3pt}{0pt}{shadecolor}]}{\end{tcolorbox}}\fi
+\noindent\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, frame hidden, borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, enhanced, breakable, interior hidden]}{\end{tcolorbox}}\fi
 
 \hypertarget{sec-int}{%
 \chapter{Intuition}\label{sec-int}}
@@ -216,8 +239,8 @@ moving to details what can be used when instead considering discrete
 random variables as is the case for the degree distributions of random
 networks.
 
-\hypertarget{continuous-extremes}{%
-\section{Continuous Extremes}\label{continuous-extremes}}
+\hypertarget{sec-ce}{%
+\section{Continuous Extremes}\label{sec-ce}}
 
 Studying the properties of the right tail of the distribution of a
 continuous random variable, means that the focus is on the largest
@@ -365,14 +388,81 @@ discrete extremes should be introduced.
 \hypertarget{discrete-extremes}{%
 \section{Discrete Extremes}\label{discrete-extremes}}
 
+Moving to modelling extremes in a discrete has the potential to cause
+some issues when describing how heavy the tails of a distribution are
+and what domain of attraction belongs to. For example, the exponential
+distribution belongs to the Gumbel domain \(\mathcal D(\Lambda)\) but
+its discrete counterpart (the geometric distribution) does not belong to
+the Gumbel domain. So, care needs to be taken when attempting to
+discretise the results from Section~\ref{sec-ce}.
+
+Shimura (2012) provides conditions for a discrete distribution to belong
+to the domain of attraction. In particular the following theorem which
+corresponds to Theorem 1 in Shimura (2012).
+
+\begin{theorem}[Discrete Domains of
+Attraction]\protect\hypertarget{thm-shimura1}{}\label{thm-shimura1}
+
+~
+
+\begin{enumerate}
+\def\labelenumi{(\alph{enumi})}
+\tightlist
+\item
+  Every discretisation of distribution in \(\mathcal D(\Phi_\alpha)\)
+  remains in \(\mathcal D(\Phi_\alpha)\).
+\item
+  The discretisation of a distribution remains in
+  \(\mathcal D(\Lambda)\) if and only if the original is in
+  \(\mathcal D(\Lambda)\cap \mathcal L\).
+\end{enumerate}
+
+Where \(\mathcal L\) is the set of long-tailed distributions that have
+the property: \[
+\lim_{x\rightarrow \infty}\frac{\overline F(x+1)}{\overline F(x)} = 1   
+\]
+
+\end{theorem}
+
 \hypertarget{networks}{%
 \chapter{Networks}\label{networks}}
+
+\hypertarget{mathematical-definitions}{%
+\section{Mathematical Definitions}\label{mathematical-definitions}}
+
+\hypertarget{network-generative-models}{%
+\section{Network Generative Models}\label{network-generative-models}}
+
+\hypertarget{uniform-attachment-ua}{%
+\subsection{Uniform Attachment (UA)}\label{uniform-attachment-ua}}
+
+\hypertarget{barabuxe1si-albert-ba}{%
+\subsection{Barabási-Albert (BA)}\label{barabuxe1si-albert-ba}}
+
+\hypertarget{general-preferential-attachment-gpa}{%
+\subsection{General Preferential Attachment
+(GPA)}\label{general-preferential-attachment-gpa}}
+
+\hypertarget{methods}{%
+\chapter{Methods}\label{methods}}
+
+\hypertarget{next-steps}{%
+\chapter{Next Steps}\label{next-steps}}
 
 \newpage{}
 
 \hypertarget{references}{%
 \chapter*{References}\label{references}}
 \addcontentsline{toc}{chapter}{References}
+
+\hypertarget{refs}{}
+\begin{CSLReferences}{1}{0}
+\leavevmode\vadjust pre{\hypertarget{ref-shimura12}{}}%
+Shimura, Takaaki. 2012. {``Discretization of Distributions in the
+Maximum Domain of Attraction.''} \emph{Extremes} 15 (September): 1--19.
+\url{https://doi.org/10.1007/s10687-011-0137-7}.
+
+\end{CSLReferences}
 
 
 

@@ -21,7 +21,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="doc_files/libs/clipboard/clipboard.min.js"></script>
@@ -48,13 +67,13 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#intuition" id="toc-intuition" class="nav-link active" data-scroll-target="#intuition">Intuition</a></li>
-  <li><a href="#extremes" id="toc-extremes" class="nav-link" data-scroll-target="#extremes"><span class="header-section-number">1</span> Extremes</a>
+  <li><a href="#sec-int" id="toc-sec-int" class="nav-link active" data-scroll-target="#sec-int"><span class="header-section-number">1</span> Intuition</a></li>
+  <li><a href="#extremes" id="toc-extremes" class="nav-link" data-scroll-target="#extremes"><span class="header-section-number">2</span> Extremes</a>
   <ul class="collapse">
-  <li><a href="#continuous-extremes" id="toc-continuous-extremes" class="nav-link" data-scroll-target="#continuous-extremes">Continuous Extremes</a></li>
+  <li><a href="#sec-ce" id="toc-sec-ce" class="nav-link" data-scroll-target="#sec-ce">Continuous Extremes</a></li>
   <li><a href="#discrete-extremes" id="toc-discrete-extremes" class="nav-link" data-scroll-target="#discrete-extremes">Discrete Extremes</a></li>
   </ul></li>
-  <li><a href="#networks" id="toc-networks" class="nav-link" data-scroll-target="#networks"><span class="header-section-number">2</span> Networks</a></li>
+  <li><a href="#networks" id="toc-networks" class="nav-link" data-scroll-target="#networks"><span class="header-section-number">3</span> Networks</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="doc.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li><li><a href="doc.odt"><i class="bi bi-file"></i>OpenOffice</a></li></ul></div></nav>
@@ -91,14 +110,14 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="intuition" class="level1 unnumbered">
-<h1 class="unnumbered">Intuition</h1>
+<section id="sec-int" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Intuition</h1>
 </section>
-<section id="extremes" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Extremes</h1>
+<section id="extremes" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Extremes</h1>
 <p>Since the aim is to gain understanding about the behaviour of the degree distribution of networks at the right tail, it seems natural to look to using methods from extreme value theory. However, networks by their nature are discrete and so it may not be best to be using methods that are usually used in relation to continuous random variables. For this reason, this section starts with a review of what theory exists for modelling the extreme values of continuous random variables before moving to details what can be used when instead considering discrete random variables as is the case for the degree distributions of random networks.</p>
-<section id="continuous-extremes" class="level2">
-<h2 class="anchored" data-anchor-id="continuous-extremes">Continuous Extremes</h2>
+<section id="sec-ce" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ce">Continuous Extremes</h2>
 <p>Studying the properties of the right tail of the distribution of a continuous random variable, means that the focus is on the largest values that the random variable can take. So, a natural place to start is to consider the distribution of the block maxima of such a random variable. That is, for a set of iid random variables <span class="math inline">\(\{X_1,\ldots,X_n\}\)</span> with common cumulative density function (cdf) <span class="math inline">\(F\)</span> what is the distribution of <span class="math inline">\(M_n = \max\{X_1,\ldots,X_n\}\)</span>? This question is answered by the Fisher–Tippett–Gnedenko theorem <a href="or%20more%20simply%20the%20extreme%20value%20theorem">REF</a>.</p>
 <div id="thm-evt" class="theorem">
 <p><span class="theorem-title"><strong>Theorem 1 (Extreme Value Theorem) </strong></span>Let <span class="math inline">\(X_1,\ldots,X_n\)</span> be a sample of iid random variables with common cdf <span class="math inline">\(F\)</span> with block maxima <span class="math inline">\(M_n = \max\{X_1,\ldots,X_n\}\)</span> and suppose that there exists <span class="math inline">\(a_n&gt;0, b_n\in\mathbb R\)</span> such that <span class="math inline">\(\lim_{n\rightarrow\infty}\Pr(\frac{1}{a_n}[M_n-b_n]) = G(x)\)</span>, then <span class="math inline">\(F\)</span> is said to be in the domain of attraction of <span class="math inline">\(G\)</span>, denoted <span class="math inline">\(F\in\mathcal D(G)\)</span> ,and <span class="math inline">\(G\)</span> is of one of three types:</p>
@@ -137,20 +156,48 @@ G(x) = \begin{cases}\exp\left\{-\left(1+\frac{\xi(x-\mu)}{\sigma}\right)^{-1/\xi
 \]</span></p>
 </div>
 <p>The three types of extremal distribution are obtained from changing the shape parameter <span class="math inline">\(\xi\)</span>, which corresponds to <span class="math inline">\(1/\alpha\)</span> in the definition of the domains of attraction. This change is generally to made so that increasing <span class="math inline">\(\xi\)</span> corresponds to increasing how heavy the tails of the distribution are. So, <span class="math inline">\(\xi&lt;0\)</span> corresponds to the Weibull, <span class="math inline">\(\xi&gt;0\)</span> the Fréchet, and <span class="math inline">\(\xi=0\)</span> the Gumbel.</p>
+<p>While this is useful for modelling the distribution of block maxima of iid random variables, as seen in <a href="#sec-int">Section&nbsp;1</a>, the data in question appears to follow power law like behaviour for the bulk of the data and then changes to various different shapes above a certain threshold. For this reason, it is perhaps more appropriate to consider the distribution of threshold exceedances.</p>
+<div id="def-gp" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 4 (Generalised Pareto Distribution) </strong></span>The Generalised Pareto (GP) distribution can be obtained by using the GEV distribution and conditional probability such that for large enough threshold the GP distribution approximately describes the conditional distribution of threshold exceedances. More precisely, for large enough threshold <span class="math inline">\(u\)</span> and the change of variable to <span class="math inline">\(Y=X-u\)</span>: <span class="math display">\[
+\Pr(Y\le y | Y&gt;0) = H(y) = \begin{cases}
+1-\left(1+\frac{\xi y}{\sigma}\right)^{-1/\xi},&amp;y&gt;0,\xi\ne 0 \\
+1-\exp\left(-\frac{y}{\sigma}\right),&amp;y&gt;0,\xi = 0
+\end{cases}
+\]</span></p>
+</div>
+<p>Since this distribution was obtained using a <span class="math inline">\(\text{GEV}(\mu,\sigma^*,\xi)\)</span> the shape parameter <span class="math inline">\(\xi\)</span> is identical in both distributions and the shape parameter <span class="math inline">\(\sigma\)</span> is defined such that <span class="math inline">\(\sigma = \sigma^* + \xi(u-\mu)\)</span>.</p>
+<p>The vast majority of this theory is appropriate only for continuous data, and since the data being focused on is discrete, some results for discrete extremes should be introduced.</p>
 </section>
 <section id="discrete-extremes" class="level2">
 <h2 class="anchored" data-anchor-id="discrete-extremes">Discrete Extremes</h2>
+<p>Moving to modelling extremes in a discrete has the potential to cause some issues when describing how heavy the tails of a distribution are and what domain of attraction belongs to. For example, the exponential distribution belongs to the Gumbel domain <span class="math inline">\(\mathcal D(\Lambda)\)</span> but its discrete counterpart (the geometric distribution) does not belong to the Gumbel domain. So, care needs to be taken when attempting to discretise the results from <a href="#sec-ce">Section&nbsp;2.1</a>.</p>
+<p><span class="citation" data-cites="shimura12">Shimura (<a href="#ref-shimura12" role="doc-biblioref">2012</a>)</span> provides conditions for a discrete distribution to belong to the domain of attraction. In particular the following theorem which corresponds to Theorem 1 in <span class="citation" data-cites="shimura12">Shimura (<a href="#ref-shimura12" role="doc-biblioref">2012</a>)</span>.</p>
+<div id="thm-shimura1" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 2 (Discrete Domains of Attraction) </strong></span>&nbsp;</p>
+<ol type="a">
+<li>Every discretisation of distribution in <span class="math inline">\(\mathcal D(\Phi_\alpha)\)</span> remains in <span class="math inline">\(\mathcal D(\Phi_\alpha)\)</span>.</li>
+<li>The discretisation of a distribution remains in <span class="math inline">\(\mathcal D(\Lambda)\)</span> if and only if the original is in <span class="math inline">\(\mathcal D(\Lambda)\cap \mathcal L\)</span>.</li>
+</ol>
+<p>Where <span class="math inline">\(\mathcal L\)</span> is the set of long-tailed distributions that have the property: <span class="math display">\[
+\lim_{x\rightarrow \infty}\frac{\overline F(x+1)}{\overline F(x)} = 1   
+\]</span></p>
+</div>
 </section>
 </section>
-<section id="networks" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Networks</h1>
+<section id="networks" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Networks</h1>
 <div style="page-break-after: always;"></div>
 </section>
 <section id="references" class="level1 unnumbered">
-<h1 class="unnumbered">References</h1>
+
+
 </section>
 
-</main>
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-shimura12" class="csl-entry" role="listitem">
+Shimura, Takaaki. 2012. <span>“Discretization of Distributions in the Maximum Domain of Attraction.”</span> <em>Extremes</em> 15 (September): 1–19. <a href="https://doi.org/10.1007/s10687-011-0137-7">https://doi.org/10.1007/s10687-011-0137-7</a>.
+</div>
+</div></section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
