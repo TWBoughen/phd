@@ -15,7 +15,7 @@ format:
     include-in-header: include-in-header.tex
     template-partials:
       - before-body.tex
-    indent: truef
+    indent: false
     geometry:
       - inner=2cm
       - outer=2cm
@@ -141,7 +141,7 @@ cond.b = Vectorize(function(lambda, g){
 ```
 
 
-# Intuition {.unnumbered}
+# Intuition {#sec-int}
 
 
 # Extremes
@@ -215,8 +215,25 @@ $$
 The three types of extremal distribution are obtained from changing the shape parameter $\xi$, which corresponds to $1/\alpha$ in the definition of the domains of attraction. This change is generally to made so that increasing $\xi$ corresponds to increasing how heavy the tails of the distribution are. So, $\xi<0$ corresponds to the Weibull, $\xi>0$ the Fréchet, and $\xi=0$ the Gumbel.
 
 
+While this is useful for modelling the distribution of block maxima of iid random variables, as seen in @sec-int, the data in question appears to follow power law like behaviour for the bulk of the data and then changes to various different shapes above a certain threshold. For this reason, it is perhaps more appropriate to consider the distribution of threshold exceedances.
 
 
+
+:::{#def-gp}
+
+## Generalised Pareto Distribution
+
+The Generalised Pareto (GP) distribution can be obtained by using the GEV distribution and conditional probability such that for large enough threshold the GP distribution approximately describes the conditional distribution of threshold exceedances. More precisely, for large enough threshold $u$ and the change of variable to $Y=X-u$:
+$$
+\Pr(Y\le y | Y>0) = H(y) = \begin{cases}
+1-\left(1+\frac{\xi y}{\sigma}\right)^{-1/\xi},&y>0,\xi\ne 0 \\
+1-\exp\left(-\frac{y}{\sigma}\right),&y>0,\xi = 0
+\end{cases}
+$$
+:::
+Since this distribution was obtained using a $\text{GEV}(\mu,\sigma^*,\xi)$ the shape parameter $\xi$ is identical in both distributions and the shape parameter $\sigma$ is defined such that $\sigma = \sigma^* + \xi(u-\mu)$.
+
+The vast majority of this theory is appropriate only for continuous data, and since the data being focused on is discrete, some results for discrete extremes should be introduced.
 
 ## Discrete Extremes
 
