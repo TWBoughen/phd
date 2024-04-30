@@ -68,12 +68,23 @@ div.csl-indent {
    
   <ul>
   <li><a href="#sec-int" id="toc-sec-int" class="nav-link active" data-scroll-target="#sec-int"><span class="header-section-number">1</span> Intuition</a></li>
-  <li><a href="#extremes" id="toc-extremes" class="nav-link" data-scroll-target="#extremes"><span class="header-section-number">2</span> Extremes</a>
+  <li><a href="#sec-ext" id="toc-sec-ext" class="nav-link" data-scroll-target="#sec-ext"><span class="header-section-number">2</span> Extremes</a>
   <ul class="collapse">
   <li><a href="#sec-ce" id="toc-sec-ce" class="nav-link" data-scroll-target="#sec-ce">Continuous Extremes</a></li>
   <li><a href="#discrete-extremes" id="toc-discrete-extremes" class="nav-link" data-scroll-target="#discrete-extremes">Discrete Extremes</a></li>
   </ul></li>
-  <li><a href="#networks" id="toc-networks" class="nav-link" data-scroll-target="#networks"><span class="header-section-number">3</span> Networks</a></li>
+  <li><a href="#networks" id="toc-networks" class="nav-link" data-scroll-target="#networks"><span class="header-section-number">3</span> Networks</a>
+  <ul class="collapse">
+  <li><a href="#mathematical-definitions" id="toc-mathematical-definitions" class="nav-link" data-scroll-target="#mathematical-definitions">Mathematical Definitions</a></li>
+  <li><a href="#network-generative-models" id="toc-network-generative-models" class="nav-link" data-scroll-target="#network-generative-models">Network Generative Models</a>
+  <ul class="collapse">
+  <li><a href="#uniform-attachment-ua" id="toc-uniform-attachment-ua" class="nav-link" data-scroll-target="#uniform-attachment-ua">Uniform Attachment (UA)</a></li>
+  <li><a href="#barabási-albert-ba" id="toc-barabási-albert-ba" class="nav-link" data-scroll-target="#barabási-albert-ba">Barabási-Albert (BA)</a></li>
+  <li><a href="#general-preferential-attachment-gpa" id="toc-general-preferential-attachment-gpa" class="nav-link" data-scroll-target="#general-preferential-attachment-gpa">General Preferential Attachment (GPA)</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#sec-meth" id="toc-sec-meth" class="nav-link" data-scroll-target="#sec-meth"><span class="header-section-number">4</span> Methods</a></li>
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps"><span class="header-section-number">5</span> Next Steps</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="doc.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li><li><a href="doc.odt"><i class="bi bi-file"></i>OpenOffice</a></li></ul></div></nav>
@@ -113,7 +124,7 @@ div.csl-indent {
 <section id="sec-int" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Intuition</h1>
 </section>
-<section id="extremes" class="level1" data-number="2">
+<section id="sec-ext" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Extremes</h1>
 <p>Since the aim is to gain understanding about the behaviour of the degree distribution of networks at the right tail, it seems natural to look to using methods from extreme value theory. However, networks by their nature are discrete and so it may not be best to be using methods that are usually used in relation to continuous random variables. For this reason, this section starts with a review of what theory exists for modelling the extreme values of continuous random variables before moving to details what can be used when instead considering discrete random variables as is the case for the degree distributions of random networks.</p>
 <section id="sec-ce" class="level2">
@@ -148,7 +159,7 @@ div.csl-indent {
 </div>
 <p>It is possible to gather the main three types of extremal distributions into what is called the Generalised Extreme Value (GEV) distribution [REF].</p>
 <div id="def-gev" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 3 (Generalised Extreme Value Distribution) </strong></span>Denoted by <span class="math inline">\(\GEV(\mu,\sigma,\xi)\)</span> the distribution is characterised by three parameters <span class="math inline">\(\mu \in \mathbb R\)</span> the location, <span class="math inline">\(\sigma\in \mathbb R^+\)</span> the scale, and the shape <span class="math inline">\(\xi\in \mathbb R\)</span>. It has support on <span class="math inline">\(\{x\in \mathbb R:1+\xi(x-\mu)/\sigma &gt; 0\}\)</span> and has cdf given by:</p>
+<p><span class="theorem-title"><strong>Definition 3 (Generalised Extreme Value Distribution) </strong></span>Denoted by <span class="math inline">\(\text{GEV}(\mu,\sigma,\xi)\)</span> the distribution is characterised by three parameters <span class="math inline">\(\mu \in \mathbb R\)</span> the location, <span class="math inline">\(\sigma\in \mathbb R^+\)</span> the scale, and the shape <span class="math inline">\(\xi\in \mathbb R\)</span>. It has support on <span class="math inline">\(\{x\in \mathbb R:1+\xi(x-\mu)/\sigma &gt; 0\}\)</span> and has cdf given by:</p>
 <p><span class="math display">\[
 G(x) = \begin{cases}\exp\left\{-\left(1+\frac{\xi(x-\mu)}{\sigma}\right)^{-1/\xi}\right\},&amp;\xi\ne0\\
 \exp\{-\exp(-\frac{x-\mu}{\sigma})\},&amp;\xi=0
@@ -182,10 +193,128 @@ G(x) = \begin{cases}\exp\left\{-\left(1+\frac{\xi(x-\mu)}{\sigma}\right)^{-1/\xi
 \lim_{x\rightarrow \infty}\frac{\overline F(x+1)}{\overline F(x)} = 1   
 \]</span></p>
 </div>
+<p>In addition to this theorem, Shimura also introduces a quantity that will become useful when deciding what domain of attraction a discrete distribution belongs to. In this report we will simply refer to it as the Omega function and is defined below:</p>
+<div id="def-omega" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5 (Omega Function) </strong></span>For a distribution <span class="math inline">\(F\)</span> with survival function <span class="math inline">\(\overline F\)</span> and some <span class="math inline">\(n\in\mathbb Z^+\)</span> let:</p>
+<p><span class="math display">\[
+\Omega(F,n) = \left(\log\frac{\overline F (n+1)}{\overline F (n+2)}\right)^{-1} - \left(\log\frac{\overline F (n)}{\overline F (n+1)}\right)^{-1}
+\]</span></p>
+</div>
+<p>This quantity will play an important role in <a href="#sec-meth">Section&nbsp;4</a> when determining what kinds of degree distributions different network generative models are expected to lead to.</p>
+<p>[ADD COMMENTS HERE ABOUT WHAT EXISTS IN THE DISCRETE EXTREMES FIELD]</p>
 </section>
 </section>
 <section id="networks" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Networks</h1>
+<p>Networks are the structures that will be the source of data that the results from <a href="#sec-ext">Section&nbsp;2</a> will be used to analyse. Networks appear across a wide range of fields when attempting to represent complex systems and the relationships between the components within, showing up in anything from micro-biology (e.g.&nbsp;protein interactions in cells) to sociology (e.g.&nbsp;the social network of Harvard graduates).</p>
+<p>This makes networks a valuable source of data and understanding the mechanics of the network generation process can provide insights to the components themselves and into the networks future.</p>
+<section id="mathematical-definitions" class="level2">
+<h2 class="anchored" data-anchor-id="mathematical-definitions">Mathematical Definitions</h2>
+<p>Networks on the face of it are fairly simple objects, nothing more than a collection of objects with connections between each other. Here, graphs constructed from vertices and edges will be used as an analogue for these networks.</p>
+<div id="def-net" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 6 (Graph/Network) </strong></span>A graph <span class="math inline">\(G = (V,E)\)</span> is constructed from a vertex set <span class="math inline">\(V\in\mathbb Z^+\)</span> and an edge set <span class="math inline">\(E\)</span>. The edge set can take on one of two forms depending on if the graph is directed or un-directed. If the graph is directed then <span class="math inline">\(E\subseteq V^2\)</span> i.e the edge set is contained within the set of ordered pairs of vertices, whereas if the graph is <strong>un-directed</strong> then <span class="math inline">\(E\subseteq [V]^2\)</span> i.e.&nbsp;the edge set is contained within the set of un-ordered pairs of vertices. The focus from now on will be on un-directed networks and graphs.</p>
+</div>
+<p>Throughout this section and the next the concept of a vertices “degree” will come up, and in fact the main focus of <a href="#sec-meth">Section&nbsp;4</a> is the degree distribution of networks.</p>
+<div id="def-deg" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 7 (Degree) </strong></span>For an un-directed graph a vertex’s degree denoted <span class="math inline">\(d(v)\)</span> or <span class="math inline">\(k_v\)</span> for <span class="math inline">\(v\in V\)</span> is the number of edges that are connected to vertex <span class="math inline">\(v\)</span>: <span class="math display">\[
+d(v) = |\{e\in E : v \in e\}|
+\]</span> Directed graphs have something analogous, called the in-degree <span class="math inline">\(d_{in}\)</span>, out-degree <span class="math inline">\(d_{out}\)</span> and total degree <span class="math inline">\(d_{tot}\)</span>. The in-degree of a vertex <span class="math inline">\(v\)</span> is the number edges with endpoint at <span class="math inline">\(v\)</span>, whereas the out-degree is the number of edges with start point at <span class="math inline">\(v\)</span> and the total degree is the sum of these i.e.:</p>
+<span class="math display">\[\begin{align*}
+d_{in}(v)&amp;= |\{(w_1,w_2)\in E: w_2=v \}|\\
+d_{out}(v) &amp;= |\{(w_1,w_2)\in E: w_1=v \}|\\
+d_{tot}(v) &amp;= d_{in}(v) + d_{out}(v)
+\end{align*}\]</span>
+</div>
+<p>There are many reasons to analyse network like data, one of which is to gain an insight into the mechanics that governed the growth of the network. The next sub-section is focused on presenting several network generative models increasing in generality.</p>
+</section>
+<section id="network-generative-models" class="level2">
+<h2 class="anchored" data-anchor-id="network-generative-models">Network Generative Models</h2>
+<p>The models in this section are nested within one another, they all follow the same regiment that at each time-step a vertex is added to the network along with one or more edges that connect the new vertex to those already in the network.</p>
+<section id="uniform-attachment-ua" class="level3">
+<h3 class="anchored" data-anchor-id="uniform-attachment-ua">Uniform Attachment (UA)</h3>
+<p>The first model dubbed the “uniform attachment model” is a simple model first presented in [UA REF] and is defined as follows:</p>
+<div id="def-ua" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 8 (Uniform Attachment Model) </strong></span>Start with a graph <span class="math inline">\(G_1 = (V_1, E_1) = (\{1,\ldots,m_0\}, \emptyset)\)</span>, at each time step <span class="math inline">\(t&gt;1\)</span> the graph is denoted by <span class="math inline">\(G_t=(V_t, E_t)\)</span> and generated by repeating the following two steps:</p>
+<ol type="1">
+<li><strong>Growth:</strong> Add a new vertex to the vertex set i.e.&nbsp; <span class="math display">\[
+V_t=V_{t-1}\cup\{t\}
+\]</span></li>
+<li><strong>Attachment:</strong> Add <span class="math inline">\(m\le m_0\)</span> random edges between the new vertex and those already in the graph i.e.&nbsp; <span class="math display">\[
+E_t = E_{t-1} \cup \tilde E
+\]</span> where <span class="math inline">\(\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}\)</span> and <span class="math inline">\(e_i \sim U([V_{t-1}]^2 \cap \{t\})\)</span>.</li>
+</ol>
+</div>
+<section id="expected-degree-distribution" class="level4">
+<h4 class="anchored" data-anchor-id="expected-degree-distribution">Expected Degree Distribution</h4>
+<p>As showing in [REF] the expected degree distribution of this model for large values of <span class="math inline">\(t\)</span> is: <span class="math display">\[
+f(k) = \frac{e}{m}\exp\left(-\frac{k}{m}\right),\qquad k \ge m
+\]</span> Since this distribution has exponential form, it is in the Gumbel domain of attraction.</p>
+</section>
+</section>
+<section id="barabási-albert-ba" class="level3">
+<h3 class="anchored" data-anchor-id="barabási-albert-ba">Barabási-Albert (BA)</h3>
+<p>This model defined in <span class="citation" data-cites="Barabasi99">Barabási and Albert (<a href="#ref-Barabasi99" role="doc-biblioref">1999</a>)</span> and also very closely related to the Yule-Simon process from [YS REF] changes the attachment mechanism from being purely uniform on the vertices already in the network to being random with a probability proportional to the degrees of the vertices in the network.</p>
+<div id="def-ba" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 9 (Barabási-Albert Model) </strong></span>Starting with a graph <span class="math inline">\(G_1 = (V_1, E_1)\)</span> where <span class="math inline">\(V_1 = \{1,\ldots,m_0\}\)</span> and <span class="math inline">\(E_1 = \{\{v\}:v\in V_1\}\)</span> i.e a graph with <span class="math inline">\(m_0\)</span> vertices with one self-loop each. At each time step <span class="math inline">\(t&gt;1\)</span> the graph denoted by <span class="math inline">\(G_t = (V_1, E_1)\)</span> is generated by repeating the following:</p>
+<ol type="1">
+<li><strong>Growth:</strong> Add a new vertex to the vertex set i.e. <span class="math display">\[
+V_t = V_{t-1} \cup \{t\}
+\]</span></li>
+<li><strong>Preferential Attachment:</strong> Add <span class="math inline">\(m\le m_0\)</span> edges between the new vertex and those already in the graph with probability proportional to each vertices degree i.e:</li>
+</ol>
+<p><span class="math display">\[
+E_t= E_{t-1} \cup \tilde E
+\]</span> where <span class="math inline">\(\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}\)</span> and</p>
+<span class="math display">\[\begin{align*}
+\tilde e_i &amp;\sim \text{Cat}\left([V_{t-1}]^2 \cap \{t\},P \right)\\
+P &amp;= \left\{\frac{d(v)}{\sum_{w\in V_{t-1}} d(w)} : v \in V_{t-1}\right\}
+\end{align*}\]</span>
+</div>
+<section id="expected-degree-distriubtion" class="level4">
+<h4 class="anchored" data-anchor-id="expected-degree-distriubtion">Expected Degree Distriubtion</h4>
+<p>In the same paper (<span class="citation" data-cites="Barabasi99">Barabási and Albert (<a href="#ref-Barabasi99" role="doc-biblioref">1999</a>)</span>) it was shown that for large values of <span class="math inline">\(t\)</span> the expected degree distribution for this model is approximately: <span class="math display">\[
+f(k) = \frac{2m^2t}{m_0+t}k^{-3} \approx 2m^2k^{-3},\qquad k\ge m
+\]</span></p>
+<p>This is clearly a regularly varying function and therefore in in the Fréchet domain of attraction <span class="math inline">\(\mathcal D(\Phi_2)\)</span>.</p>
+</section>
+</section>
+<section id="general-preferential-attachment-gpa" class="level3">
+<h3 class="anchored" data-anchor-id="general-preferential-attachment-gpa">General Preferential Attachment (GPA)</h3>
+<p>This model generalises the BA model by instead of attaching the new edges with a probability proportional to vertices’ degrees, the new edges are attached with probability proportional to some function of the vertices’ degrees.</p>
+<div id="def-gpa" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 10 (General Preferential Attachment Model) </strong></span>Starting with a graph <span class="math inline">\(G_1 = (V_1, E_1) = (\{1,\ldots,m_0\}, \emptyset)\)</span>, at each following time step <span class="math inline">\(t&gt;1\)</span> the graph is denoted by <span class="math inline">\(G_t = (V_t, E_t)\)</span> and is generated by repeating:</p>
+<ol type="1">
+<li><strong>Growth:</strong> Add a new vertex to the vertex set i.e. <span class="math display">\[
+V_t = V_{t-1} \cup \{t\}
+\]</span></li>
+<li><strong>Preferential Attachment:</strong> Add <span class="math inline">\(m\le m_0\)</span> edges connecting the new vertex to those already in the graph selected at random proportional to a function of their degree(minus one)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> i.e.: <span class="math display">\[
+E_t  = E_{t-1} \cup \tilde E
+\]</span> where <span class="math inline">\(\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}\)</span> and</li>
+</ol>
+<span class="math display">\[\begin{align*}
+\tilde e_i &amp;\sim \text{Cat}\left([V_{t-1}]^2 \cap \{t\},P \right)\\
+P &amp;= \left\{\frac{g(k_v-1)}{\sum_{w\in V_{t-1}} g(k_w-1)} : v \in V_{t-1}\right\}
+\end{align*}\]</span>
+<p>for some function <span class="math inline">\(g: \mathbb Z \mapsto \mathbb R^+\setminus\{0\}\)</span>, which will be referred to as the preferential attachment function</p>
+</div>
+<section id="expected-degree-dristribution" class="level4">
+<h4 class="anchored" data-anchor-id="expected-degree-dristribution">Expected Degree Dristribution</h4>
+<p>In [GPA REF] the expected degree distribution for <span class="math inline">\(m=1\)</span> was calculated in terms of the preferential attachment function does not have a general explicit form. It is defined as follows, let <span class="math inline">\(\lambda^*\)</span> be the solution, if it exists, to:</p>
+<p><span class="math display">\[
+1=\sum_{n=1}^\infty \prod_{i=1}^{n-1}\frac{g(i)}{g(i)+\lambda}
+\]</span> then the expected degree distribution resulting from the GPA model has pmf:</p>
+<p><span class="math display">\[
+f(k) = \frac{\lambda^*}{g(k) + \lambda^*}\prod_{i=0}^{k-1}\frac{g(i)}{g(i)+\lambda^*}
+\]</span> It is hard to see how this may behave in the tails for different preferential attachment functions, this will one the main foucses of the next section.</p>
+</section>
+</section>
+</section>
+</section>
+<section id="sec-meth" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Methods</h1>
+</section>
+<section id="next-steps" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Next Steps</h1>
 <div style="page-break-after: always;"></div>
 </section>
 <section id="references" class="level1 unnumbered">
@@ -193,11 +322,20 @@ G(x) = \begin{cases}\exp\left\{-\left(1+\frac{\xi(x-\mu)}{\sigma}\right)^{-1/\xi
 
 </section>
 
+
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-Barabasi99" class="csl-entry" role="listitem">
+Barabási, Albert-László, and Réka Albert. 1999. <span>“Emergence of Scaling in Random Networks.”</span> <em>Science</em> 286 (5439): 509–12. <a href="https://doi.org/10.1126/science.286.5439.509">https://doi.org/10.1126/science.286.5439.509</a>.
+</div>
 <div id="ref-shimura12" class="csl-entry" role="listitem">
 Shimura, Takaaki. 2012. <span>“Discretization of Distributions in the Maximum Domain of Attraction.”</span> <em>Extremes</em> 15 (September): 1–19. <a href="https://doi.org/10.1007/s10687-011-0137-7">https://doi.org/10.1007/s10687-011-0137-7</a>.
 </div>
-</div></section></div></main>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>The probabilities are proportional to the degree minus one to align with the results from [GPA REF]<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
