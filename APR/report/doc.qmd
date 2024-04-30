@@ -16,7 +16,7 @@ format:
     template-partials:
       - before-body.tex
     indent: false
-    toc: true
+    toc: false
     toc-depth: 2
     geometry:
       - inner=2cm
@@ -34,6 +34,7 @@ format:
   html: 
     output-file: 'index'
     page-layout: full
+    number-depth: 2
     toc: true
   odt:
     output-file: 'doc'
@@ -268,7 +269,16 @@ $$
 :::
 This quantity will play an important role in @sec-meth when determining what kinds of degree distributions different network generative models are expected to lead to.
 
-[ADD COMMENTS HERE ABOUT WHAT EXISTS IN THE DISCRETE EXTREMES FIELD]
+
+Applying ideas from @sec-ce to modelling discrete random variables has been approached from many different directions. What follows is a overview of some of the approaches that have been taken but will see use in this report. 
+
+One of the main issues when it comes to applying results from @sec-ce to discrete data, is the discretisation of the GP distribution and making sure that it still maintains most of the same properties. 
+
+[AHMAD] introduces several ways to discretise the GP distribution including mixing the geometric distribution with a Gamma distribution, they also introduce an extended GP distribution (and its discretisation) which is obtained from a probability integral transform (PIT) of a distribution with support on $(0,1)$. This is a modification of how the regular GP is obtained, which is from a PIT uniform distribution on (0,1).
+
+Also considering mixtures, [VALIQUETTE] investigated the tail properties of Poisson mixtures and found that changing the mixing distribution changes the tail heaviness of the mixed distribution. They divided the domain of attraction of the mixing distribution into various subsets that lead to different tail behaviours, through the limit of the ratio of consecutive values of the survival function. These limits do help describe the tail behaviour of the resulting mixture but do not quite correspond to different domains of attraction.
+
+The approach used in @sec-meth will be very similar to the one taken in [ROHRBECK] with a minor change to the derivation, this will be explained in detail in @sec-meth.
 
 # Networks
 
@@ -329,7 +339,8 @@ $$
 $$
 E_t = E_{t-1} \cup \tilde E
 $$
-where $\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}$ and $e_i \sim U([V_{t-1}]^2 \cap \{t\})$.
+where $\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}$ and $\tilde e_i = \{t,\tilde v_i\}$ and $\tilde v_i \sim U(V_{t-1})$.
+
 :::
 
 #### Expected Degree Distribution
@@ -356,11 +367,10 @@ $$
 $$
 E_t= E_{t-1} \cup \tilde E
 $$
-where $\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}$ and
+where $\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}$ and $\tilde e_i = \{t,\tilde v_i\}$ for $\tilde v_i \sim \text{Cat}(V_{t-1}, P)$
 
 ```{=tex}
 \begin{align*}
-\tilde e_i &\sim \text{Cat}\left([V_{t-1}]^2 \cap \{t\},P \right)\\
 P &= \left\{\frac{d(v)}{\sum_{w\in V_{t-1}} d(w)} : v \in V_{t-1}\right\}
 \end{align*}
 ```
@@ -391,10 +401,9 @@ $$
 $$
 E_t  = E_{t-1} \cup \tilde E
 $$
-where $\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}$ and
+where $\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}$ and $\tilde e_i = \{t,\tilde v_i\}$ for $\tilde v_i \sim \text{Cat}(V_{t-1}, P)$
 ```{=tex}
 \begin{align*}
-\tilde e_i &\sim \text{Cat}\left([V_{t-1}]^2 \cap \{t\},P \right)\\
 P &= \left\{\frac{g(k_v-1)}{\sum_{w\in V_{t-1}} g(k_w-1)} : v \in V_{t-1}\right\}
 \end{align*}
 ```
@@ -414,12 +423,24 @@ then the expected degree distribution resulting from the GPA model has pmf:
 $$
 f(k) = \frac{\lambda^*}{g(k) + \lambda^*}\prod_{i=0}^{k-1}\frac{g(i)}{g(i)+\lambda^*}
 $$
-It is hard to see how this may behave in the tails for different preferential attachment functions, this will one the main foucses of the next section.
+It is hard to see how this may behave in the tails for different preferential attachment functions, this will be one of the main focuses of the next section.
 
 # Methods {#sec-meth}
 
+## Integral Generalised Pareto Distribution
 
+## Mixture Model
+### Threshold Selection
 
+## Fitting model to simulated data
+### UA model
+### BA model
+
+## Fitting model to real data
+
+## GPA analyses
+
+## Conclusion and a Conjecture
 
 # Next Steps
 
