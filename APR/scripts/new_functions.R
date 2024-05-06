@@ -273,6 +273,8 @@ plot.pli.mcmc = function(X,mcmc.out.states, burn.in=0, thin.by = 0, top='', show
   Y[,2] = cumsum(X[,2])
   Y[,2] = Y[,2]/max(Y[,2])
   
+  print(Y)
+  Y=Y[-nrow(Y),]
   N = length(mcmc.out.states$alpha)
   mcmc.out.states = tail(mcmc.out.states, N-burn.in)[seq(1,N-burn.in, by=thin.by+1),]
   mcmc.out.states$phi = sapply(mcmc.out.states$threshold, FUN=function(x){return(sum(X[X[,1]>x,2])/sum(X[,2]))})
@@ -302,7 +304,7 @@ plot.pli.mcmc = function(X,mcmc.out.states, burn.in=0, thin.by = 0, top='', show
   p2 = ggplot(data=mcmc.out.states, aes(x=shape, y=scale)) + geom_density_2d(linewidth=0.2)+theme(text = element_text(size=20))+theme(plot.title = element_text(hjust = 0.5))
   p3 = ggplot(data = mcmc.out.states) + geom_histogram(aes(x = ceiling(threshold)))+theme(text = element_text(size=20))+theme(plot.title = element_text(hjust = 0.5))
   p4=ggplot() + geom_line(data=Y,aes(x=x, y=1-Freq),linewidth=0.1)+geom_ribbon(aes(x=k,ymin=surv.lower95, ymax=surv.upper95), alpha=0.3) + geom_line(aes(x=k, y=surv.mean),colour='red')+
-    scale_x_log10() +scale_y_log10()+ylab('Surv')+theme(text = element_text(size=20))+theme(plot.title = element_text(hjust = 0.5))
+    scale_x_log10()+scale_y_log10()+ylab('Surv')+theme(text = element_text(size=20))+theme(plot.title = element_text(hjust = 0.5))
   # p5 = ggplot(data=X/sum(X[,2])) +geom_point(aes(x=x, y=Freq))+geom_ribbon(aes(x=x,ymin=pmf.lower95, ymax=pmf.upper95), alpha=0.3)+   scale_x_log10() +scale_y_log10()+theme(text = element_text(size=5))
   plot.list = list(p1,p2,p3,p4)
   return(arrangeGrob(p1,p2,p3,p4, nrow = 2, ncol=2,top=top))

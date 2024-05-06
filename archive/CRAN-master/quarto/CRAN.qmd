@@ -1,0 +1,503 @@
+---
+title: "CRAN"
+format: 
+  html: 
+    page-layout: full
+    toc: true
+    toc-location: left
+    toc-depth: 5
+editor: visual
+execute:
+  cache: false
+---
+
+```{r Loading Data, echo=FALSE,warning=FALSE,message=FALSE}
+source('../scripts/functions.R')
+df = load_data('rpkg_20190129.csv')
+df0 = df-1
+
+```
+
+# The Data
+
+We have data collected from the Comprehensive R Archive Network (CRAN) about the different relationships R packages have with each other. There are 4 different types of relationship:
+
+-   Imports
+
+-   Depends
+
+-   Linking To
+
+-   Suggests
+
+We are only really interested in first two relationships. The data we will be investigating are the in-degrees of the network formed by these relationships. That is the number of other packages that either depend on or import each package.
+
+## The zeros issue
+
+This data contains a massive amount of zeros, so much so that they have a large influence over the models to follow. So, since the zeros are mostly uninteresting, we will remove them and only investigate the non-zero data.
+
+# Power Law Model
+
+We first consider modelling our data using the zeta distribution, which has probability mass function (p.m.f)
+
+$$
+f(x) = \zeta(\alpha+1)^{-1}x^{-(\alpha+1)}, \qquad x=1,2,3,\ldots
+$$
+
+and has survival function:
+
+$$
+S(x) = 1-\zeta(\alpha+1)^{-1}\sum_{k=1}^x k^{-(\alpha+1)}, \qquad x=1,2,3,\ldots 
+$$
+
+Where $\zeta(s) = \sum_{k=1}^\infty k^{-s}$ is the Riemann Zeta function and $\alpha>0$ .
+
+If we have a vector of data $\boldsymbol{x} = (x_1,x_2,\ldots,x_N)^T$ , then the likelihood function and log-likelihood functions are:
+
+$$
+L(\boldsymbol{x}) = \zeta(\alpha+1)^{-N}\prod_{i=1}^N x_i^{-(\alpha+1)}
+$$
+
+and,
+
+$$
+\ell(\boldsymbol{x}) = -N\log\zeta(\alpha+1) - (\alpha+1)\sum_{i=1}^N\log x_i
+$$
+
+We now aim to fit this model using a Bayesian approach, which means we need to decide on a prior for $\alpha$. Since its value is restricted to being positive we choose to use a Gamma prior, that is:
+
+$$
+\alpha \sim Ga(\gamma,\delta), \qquad \gamma,\delta > 0
+$$
+
+with the prior density function being:
+
+$$
+\pi(\alpha) \propto \alpha^{\gamma-1}e^{-\delta\alpha}
+$$
+
+Now, we can calculate the posterior distribution up to a constant of proportionality:
+
+$$
+\pi(\alpha|\boldsymbol{x}) \propto\pi(\alpha)L(\boldsymbol{x})
+$$
+
+But, it will be better to use the log of the posterior distribution to mitigate any computational issues that may arise.
+
+$$
+\log\pi(\alpha|\boldsymbol{x}) = \log A + (\gamma-1)\log\alpha-N\log\zeta(\alpha+1)-\delta\alpha-(\alpha+1)\sum_{i=1}^N\log x_i
+$$
+
+Where $A$ is a normalising constant.
+
+With this posterior we can fit the model to both sets of our data.
+
+## Plots of Power Law Model Fit
+
+The same prior was used for both models below, with $\gamma = \delta = 4$ . The parameters were estimated using a Metropolis-Hastings algorithm with an adaptive proposal, with initial value of $\alpha = 2$.
+
+### Depends Data
+
+```{r Zeta Depends no zeros ,echo=FALSE,message=FALSE,warning=FALSE}
+zeta.depends0.out = zeta.mcmc(1e4,df0$depends[df0$depends>0],2,c(4,4))
+
+```
+
+### Imports Data
+
+```{r  Zeta Imports no zeros ,echo=FALSE,message=FALSE,warning=FALSE}
+zeta.imports0.out = zeta.mcmc(1e4,df0$imports[df0$imports>0],2,c(4,4))
+```
+
+# Power Law-IGPD Model
+
+Since the power law model seems to not fit very well, we now aim to fit a new model to the data that may fit better. This model treats the data as a power law below a certain threshold $u$ but above it the data is modeled using the integer-valued generalised Pareto distribution (IGPD). The p.m.f of this model is
+
+$$
+f(x) =
+\begin{cases}
+(1-\phi_u)\left[\zeta(\alpha+1)-\zeta(\alpha+1,u+1)\right]^{-1}x^{-(\alpha+1)}&, x\leq u\\
+\phi_u\left\{\left(1+\frac{\xi(x-u-1)}{\sigma_u}\right)_+^{-1/\xi} - \left(1+\frac{\xi (x-u)}{\sigma_u}\right)_+^{-1/\xi}\right\}&,x>u
+\end{cases}
+$$
+
+For $\alpha>0,\xi\in\mathbb{R},\sigma_u>0$ with $\xi=0$ taken as the limit.
+
+The cumulative mass function is given by:
+
+$$
+F(x) = \begin{cases}
+(1-\phi_u)\frac{\zeta(\alpha+1)-\zeta(\alpha+1,x+1)}{\zeta(\alpha+1)-\zeta(\alpha+1,u+1)}&,x\leq u\\
+(1-\phi_u) + \phi_u\left[1-\left(1+\frac{\xi(x-u)}{\sigma_u}\right)_+^{-1/\xi}\right]&,x>u
+\end{cases}
+$$
+
+Which makes the survival function of this model:
+
+$$
+S(x) = 
+\begin{cases}
+1-(1-\phi_u)\frac{\zeta(\alpha+1)-\zeta(\alpha+1,x+1)}{\zeta(\alpha+1)-\zeta(\alpha+1,u+1)}&,x\leq u\\
+\phi_u\left(1+\frac{\xi(x-u)}{\sigma_u}\right)_+^{-1/\xi}&,x>u
+\end{cases}
+$$
+
+If we have a vector of data $\boldsymbol{x} = (x_1,x_2,\ldots x_N)^T$ then the likelihood and log-likelihood are:
+
+$$
+L(\boldsymbol{x}) = (1-\phi_u)^n\phi_u^{N-n}[\zeta(\alpha+1)-\zeta(\alpha+1,u+1)]^{-n}\prod_{i:x_i \le u} x_i^{-(\alpha+1)}\prod_{i:x_i>u}\left\{\left(1+\frac{\xi(x_i-u-1)}{\sigma_u}\right)_+^{-1/\xi} - \left(1+\frac{\xi (x_i-u)}{\sigma_u}\right)_+^{-1/\xi}\right\}
+$$
+
+and,
+
+$$
+\ell(\boldsymbol{x}) = n\log(1-\phi_u) + (N-n)\log\phi_u-n\log[\zeta(\alpha+1)-\zeta(\alpha+1,u+1)] -(\alpha+1)\sum_{i:x_i\leq u}\log x_i + \sum_{i:x_i>u}\log\left\{\left(1+\frac{\xi(x_i-u-1)}{\sigma_u}\right)_+^{-1/\xi} - \left(1+\frac{\xi (x_i-u)}{\sigma_u}\right)_+^{-1/\xi}\right\}
+$$
+
+Since we wish to use this to construct a Metropolis-Hastings algorithm we again need some priors for the values of the parameters. The priors we use are listed below.
+
+$$
+\alpha\sim Ga(c,d),\\
+\xi \sim N(0,s^2),\\
+\sigma_u \sim Ga(v,w)
+$$
+
+For $c,d,s,v,w>0$
+
+Our joint prior distribution is defined as follows:
+
+```{=tex}
+\begin{align}
+\pi(\alpha,\xi,\sigma_u) &= \pi(\alpha)\pi(\xi)\pi(\sigma_u)\\
+\log\pi(\alpha,\xi\sigma_u) &= \log\pi(\alpha) +\log\pi(\xi) +\log\pi(\sigma_u)
+\end{align}
+```
+And we have that
+
+```{=tex}
+\begin{align}
+\log\pi(\alpha) &= c\log d - \log \Gamma(c) + (c-1)\log\alpha -d\alpha\\
+\log\pi(\xi) &= -\log s -0.5\log 2\pi - \frac{\xi^2}{2s^2}\\
+\log\pi(\sigma_u) &= v\log w - \log\Gamma(v) + (v-1)\log\sigma_u - w\sigma_u
+\end{align}
+```
+## Method for fitting
+
+In order to fit this model we will be using a Bayesian approach, estimating the parameters using a Metropolis-Hastings algorithm with an adaptive proposal distribution, the method is fully described below:
+
+Suppose we have the initial state $\theta^{(0)} = (\alpha^{(0)},\xi^{(0)},\sigma_u^{(0)})$ and an initial proposal covariance matrix $\Sigma^{(0)}$. Let $\Omega$ be the ordered set of accepted states that is initially empty. Starting with $t=1$.
+
+1.  
+
+    -   If $|\Omega|<H$ then:
+
+        -   Set $\Sigma^{(t)} = \Sigma^{(0)}$
+
+    -   Otherwise:
+
+        -   Set $\Sigma^{(t)} =\frac{2.38^2}{3}R_m$ , where $R_m$ is the empirical covariance matrix of the last $H$ accepted states.
+
+2.  Propose a new state $\theta^* \sim N(\theta^{(t-1)},\Sigma^{(t)})$
+
+3.  
+
+    -   If $\alpha^*<0$ or $\sigma_u^*<0$ then:
+
+        -   Reject: set $\theta^{(t)} = \theta^{(t-1)}$
+
+        -   Set $t=t+1$ and go to 1.
+
+4.  Calculate $\mathcal{A} = \min(0,\log\pi(\theta^*|x) - \log\pi(\theta^{(t-1)}|x))$
+
+5.  Draw $z\sim U(0,1)$
+
+    -   If $\log z <\mathcal{A}$ then:
+
+        -   Accept: set $\theta^{(t)} = \theta^*$
+
+        -   Add $\theta^{(t)}$ to the end of $\Omega$
+
+    -   Otherwise
+
+        -   Reject: set $\theta^{(t)} = \theta^{(t-1)}$
+
+6.  Set $t=t+1$ and go to 1.
+
+## Plots of fitted model
+
+```{r}
+n.iter=1e4
+```
+
+The models below were obtained using hyper parameters:
+
+$$
+c=1,d=0.01,s=3,v=1,w=0.01
+$$
+
+The initial values used were:
+
+$$
+\alpha=2,\xi=3,\sigma_u=5
+$$
+
+### Depends Without Zeros
+
+#### Quantile 0.95
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+u = quantile(df0$depends[df0$depends>0],0.95)
+mcmc.out=fast.zigpd.mcmc(n.iter,df0$depends[df0$depends>0],u)
+```
+
+#### Quantile 0.96
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+u = quantile(df0$depends[df0$depends>0],0.96)
+mcmc.out=fast.zigpd.mcmc(n.iter,df0$depends[df0$depends>0],u)
+```
+
+#### Quantile 0.97
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+u = quantile(df0$depends[df0$depends>0],0.97)
+mcmc.out=fast.zigpd.mcmc(n.iter,df0$depends[df0$depends>0],u)
+```
+
+#### Quantile 0.98
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+u = quantile(df0$depends[df0$depends>0],0.98)
+mcmc.out=fast.zigpd.mcmc(n.iter,df0$depends[df0$depends>0],u)
+```
+
+### Imports Without Zeros
+
+#### Quantile 0.95
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+u = quantile(df0$imports[df0$imports>0],0.95)
+mcmc.out=fast.zigpd.mcmc(n.iter,df0$imports[df0$imports>0],u)
+```
+
+#### Quantile 0.96
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+u = quantile(df0$imports[df0$imports>0],0.96)
+mcmc.out=fast.zigpd.mcmc(n.iter,df0$imports[df0$imports>0],u)
+
+```
+
+#### Quantile 0.97
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+u = quantile(df0$imports[df0$imports>0],0.97)
+mcmc.out=fast.zigpd.mcmc(n.iter,df0$imports[df0$imports>0],u)
+```
+
+#### Quantile 0.98
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+u = quantile(df0$imports[df0$imports>0],0.98)
+mcmc.out=fast.zigpd.mcmc(n.iter,df0$imports[df0$imports>0],u)
+```
+
+# Power Law Mixture
+
+To see if the previous model is worth using we will compare it to a simpler model that models the data both above and below the threshold as a power law but with different parameters $\alpha$ and $\beta$ . The p.m.f of this model is:
+
+$$
+f(x) = 
+\begin{cases}
+(1-\phi_u)\left[\zeta(\alpha+1) - \zeta(\alpha+1,u+1)\right]^{-1}x^{-(\alpha+1)}&,x\le u\\
+\phi_u\zeta(\beta+1,u+1)^{-1}x^{-(\beta+1)}&,x>u
+\end{cases}
+$$
+
+Where $\alpha,\beta >0$ and $\phi_u \in (0,1)$ is the exceedance probability, and $\zeta(s,t) = \sum_{k=t}^\infty k^{-s}$ is the Hurwitz zeta function. From now on, we will use $\zeta_{t-1}(s)$ to denote the Hurwitz zeta function with parameters $s$ and $t$ .
+
+This makes the survival function of this model:
+
+$$
+S(x) = 
+\begin{cases}
+1-(1-\phi_u)\frac{\zeta(\alpha+1)-\zeta_{x}(\alpha+1)}{\zeta(\alpha+1)-\zeta_{u}(\alpha+1)} &,x\le u\\
+\phi_u\frac{\zeta_{x}(\beta+1)}{\zeta_{u}(\beta+1)}&,x>u
+\end{cases}
+$$
+
+As before we have data $\boldsymbol{x} = (x_1,x_2,\ldots,x_N)^T$ with $n$ values at or below the threshold $u$ , the likelihood function for this model is as below:
+
+$$
+L(\boldsymbol{x}) = (1-\phi_u)^n\phi_u^{N-n} \left[\zeta(\alpha+1) - \zeta_{u}(\alpha+1)\right]^{-n} \zeta_{u}(\beta+1)^{n-N} \prod_{i:x_i\le u}x_i^{-(\alpha+1)}\prod_{i:x_i>u}x_i^{-(\beta+1)}
+$$
+
+and the log likelihood:
+
+$$
+\ell(\boldsymbol{x}) = n\log(1-\phi_u) + (N-n)\log\phi_u -n\log\left[\zeta(\alpha+1) - \zeta_{u}(\alpha+1)\right] + (n-N)\log\zeta_u(\beta+1) - (\alpha+1)\sum_{i:x_i \le u}{\log x_i} -(\beta+1)\sum_{i:x_i>u}\log x_i 
+$$
+
+We will be fitting this model using a bayesian approach and so we need to decide a prior for both $\alpha$ and $\beta$. We will use the same prior for $\alpha$ as we have for the last two models, and we will use the exact same prior for $\beta$ . That is:
+
+$$
+\alpha,\beta \sim Ga(\gamma,\delta)
+$$
+
+We will be treating $\phi_u$ as a fixed value, using the MLE as its value; $\hat\phi_u = \frac{N-n}{N}$
+
+## Plots of fitted model
+
+```{r}
+n.iter = 3e4
+```
+
+We used the hyperparamters:
+
+$$
+\gamma=1,\delta=0.01
+$$
+
+and initial values:
+
+$$
+\alpha=\beta=2
+$$
+
+### Depends Data
+
+#### Quantile 0.95
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE, fig.ncol=2}
+
+mcmc.out = fast_zc_mcmc(n.iter,df0$depends[df0$depends>0],0.95)
+
+```
+
+#### Quantile 0.96
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE, fig.ncol=2}
+
+mcmc.out = fast_zc_mcmc(n.iter,df0$depends[df0$depends>0],0.96)
+
+```
+
+#### Quantile 0.97
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE, fig.ncol=2}
+
+mcmc.out = fast_zc_mcmc(n.iter,df0$depends[df0$depends>0],0.97)
+
+```
+
+#### Quantile 0.98
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE, fig.ncol=2}
+
+mcmc.out = fast_zc_mcmc(n.iter,df0$depends[df0$depends>0],0.98)
+
+```
+
+### Imports Data
+
+#### Quantile 0.95
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE, fig.ncol=2}
+
+mcmc.out = fast_zc_mcmc(n.iter,df0$imports[df0$imports>0],0.95)
+
+```
+
+#### Quantile 0.96
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE, fig.ncol=2}
+
+mcmc.out = fast_zc_mcmc(n.iter,df0$imports[df0$imports>0],0.96)
+
+```
+
+#### Quantile 0.97
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE, fig.ncol=2}
+
+mcmc.out = fast_zc_mcmc(n.iter,df0$imports[df0$imports>0],0.97)
+
+```
+
+#### Quantile 0.98
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE, fig.ncol=2}
+
+mcmc.out = fast_zc_mcmc(n.iter,df0$imports[df0$imports>0],0.98)
+
+```
+
+# Notes
+
+## Implementation of zeta function
+
+Below is a plot demonstrating the difference in the values obtained from the two different implementations of the hurwitz zeta function.There appears to be a large difference, with the gsl library being more accurate, evidenced by the fact that we can increase the 'aa' variable in the function from VGAM and obtain values closer to those obtained from gsl.
+
+### Defaults
+
+```{r, echo=TRUE}
+zeta_mod = function (x, deriv = 0, shift = 1,aa=12) 
+{
+    deriv.arg <- deriv
+    rm(deriv)
+    if (!is.Numeric(deriv.arg, length.arg = 1, integer.valued = TRUE)) 
+        stop("'deriv' must be a single non-negative integer")
+    if (deriv.arg < 0 || deriv.arg > 2) 
+        stop("'deriv' must be 0, 1, or 2")
+    if (deriv.arg > 0) 
+        return(zeta.specials(Zeta.derivative(x, deriv.arg = deriv.arg, 
+            shift = shift), x, deriv.arg, shift))
+    if (any(special <- Re(x) <= 1)) {
+        ans <- x
+        ans[special] <- Inf
+        special3 <- Re(x) < 1
+        ans[special3] <- NA
+        special4 <- (0 < Re(x)) & (Re(x) < 1) & (Im(x) == 0)
+        ans[special4] <- Zeta.derivative(x[special4], deriv.arg = deriv.arg, 
+            shift = shift)
+        special2 <- Re(x) < 0
+        if (any(special2)) {
+            x2 <- x[special2]
+            cx <- 1 - x2
+            ans[special2] <- 2^(x2) * pi^(x2 - 1) * sin(pi * 
+                x2/2) * gamma(cx) * Recall(cx)
+        }
+        if (any(!special)) {
+            ans[!special] <- Recall(x[!special])
+        }
+        return(zeta.specials(ans, x, deriv.arg, shift))
+    }
+    ans <- 0
+    for (ii in 0:(aa - 1)) ans <- ans + 1/(shift + ii)^x
+    ans <- ans + Zeta.aux(shape = x, aa, shift = shift)
+    ans[shift <= 0] <- NaN
+    zeta.specials(ans, x, deriv.arg = deriv.arg, shift = shift)
+}
+```
+
+```{r, echo=FALSE}
+library(latex2exp)
+
+k = 1:2000
+s = 3
+
+plot(k,gsl::hzeta(s,q=k), log='xy', type='l',lty=1, col=1,ylab=TeX('\\zeta(s,k)'))
+lines(k,zeta_mod(s,shift=k), lty=2)
+legend('bottomleft',legend=c('VGAM','gsl'),lty=c(2,1))
+
+```
+
+### Increasing the value of aa to 300
+
+```{r,echo=FALSE}
+aa = 3e2
+plot(k,gsl::hzeta(s,q=k), log='xy', type='l',lty=1, col=1,ylab=TeX('\\zeta(s,k)'))
+lines(k,zeta_mod(s,shift=k,aa=aa), lty=2)
+legend('bottomleft',legend=c('VGAM','gsl'),lty=c(2,1))
+
+```
