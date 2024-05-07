@@ -12,7 +12,7 @@ pgpd = function(x, shape, scale, threshold=0, lower.tail=T){
       stop('error:scale<0')
     }
     if(threshold<0){
-      stop('error:threshold<0')
+      threshold=0
     }
     if(x<=threshold){
       return(0)
@@ -62,7 +62,7 @@ ppl = function(x,alpha, upper.lim=NULL, lower.tail=T){
     return(1-ppl(x,alpha, upper.lim))
   }
   if(is.null(upper.lim)){
-    return(1 - gsl::hzeta(alpha+1, x+1) / gsl::zeta(alpha+1))
+    return(1 - gsl::hzeta(alpha+1, x) / gsl::zeta(alpha+1))
   }else{
     if(x>upper.lim){
       return(1)
@@ -228,7 +228,8 @@ pli.mcmc = function(n.iter, x, init, prior.params, init.cov, type=1, burn.in=0, 
         thresh.cov = cov.prop(tail(thresh.acc,cov.period))
       }
       thresh.prop = rnorm(1,tail(thresh.acc,1)[[1]],thresh.cov)
-      if(tail(shapescale.acc$shape,1)[[1]] > - (tail(shapescale.acc$scale,1)[[1]]/ (floor(thresh.prop)-1))){
+      if(T){
+      # if(tail(shapescale.acc$shape,1)[[1]] > - (tail(shapescale.acc$scale,1)[[1]]/ (floor(thresh.prop)-1))){
         logA = min(0,pli.joint.posterior(x,tail(alpha.acc,1)[[1]],tail(shapescale.acc$shape,1)[[1]],tail(shapescale.acc$scale,1)[[1]],thresh.prop,prior.params,type)-
                      pli.joint.posterior(x,tail(alpha.acc,1)[[1]],tail(shapescale.acc$shape,1)[[1]],tail(shapescale.acc$scale,1)[[1]],tail(thresh.acc,1)[[1]],prior.params,type))
         if(log(runif(1))<logA){
@@ -236,7 +237,7 @@ pli.mcmc = function(n.iter, x, init, prior.params, init.cov, type=1, burn.in=0, 
         }
       }
     }
-    thresh.props[i]  =thresh.prop
+    thresh.props[i]  = thresh.prop
     #shape and scale steps
     if(nrow(shapescale.acc)%%cov.period==0){
       shapescale.cov = cov.prop(tail(shapescale.acc,cov.period))
@@ -258,7 +259,7 @@ pli.mcmc = function(n.iter, x, init, prior.params, init.cov, type=1, burn.in=0, 
     }
     if(i>1 && show){
       dev.flush()
-      plot(max(1,i-499):i,tail(states$thresh[1:i],500), type='l', 
+      plot(max(1,i-499):i,tail(states$shape[1:i],500), type='l', 
            main = paste(round(tail(states[1:i,],1),3),sep=','))
       legend('topleft', legend = paste0('Posterior Log-Likelihood: ',round(tail(post.vals[1:i],1),3)))
     }
@@ -268,13 +269,13 @@ pli.mcmc = function(n.iter, x, init, prior.params, init.cov, type=1, burn.in=0, 
 
 
 # -------------------------------------------------------------------------
-plot.pli.mcmc = function(X,mcmc.out.states, burn.in=0, thin.by = 0, top='', show=F, by=1){
+plot.pli.mcmc = function(X,mcmc.out.states, burn.in=0, thin.by = 0, top='', show=F, by=1, type=1){
   Y=X
   Y[,2] = cumsum(X[,2])
   Y[,2] = Y[,2]/max(Y[,2])
   
   print(Y)
-  Y=Y[-nrow(Y),]
+  # Y[,2] = c(0,Y[-nrow(Y),2])
   N = length(mcmc.out.states$alpha)
   mcmc.out.states = tail(mcmc.out.states, N-burn.in)[seq(1,N-burn.in, by=thin.by+1),]
   mcmc.out.states$phi = sapply(mcmc.out.states$threshold, FUN=function(x){return(sum(X[X[,1]>x,2])/sum(X[,2]))})
@@ -288,7 +289,7 @@ plot.pli.mcmc = function(X,mcmc.out.states, burn.in=0, thin.by = 0, top='', show
     }
     
     surv.df[i,] = ppli(k,mcmc.out.states$phi[i], mcmc.out.states$alpha[i], 
-                       mcmc.out.states$shape[i], mcmc.out.states$scale[i], mcmc.out.states$threshold[i], lower.tail=F)
+                       mcmc.out.states$shape[i], mcmc.out.states$scale[i], mcmc.out.states$threshold[i], lower.tail=F, type=type)
     # pmf.df[i,] = dpli(k,mcmc.out.states$phi[i], mcmc.out.states$alpha[i], 
     #                   mcmc.out.states$shape[i], mcmc.out.states$scale[i], mcmc.out.states$threshold[i])
   }
@@ -319,6 +320,9 @@ llpli2 = function(X,alpha,shape,scale,threshold,type=1){
   cc = as.numeric(X[,2])
   y = as.numeric(X[,1])
   m=length(y)
+  if(shape<0.01 && shape>-0.01){
+    shape=0
+  }
   #restrict u to be at most the third largest value
   if(v>y[m-2]){
     return(-Inf)
