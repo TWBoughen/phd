@@ -33,7 +33,7 @@ pro[,1] = as.numeric(pro[,1])
 
 library(igraph)
 
-sim_ba_g = sample_pa(1e4, power=1, m=1, directed=F)
+sim_ba_g = sample_pa(1e5, power=1, m=1, directed=F)
 ba = data.frame(table(degree(sim_ba_g)))
 names(ba) = c('x','Freq')
 ba[,1] = as.numeric(ba[,1])
