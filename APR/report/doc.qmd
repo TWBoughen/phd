@@ -49,26 +49,26 @@ keep-tex: true
 
 #pdftotext APR/report/doc.pdf - | wc -w 
 #for word count
-library(networkdata)
+# library(networkdata)
 library(igraph)
 source('../scripts/functions.R')
 source('../scripts/new_functions.R')
 # library(mvtnorm)
 #loading data############################
 
-x=degree(atp[[1]],mode='in')
-x=x[x>0]
-tennis = as.data.frame(table(x))
-tennis[,1] = as.numeric(as.character(tennis[,1]))
+# x=degree(atp[[1]],mode='in')
+# x=x[x>0]
+# tennis = as.data.frame(table(x))
+# tennis[,1] = as.numeric(as.character(tennis[,1]))
 
 harvard = read.csv('../data/harvard.txt')
 colnames(harvard) = c('x', 'Freq')
 
-data("protein", package='networkdata')
-x = degree(protein)
-protein.dat = as.data.frame(table(x[x>0]))
-protein.dat[,1] = as.numeric(as.character(protein.dat[,1]))/2
-colnames(protein.dat) = c('x', 'Freq')
+# data("protein", package='networkdata')
+# x = degree(protein)
+# protein.dat = as.data.frame(table(x[x>0]))
+# protein.dat[,1] = as.numeric(as.character(protein.dat[,1]))/2
+# colnames(protein.dat) = c('x', 'Freq')
 
 
 df = load_data('../data/rpkg_20190129.csv')
@@ -144,33 +144,63 @@ cond.b = Vectorize(function(lambda, g){
 ```
 
 
-# Intuition {#sec-int}
+# Introduction {#sec-int}
+
+Since the aim is to gain understanding about the behaviour of the degree distribution of networks at the right tail, it seems natural to look to using methods from extreme value theory.
 
 
-# Extremes {#sec-ext}
-Since the aim is to gain understanding about the behaviour of the degree distribution of networks at the right tail, it seems natural to look to using methods from extreme value theory. However, networks by their nature are discrete and so it may not be best to be using methods that are usually used in relation to continuous random variables. For this reason, this section starts with a review of what theory exists for modelling the extreme values of continuous random variables before moving to details what can be used when instead considering discrete random variables as is the case for the degree distributions of random networks.
+# Extreme Value Theory {#sec-ext}
+
+This section begins with a review of the theory and methodology for modelling the extreme values of continuous random variables, before moving to considerations for modelling the extreme values of discrete random variables.
 
 ## Continuous Extremes {#sec-ce}
 
-Studying the properties of the right tail of the distribution of a continuous random variable, means that the focus is on the largest values that the random variable can take. So, a natural place to start is to consider the distribution of the block maxima of such a random variable. That is, for a set of iid random variables $\{X_1,\ldots,X_n\}$ with common cumulative density function (cdf) $F$ what is the distribution of $M_n = \max\{X_1,\ldots,X_n\}$? This question is answered by the Fisher–Tippett–Gnedenko theorem [REF](or more simply the extreme value theorem).
+Studying the properties of the extreme values of a random variable first requires determining what exactly is considered to be an extreme value. In this section extreme values of two kinds are considered, both of which can be characterised.
+
+
+The first kind of extreme value considers the distribution of block maxima. That is, for a set of independent and identically distributed (iid) random variables $\{X_1,\ldots,X_n\}$ with common cumulative density function (cdf) $F$ what is the limiting distribution of $M_n = \max\{X_1,\ldots,X_n\}$? This is answered by the Fisher–Tippett–Gnedenko theorem [REF](or more simply the extreme value theorem).
 
 :::{#thm-evt}
 
 ### Extreme Value Theorem
-Let $X_1,\ldots,X_n$ be a sample of iid random variables with common cdf $F$ with block maxima $M_n = \max\{X_1,\ldots,X_n\}$ and suppose that there exists $a_n>0, b_n\in\mathbb R$ such that $\lim_{n\rightarrow\infty}\Pr(\frac{1}{a_n}[M_n-b_n]) = G(x)$, then $F$ is said to be in the domain of attraction of $G$, denoted $F\in\mathcal D(G)$ ,and $G$ is of one of three types:
+Let $X_1,\ldots,X_n$ be a sample of iid random variables with common cdf $F$ with block maxima $M_n = \max\{X_1,\ldots,X_n\}$ and suppose that there exists $a_n>0, b_n\in\mathbb R$ such that
+
+$$\lim_{n\rightarrow\infty}\Pr\left(\frac{1}{a_n}[M_n-b_n]\right) = G(x),$$
+
+then $F$ is said to be in the domain of attraction of $G$, denoted $F\in\mathcal D(G)$ ,and $G$ is of one of three types:
 
 - Gumbel: $\Lambda(x) = \exp\{-\exp(-x)\},\quad x \in \mathbb R$
 - Fréchet: $\Phi_\alpha(x) = \exp\{-x^{-\alpha}\},\quad x\ge 0,\alpha>0$
-- Weibull: $\Psi_\alpha(x) = \exp\{-x^{-a}\},\quad x<0,\alpha>0$
+- Negative-Weibull: $\Psi_\alpha(x) = \exp\{-x^{-a}\},\quad x<0,\alpha>0$
 
 :::
 
-While this is a useful result, it may prove difficult to find the sequences $a_n,b_n$ in practice, so a simpler method to establish what domain of attraction a distribution belongs to would be nice. Luckily, this can be done through the concept of regular variation and is what will be used to define the domains of attraction and tail-heaviness through the rest of this report.
+
+
+These three types of distribution can be collected into one more general distribution, called the generalised extreme value (GEV) distribution which is defined below. 
+
+:::{#def-gev}
+
+### Generalised Extreme Value Distribution
+
+Denoted by $\text{GEV}(\mu,\sigma,\xi)$ the distribution is characterised by three parameters $\mu \in \mathbb R$ the location, $\sigma\in \mathbb R^+$ the scale, and the shape $\xi\in \mathbb R$. It has support on $\{x\in \mathbb R:1+\xi(x-\mu)/\sigma > 0\}$ and has cdf given by:
+
+$$
+G(x) = \begin{cases}\exp\left\{-\left(1+\frac{\xi(x-\mu)}{\sigma}\right)_+^{-1/\xi}\right\},&\xi\ne0\\
+\exp\{-\exp(-\frac{x-\mu}{\sigma})\},&\xi=0.
+\end{cases}
+$$
+:::
+
+The three types of extremal distribution are obtained from changing the shape parameter $\xi$, which corresponds to $1/\alpha$ in @thm-evt. This change is generally to made so that increasing $\xi$ corresponds to increasing how heavy the tails of the distribution are. Specifically, $\xi<0$, $\xi=0$, $\xi>0$, correspond to the negative Weibull, Gumbel and the Fréchet domains of attraction respectively.
+
+Identifying what domain of attraction a distribution belongs to via @thm-evt may not be so trivial, however, there are other ways to determine what domain of attraction a distribution belongs to.
 
 :::{#def-doa}
 
-### Domains of Attraction
-The distribution $F$ belongs to the Fréchet domain of attraction $\mathcal D(\Phi_\alpha)$ if and only if its complement (the survival function) $\bar F$ is regularly varying with index $-\alpha$ i.e.:
+### Conditions for Domains of Attraction
+
+The distribution $F$ belongs to the Fréchet domain of attraction $\mathcal D(\Phi_\alpha)$ if and only if the survival function $\bar F = 1-F$ is regularly varying with index $-\alpha$ i.e.:
 $$
 \bar F(x) = x^{-\alpha}L(x),\qquad \text{for } L \text{ slowly varying}
 $$
@@ -180,7 +210,7 @@ $$
 $$
 where $x_F$ is the finite right endpoint of the support of $F$.
 
-The condition for the Gumbel domain of attraction is not as simple, a distribution $F$ belongs to the Gumbel domain if and only if there exists a positive function $a: \mathbb R \rightarrow \mathbb R^+$ and a $t\in \mathbb R$ such that:
+The condition for the Gumbel domain of attraction is not defined through regular variation but instead, a distribution $F$ belongs to the Gumbel domain if and only if there exists a positive function $a: \mathbb R \rightarrow \mathbb R^+$ and a $t\in \mathbb R$ such that:
 $$
 \lim_{x\rightarrow x_F} \frac{\bar F(x+ta(x))}{\bar F(x)} = e^{-t}
 $$
@@ -201,32 +231,15 @@ $$
 \lim_{x\rightarrow\infty}\frac{\bar F(tx)}{\bar{F}(x)} = 1, \forall t\in\mathbb R^+ \implies \text{super heavy tails} 
 $$
 :::
-It is possible to gather the main three types of extremal distributions into what is called the Generalised Extreme Value (GEV) distribution [REF].
-
-:::{#def-gev}
-
-### Generalised Extreme Value Distribution
-
-Denoted by $\text{GEV}(\mu,\sigma,\xi)$ the distribution is characterised by three parameters $\mu \in \mathbb R$ the location, $\sigma\in \mathbb R^+$ the scale, and the shape $\xi\in \mathbb R$. It has support on $\{x\in \mathbb R:1+\xi(x-\mu)/\sigma > 0\}$ and has cdf given by:
-
-$$
-G(x) = \begin{cases}\exp\left\{-\left(1+\frac{\xi(x-\mu)}{\sigma}\right)^{-1/\xi}\right\},&\xi\ne0\\
-\exp\{-\exp(-\frac{x-\mu}{\sigma})\},&\xi=0
-\end{cases}
-$$
-:::
-The three types of extremal distribution are obtained from changing the shape parameter $\xi$, which corresponds to $1/\alpha$ in the definition of the domains of attraction. This change is generally to made so that increasing $\xi$ corresponds to increasing how heavy the tails of the distribution are. So, $\xi<0$ corresponds to the Weibull, $\xi>0$ the Fréchet, and $\xi=0$ the Gumbel.
-
-
-While this is useful for modelling the distribution of block maxima of iid random variables, as seen in @sec-int, the data in question appears to follow power law like behaviour for the bulk of the data and then changes to various different shapes above a certain threshold. For this reason, it is perhaps more appropriate to consider the distribution of threshold exceedances.
-
+ 
+Another kind of extreme values are the observations above a large threshold, like the limiting distribution of block maxima, the limiting distribution of these extreme values can be characterised by the generalised pareto (GP) distribution.
 
 
 :::{#def-gp}
 
 ### Generalised Pareto Distribution
 
-The Generalised Pareto (GP) distribution can be obtained by using the GEV distribution and conditional probability such that for large enough threshold the GP distribution approximately describes the conditional distribution of threshold exceedances. More precisely, for large enough threshold $u$ and the change of variable to $Y=X-u$:
+Consider a random variable $X$ with the same cdf $F$ as in @thm-evt, the Generalised Pareto (GP) distribution can be obtained by using the GEV distribution and conditional probability such that for large enough threshold the GP distribution approximately describes the conditional distribution of threshold exceedances. More precisely, for sufficiently large threshold $u$ and the change of variable to $Y=X-u$:
 $$
 \Pr(Y\le y | Y>0) = H(y) = \begin{cases}
 1-\left(1+\frac{\xi y}{\sigma}\right)^{-1/\xi},&y>0,\xi\ne 0 \\
@@ -236,17 +249,18 @@ $$
 :::
 Since this distribution was obtained using a $\text{GEV}(\mu,\sigma^*,\xi)$ the shape parameter $\xi$ is identical in both distributions and the shape parameter $\sigma$ is defined such that $\sigma = \sigma^* + \xi(u-\mu)$.
 
-The vast majority of this theory is appropriate only for continuous data, and since the data being focused on is discrete, some results for discrete extremes should be introduced.
+It is also possible to derive the result without using the GEV, as shown in [REF].
 
 ## Discrete Extremes
 
-Moving to modelling extremes in a discrete has the potential to cause some issues when describing how heavy the tails of a distribution are and what domain of attraction belongs to. For example, the exponential distribution belongs to the Gumbel domain $\mathcal D(\Lambda)$ but its discrete counterpart (the geometric distribution)  does not belong to the Gumbel domain. So, care needs to be taken when attempting to discretise the results from @sec-ce. 
+A lot of @sec-ce is appropriate only for continuous random variables and some of the results may not hold in a discrete setting. In particular, a continuous distribution $F$ being in certain domain of attraction may not necessarily imply that a discretisation of $F$ remains in that domain of attraction.
 
 @shimura12 provides conditions for a discrete distribution to belong to the domain of attraction. In particular the following theorem which corresponds to Theorem 1 in @shimura12.
 
+
 :::{#thm-shimura1}
 
-### Discrete Domains of Attraction
+### Domain of attraction consistency
 (a) Every discretisation of distribution in $\mathcal D(\Phi_\alpha)$ remains in $\mathcal D(\Phi_\alpha)$.
 (b) The discretisation of a distribution remains in $\mathcal D(\Lambda)$ if and only if the original is in $\mathcal D(\Lambda)\cap \mathcal L$. 
 
@@ -255,7 +269,7 @@ $$
 \lim_{x\rightarrow \infty}\frac{\overline F(x+1)}{\overline F(x)} = 1   
 $$
 :::
-In addition to this theorem, Shimura also introduces a quantity that will become useful when deciding what domain of attraction a discrete distribution belongs to. In this report we will simply refer to it as the Omega function and is defined below:
+In addition @shimura12 introduces a quantity useful for determining the domain of a attraction that a discrete distribution belongs to. 
 
 :::{#def-omega}
 
@@ -267,8 +281,8 @@ $$
 \Omega(F,n) = \left(\log\frac{\overline F (n+1)}{\overline F (n+2)}\right)^{-1} - \left(\log\frac{\overline F (n)}{\overline F (n+1)}\right)^{-1}
 $$
 :::
-This quantity will play an important role in @sec-meth when determining what kinds of degree distributions different network generative models are expected to lead to.
 
+This quantity plays an important role in @sec-meth when determining the domain of attraction to which the degree distribution of a network generative model belongs.
 
 Applying ideas from @sec-ce to modelling discrete random variables has been approached from many different directions. What follows is a overview of some of the approaches that have been taken but will see use in this report. 
 
@@ -279,6 +293,16 @@ One of the main issues when it comes to applying results from @sec-ce to discret
 Also considering mixtures, [VALIQUETTE] investigated the tail properties of Poisson mixtures and found that changing the mixing distribution changes the tail heaviness of the mixed distribution. They divided the domain of attraction of the mixing distribution into various subsets that lead to different tail behaviours, through the limit of the ratio of consecutive values of the survival function. These limits do help describe the tail behaviour of the resulting mixture but do not quite correspond to different domains of attraction.
 
 The approach used in @sec-meth will be very similar to the one taken in [ROHRBECK] with a minor change to the derivation, this will be explained in detail in @sec-meth.
+
+## Modelling {#sec-mod}
+
+The results from @sec-ce allow the GEV and GP to be fitted to the block maxima and threshold exceedances respectively. Typically, when fitting the GP, a sufficiently high threshold needs to be specified beforehand  [REFER TO COLES 2001] and give examples.
+
+Another more recent approach shown in [MACDONALD 2012], uses a spliced threshold mixture to model the threshold exceedances where one distribution is assumed for the bulk of the data and the GP is used for those values above the threshold. This approach can also be applied in the discrete setting, and is what is used in @sec-meth.
+
+
+
+
 
 # Networks
 
@@ -320,72 +344,12 @@ d_{tot}(v) &= d_{in}(v) + d_{out}(v)
 There are many reasons to analyse network like data, one of which is to gain an insight into the mechanics that governed the growth of the network. The next sub-section is focused on presenting several network generative models increasing in generality.
 
 ## Network Generative Models
-The models in this section are nested within one another, they all follow the same regiment that at each time-step a vertex is added to the network along with one or more edges that connect the new vertex to those already in the network.
 
-### Uniform Attachment (UA)
-The first model dubbed the "uniform attachment model" is a simple model first presented in [UA REF] and is defined as follows:
-
-:::{#def-ua}
-
-#### Uniform Attachment Model
-
-Start with a graph $G_1 = (V_1, E_1) = (\{1,\ldots,m_0\}, \emptyset)$, at each time step $t>1$ the graph is denoted by $G_t=(V_t, E_t)$ and generated by repeating the following two steps:
-
-1. **Growth:** Add a new vertex to the vertex set i.e. 
-$$
-V_t=V_{t-1}\cup\{t\}
-$$
-2. **Attachment:** Add $m\le m_0$ random edges between the new vertex and those already in the graph i.e. 
-$$
-E_t = E_{t-1} \cup \tilde E
-$$
-where $\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}$ and $\tilde e_i = \{t,\tilde v_i\}$ and $\tilde v_i \sim U(V_{t-1})$.
-
-:::
-
-#### Expected Degree Distribution
-As showing in [REF] the expected degree distribution of this model for large values of $t$ is:
-$$
-f(k) = \frac{e}{m}\exp\left(-\frac{k}{m}\right),\qquad k \ge m
-$$
-Since this distribution has exponential form, it is in the Gumbel domain of attraction.
-
-### Barabási-Albert (BA)
-
-This model defined in @Barabasi99 and also very closely related to the Yule-Simon process from [YS REF] changes the attachment mechanism from being purely uniform on the vertices already in the network to being random with a probability proportional to the degrees of the vertices in the network.
-
-:::{#def-ba}
-#### Barabási-Albert Model
-Starting with a graph $G_1 = (V_1, E_1)$ where $V_1 = \{1,\ldots,m_0\}$ and $E_1 = \{\{v\}:v\in V_1\}$ i.e a graph with $m_0$ vertices with one self-loop each. At each time step $t>1$ the graph denoted by $G_t = (V_1, E_1)$ is generated by repeating the following:
-
-1. **Growth:** Add a new vertex to the vertex set i.e.
-$$
-V_t = V_{t-1} \cup \{t\}
-$$
-2. **Preferential Attachment:** Add $m\le m_0$ edges between the new vertex and those already in the graph with probability proportional to each vertices degree i.e:
-
-$$
-E_t= E_{t-1} \cup \tilde E
-$$
-where $\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}$ and $\tilde e_i = \{t,\tilde v_i\}$ for $\tilde v_i \sim \text{Cat}(V_{t-1}, P)$
-
-```{=tex}
-\begin{align*}
-P &= \left\{\frac{d(v)}{\sum_{w\in V_{t-1}} d(w)} : v \in V_{t-1}\right\}
-\end{align*}
-```
-:::
-#### Expected Degree Distriubtion
-In the same paper (@Barabasi99) it was shown that for large values of $t$ the expected degree distribution for this model is approximately:
-$$
-f(k) = \frac{2m^2t}{m_0+t}k^{-3} \approx 2m^2k^{-3},\qquad k\ge m
-$$
-
-This is clearly a regularly varying function and therefore in in the Fréchet domain of attraction $\mathcal D(\Phi_2)$.
+The models in this section begin with the most general considered in this report, and then two special cases of this model are introduced.  
 
 ### General Preferential Attachment (GPA)
 
-This model generalises the BA model by instead of attaching the new edges with a probability proportional to vertices' degrees, the new edges are attached with probability proportional to some function of the vertices' degrees.
+Under this model, at each time step one vertex is added to the network and brings an edge with it that connects the existing vertices with a probability proportional to some function of the vertices' degrees.
 
 :::{#def-gpa}
 
@@ -423,18 +387,110 @@ then the expected degree distribution resulting from the GPA model has pmf:
 $$
 f(k) = \frac{\lambda^*}{g(k) + \lambda^*}\prod_{i=0}^{k-1}\frac{g(i)}{g(i)+\lambda^*}
 $$
-It is hard to see how this may behave in the tails for different preferential attachment functions, this will be one of the main focuses of the next section.
+
+
+
+### Barabási-Albert (BA)
+
+The first special case is the Barabási-Albert model, which is equivalent to setting the preferential attachment function $g$ to be the identity function $g(k)=k$
+
+
+This model defined in @Barabasi99 and also very closely related to the Yule-Simon process from [YS REF] changes the attachment mechanism from being purely uniform on the vertices already in the network to being random with a probability proportional to the degrees of the vertices in the network.
+
+:::{#def-ba}
+#### Barabási-Albert Model
+Starting with a graph $G_1 = (V_1, E_1)$ where $V_1 = \{1,\ldots,m_0\}$ and $E_1 = \{\{v\}:v\in V_1\}$ i.e a graph with $m_0$ vertices with one self-loop each. At each time step $t>1$ the graph denoted by $G_t = (V_1, E_1)$ is generated by repeating the following:
+
+1. **Growth:** Add a new vertex to the vertex set i.e.
+$$
+V_t = V_{t-1} \cup \{t\}
+$$
+2. **Preferential Attachment:** Add $m\le m_0$ edges between the new vertex and those already in the graph with probability proportional to each vertices degree i.e:
+
+$$
+E_t= E_{t-1} \cup \tilde E
+$$
+where $\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}$ and $\tilde e_i = \{t,\tilde v_i\}$ for $\tilde v_i \sim \text{Cat}(V_{t-1}, P)$
+
+```{=tex}
+\begin{align*}
+P &= \left\{\frac{d(v)}{\sum_{w\in V_{t-1}} d(w)} : v \in V_{t-1}\right\}
+\end{align*}
+```
+:::
+#### Expected Degree Distriubtion
+In the same paper (@Barabasi99) it was shown that for large values of $t$ the expected degree distribution for this model is approximately:
+$$
+f(k) = \frac{2m^2t}{m_0+t}k^{-3} \approx 2m^2k^{-3},\qquad k\ge m
+$$
+
+This is clearly a regularly varying function and therefore in in the Fréchet domain of attraction $\mathcal D(\Phi_2)$.
+
+
+### Uniform Attachment (UA)
+
+The final special case presented here is obtained from setting the preferential attachment function $g$ to be some constant value.
+
+:::{#def-ua}
+
+#### Uniform Attachment Model
+
+Start with a graph $G_1 = (V_1, E_1) = (\{1,\ldots,m_0\}, \emptyset)$, at each time step $t>1$ the graph is denoted by $G_t=(V_t, E_t)$ and generated by repeating the following two steps:
+
+1. **Growth:** Add a new vertex to the vertex set i.e. 
+$$
+V_t=V_{t-1}\cup\{t\}
+$$
+2. **Attachment:** Add $m\le m_0$ random edges between the new vertex and those already in the graph i.e. 
+$$
+E_t = E_{t-1} \cup \tilde E
+$$
+where $\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}$ and $\tilde e_i = \{t,\tilde v_i\}$ and $\tilde v_i \sim U(V_{t-1})$.
+
+:::
+
+#### Expected Degree Distribution
+As showing in [REF] the expected degree distribution of this model for large values of $t$ is:
+$$
+f(k) = \frac{e}{m}\exp\left(-\frac{k}{m}\right),\qquad k \ge m
+$$
+Since this distribution has exponential form, it is in the Gumbel domain of attraction.
 
 # Methods {#sec-meth}
 
-## Integral Generalised Pareto Distribution
+As mentioned in @sec-mod, the method used here to model the extreme values of the data will be a spliced threshold mixture. Specifically, it will be a spliced threshold mixture of a power law and a discretisation of the generalised pareto distribution similar to what is defined in [ROHRBECK].
 
-## Mixture Model
-### Threshold Selection
+:::{#def-igp}
 
-## Fitting model to simulated data
-### UA model
-### BA model
+## Intergral Generalised Pareto Distribution (IGP)
+
+Consider a random variable $X$ with cdf $F$, and consider the random variable $Y=\lfloor X \rfloor$. From @def-gp, $X|X>u \sim GP(\sigma, \xi)$ for some sufficiently large $u\in \mathbb R^+$ and it can be obtained that the distribution of $Y|Y>u$ has distribution defined below:
+
+$$
+\Pr(Y=y>Y>u) = \left(1+\frac{\xi(y+1-\lceil u\rceil)}{\sigma_0+\xi\lceil u\rceil}\right)_+^{-1/\xi}-\left(1+\frac{\xi(y-\lceil u\rceil)}{\sigma_0+\xi\lceil u\rceil}\right)_+^{-1/\xi}
+$$
+
+
+For $y=\lceil u\rceil,\lceil u\rceil+1, \ldots$ and $\xi \in \mathbb R$ and $u, \sigma_0 \in \mathbb R^+.$
+:::
+
+
+Since the some degree distributions of real networks seen in [FIG] seem to be approximately linear for the bulk of the data and then begin to change, the spliced threshold mixture that will be used consists of a truncated discrete power law for the bulk of the data and a GP above a threshold.
+
+:::{#def-pligp}
+
+## Power-Law IGP Distribution
+
+
+$$
+f(y) = \begin{cases}
+(1-\phi)\frac{y^{-(\alpha+1})}{\sum_{k=1}^v}, & y=1,2,\ldots, v\\
+\phi\left[\left(1+\frac{\xi(y+1-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}-\left(1+\frac{\xi(y-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}\right],&y=v+1, v+2,\ldots
+\end{cases}
+$$
+
+:::
+
 
 ## Fitting model to real data
 

@@ -32,19 +32,35 @@ pro[,1] = as.numeric(pro[,1])
 
 
 library(igraph)
+library(wdnet)
+set.seed(1234)
+#uniform attachment
+ctrl = rpa_control_preference(ftype='customized', pref = '1')
+init_net = list(
+  edgelist = matrix(c(1, 2), nrow = 1),
+  edgeweight = 1,
+  directed =FALSE
+)
+net = wdnet_to_igraph(rpanet(1e4, initial.network = init_net, ctrl))
 
-sim_ba_g = sample_pa(1e5, power=1, m=1, directed=F)
-ba = data.frame(table(degree(sim_ba_g)))
+ua = data.frame(table(degree(net)))
+names(ua) = c('x','Freq')
+ua[,1] = as.numeric(ua[,1])
+#Ba model
+ctrl = rpa_control_preference(ftype='customized', pref = 's')
+init_net = list(
+  edgelist = matrix(c(1, 2), nrow = 1),
+  edgeweight = 1,
+  directed =FALSE
+)
+net = wdnet_to_igraph(rpanet(1e4, initial.network = init_net, ctrl))
+
+ba = data.frame(table(degree(net)))
 names(ba) = c('x','Freq')
 ba[,1] = as.numeric(ba[,1])
 
-sim_ua_g = sample_pa(1e4, power=0, m=1, directed=F)
-ua = data.frame(table(degree(sim_ua_g)))
-names(ua) = c('x','Freq')
-ua[,1] = as.numeric(ua[,1])
 
 
-data.list = list(jazz=jazz,ip=ip,ba=ba)
 # fitting model -----------------------------------------------------------
 
 

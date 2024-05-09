@@ -81,21 +81,40 @@ mix_mcmc_onestep = function(dat, init, params, covs, debug=F){
   acc.states[1,] = c(init,phi_to_u(dat,init$phi))
   
   ####################################### phi steps
-  mu = acc.states$phi[nrow(acc.states)]
-  be_a = ((1-mu)/covs$phi - 1/mu)*mu^2
-  be_b = be_a*(1/mu - 1)
-  phi_star = phi_prop(tail(acc.states$phi,1),covs$phi)
-  prop_state = tail(acc.states,1)
-  prop_state$phi = phi_star
-  prop_state$v = phi_to_u(dat, prop_state$phi)
-  if(debug) message('phi: ',prop_state)
- 
-  #accepting/rejecting
-  logA = min(0,lpos_rat(dat, prop_state, tail(acc.states,1),params) + phi_prop_p(prop_state$phi,tail(acc.states$phi,1),covs$phi) - 
-    phi_prop_p(tail(acc.states$phi,1),prop_state$phi,covs$phi))
-  if(log(runif(1))<logA){
-    acc.states = rbind(acc.states, prop_state)
+  a = tail(acc.states$a, 1)
+  xi = tail(acc.states$xi, 1)
+  sig = tail(acc.states$sig, 1)
+  phis = 1 - cumsum(dat[,2])/sum(dat[,2])
+  vs = unique(dat[,1])
+  vs = vs[phis>0]
+  phis = phis[phis>0]
+  poss = c()
+  for(i in 1:length(phis)){
+    poss = c(poss, lpos(dat, vs[i], phis[i], a, xi, sig, params))
   }
+  ws = exp(poss-max(poss))
+  phi_star = sample(phis, 1, prob=ws)
+  v_star = sample(vs, 1, prob=ws)
+  prop_state = tail(acc.states,1)
+  prop_state$phi=phi_star
+  prop_state$v = v_star
+  acc.states = rbind(acc.states, prop_state)
+  
+  # mu = acc.states$phi[nrow(acc.states)]
+  # be_a = ((1-mu)/covs$phi - 1/mu)*mu^2
+  # be_b = be_a*(1/mu - 1)
+  # phi_star = phi_prop(tail(acc.states$phi,1),covs$phi)
+  # prop_state = tail(acc.states,1)
+  # prop_state$phi = phi_star
+  # prop_state$v = phi_to_u(dat, prop_state$phi)
+  # if(debug) message('phi: ',prop_state)
+  # 
+  # #accepting/rejecting
+  # logA = min(0,lpos_rat(dat, prop_state, tail(acc.states,1),params) + phi_prop_p(prop_state$phi,tail(acc.states$phi,1),covs$phi) - 
+  #   phi_prop_p(tail(acc.states$phi,1),prop_state$phi,covs$phi))
+  # if(log(runif(1))<logA){
+  #   acc.states = rbind(acc.states, prop_state)
+  # }
  
   ##########################(############## alpha steps
   alpha_star = rnorm(1, tail(acc.states$a, 1), sqrt(covs$alpha))
@@ -104,7 +123,7 @@ mix_mcmc_onestep = function(dat, init, params, covs, debug=F){
   if(debug) message('alpha: ', prop_state)
   #accepting/rejecting
   logA = min(0,lpos_rat(dat, prop_state, tail(acc.states,1),params))
-  if(log(runif(1))<logA){
+  if(log(runif(1))<logA | runif(1)<0.05){
     acc.states = rbind(acc.states, prop_state)
   }
   
@@ -115,7 +134,7 @@ mix_mcmc_onestep = function(dat, init, params, covs, debug=F){
   prop_state$sig = shapescale_star[2]
   if(debug) message('shapescale: ',prop_state)
   #accepting/rejecting
-  if(prop_state$sig>0 & prop_state$xi>(-prop_state$sig/prop_state$v)){
+  if((prop_state$sig>0| runif(1)<0.05) & prop_state$xi>(-prop_state$sig/prop_state$v) ){
     logA = min(0,lpos_rat(dat, prop_state, tail(acc.states,1),params))
     if(log(runif(1))<logA ){
       acc.states = rbind(acc.states, prop_state)
@@ -148,12 +167,10 @@ mix_mcmc = function(iter, dat, init, params, covs,update_period = 100, debug=F){
 }
 library(coda)
 # -------------------------------------------------------------------------
-burn.in = 1e4
-thin.by = 10
 
 
 mix_mcmc_wrap <- function(dat,iter=30000,  burn.in=10000, thin.by=10, update_period = 100, debug=F) {
-  init = data.frame(phi=0.05, a=2, xi=0.5, sig=1)
+  init = data.frame(phi=0.4, a=1, xi=1, sig=1)
   params = list(
     phi=c(1,1),
     alpha=50,
@@ -161,11 +178,11 @@ mix_mcmc_wrap <- function(dat,iter=30000,  burn.in=10000, thin.by=10, update_per
     scale=0.01
   )
   covs = list(
-    phi=0.01,
+    phi=0.001,
     alpha=0.01,
     shapescale = t(matrix(ncol=2,
-          c(0.5,-0.04,
-            -0.04,0.8)
+          c(1,-0.4,
+            -0.4,1)
       ))
   )
   res = mix_mcmc(iter, dat, init, params, covs, update_period = update_period, debug=debug)
@@ -181,23 +198,40 @@ mix_mcmc_wrap <- function(dat,iter=30000,  burn.in=10000, thin.by=10, update_per
   cmfs_05 = apply(cmfs, 1, quantile, prob=0.05)
   #plotting
   par(mfrow=c(1,1))
-  plot(dat[,1], 1- cumsum(dat[,2])/sum(dat[,2]), log='xy')
-  lines(x, 1- cmfs_95)
+  plot(dat[,1], 1- cumsum(dat[,2])/sum(dat[,2]), log='xy', pch=20)
+  abline(v=res_thinburn$v, col = alpha('blue', alpha=0.004))
+  polygon(c(x, rev(x)), c(1- cmfs_95, rev(1- cmfs_05)), col=alpha('gray', 0.5), lty=0)
   lines(x, 1-cmfs_mean, col='red')
-  lines(x, 1- cmfs_05)
   return(res_thinburn)
 }
 
 # -------------------------------------------------------------------------
 set.seed()
-jazz_res = mix_mcmc_wrap(jazz, update_period = 1e2, debug = F)
-ba_res = mix_mcmc_wrap(ba, iter=1e5, update_period = 100)
+burn.in = 1e3
+thin.by = 5
+ba_res = mix_mcmc_wrap(ba, iter=1e4, update_period = 100)
+ua_res = mix_mcmc_wrap(ua, iter=3e4, update_period = 100)
+
 ip_res = mix_mcmc_wrap(ip, update_period = 1e2)
-erd_res = mix_mcmc_wrap(erd, iter =1e5,update_period = 1e3)
+erd_res = mix_mcmc_wrap(erd, iter =1e4,update_period = 100)
+jazz_res = mix_mcmc_wrap(jazz, update_period = 1e2, debug = F)
+pro_res = mix_mcmc_wrap(pro,iter = 3e4, update_period = 1e2)
 
+# -------------------------------------------------------------------------
+dat=ua
+x = unique(ua[,1])
+res_thinburn = ua_res
 
-
-
+cmfs = apply(res_thinburn, 1, p_mix_apply, x=x)
+cmfs_mean = apply(cmfs, 1, mean)
+cmfs_95 = apply(cmfs, 1, quantile, prob=0.95)
+cmfs_05 = apply(cmfs, 1, quantile, prob=0.05)
+#plotting
+par(mfrow=c(1,1))
+plot(dat[,1], 1- cumsum(dat[,2])/sum(dat[,2]), log='xy', pch=20)
+abline(v=res_thinburn$v, col = alpha('blue', alpha=0.004))
+polygon(c(x, rev(x)), c(1- cmfs_95, rev(1- cmfs_05)), col=alpha('gray', 0.5), lty=0)
+lines(x, 1-cmfs_mean, col='red')
 
 
 

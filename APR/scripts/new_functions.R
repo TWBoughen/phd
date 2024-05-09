@@ -1,6 +1,6 @@
 library(ggplot2)
 library(gridExtra)
-library(networkdata)
+# library(networkdata)
 pgpd = function(x, shape, scale, threshold=0, lower.tail=T){
   if(!lower.tail){
     return(1-pgpd(x,shape,scale,threshold))
