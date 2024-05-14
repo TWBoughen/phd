@@ -155,15 +155,18 @@ div.csl-indent {
 <p>For a distribution with cdf <span class="math inline">\(F\)</span> and survival function <span class="math inline">\(\bar F\)</span> that has right endpoint <span class="math inline">\(x_F\)</span>, the distribution belongs to each domain of attraction subject to the conditions below:</p>
 <p><strong>If <span class="math inline">\(x_F=\infty\)</span>: </strong></p>
 <ul>
-<li><p>Type I/Gumbel/<span class="math inline">\(\mathcal D(\Lambda)\)</span>: <span class="math display">\[
+<li>Type I/Gumbel/<span class="math inline">\(\mathcal D(\Lambda)\)</span>: <span class="math display">\[
 \lim_{x\rightarrow\infty} \frac{\bar F(x+ta(x))}{\bar F(x)} = e^{-t},\quad \forall t&gt;0
-\]</span></p></li>
-<li><p>Type II/Fréchet/<span class="math inline">\(\mathcal D (\Phi_\alpha)\)</span>: <span class="math display">\[
+\]</span></li>
+<li>Type II/Fréchet/<span class="math inline">\(\mathcal D (\Phi_\alpha)\)</span>: <span class="math display">\[
 \lim_{x\rightarrow\infty} \frac{\bar F(tx)}{\bar F(x)} = x^{-\alpha}, \quad \forall t&gt;0 \quad \text{ for some } \alpha&gt;0
-\]</span> <strong>If <span class="math inline">\(x_F&lt;0\)</span>:</strong></p></li>
-<li><p>Type III/Negative-Weibull/<span class="math inline">\(\mathcal D(\Psi_\alpha)\)</span>: <span class="math display">\[
+\]</span></li>
+</ul>
+<p><strong>If <span class="math inline">\(x_F&lt;0\)</span>:</strong></p>
+<ul>
+<li>Type III/Negative-Weibull/<span class="math inline">\(\mathcal D(\Psi_\alpha)\)</span>: <span class="math display">\[
 \lim_{h\downarrow 0}\frac{\bar F(x_F-xh)}{\bar F(x_F-h)} = x^\alpha, \quad\alpha&gt;0
-\]</span></p></li>
+\]</span></li>
 </ul>
 </div>
 <p>The parameter <span class="math inline">\(\alpha\)</span> in <a href="#def-doa">Definition&nbsp;1</a> and <a href="#thm-evt">Theorem&nbsp;1</a> is called the extreme value index.</p>

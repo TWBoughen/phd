@@ -199,6 +199,7 @@ $$
 $$
 \lim_{x\rightarrow\infty} \frac{\bar F(tx)}{\bar F(x)} = x^{-\alpha}, \quad \forall t>0 \quad \text{ for some } \alpha>0
 $$
+
 **If $x_F<0$:**
 
 - Type III/Negative-Weibull/$\mathcal D(\Psi_\alpha)$:
