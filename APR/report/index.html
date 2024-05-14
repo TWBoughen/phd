@@ -67,23 +67,29 @@ div.csl-indent {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#sec-int" id="toc-sec-int" class="nav-link active" data-scroll-target="#sec-int"><span class="header-section-number">1</span> Intuition</a></li>
-  <li><a href="#sec-ext" id="toc-sec-ext" class="nav-link" data-scroll-target="#sec-ext"><span class="header-section-number">2</span> Extremes</a>
+  <li><a href="#sec-int" id="toc-sec-int" class="nav-link active" data-scroll-target="#sec-int"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#sec-ext" id="toc-sec-ext" class="nav-link" data-scroll-target="#sec-ext"><span class="header-section-number">2</span> Extreme Value Theory</a>
   <ul class="collapse">
   <li><a href="#sec-ce" id="toc-sec-ce" class="nav-link" data-scroll-target="#sec-ce"><span class="header-section-number">2.1</span> Continuous Extremes</a></li>
   <li><a href="#discrete-extremes" id="toc-discrete-extremes" class="nav-link" data-scroll-target="#discrete-extremes"><span class="header-section-number">2.2</span> Discrete Extremes</a></li>
+  <li><a href="#sec-mod" id="toc-sec-mod" class="nav-link" data-scroll-target="#sec-mod"><span class="header-section-number">2.3</span> Modelling</a></li>
   </ul></li>
   <li><a href="#networks" id="toc-networks" class="nav-link" data-scroll-target="#networks"><span class="header-section-number">3</span> Networks</a>
   <ul class="collapse">
   <li><a href="#mathematical-definitions" id="toc-mathematical-definitions" class="nav-link" data-scroll-target="#mathematical-definitions"><span class="header-section-number">3.1</span> Mathematical Definitions</a></li>
   <li><a href="#network-generative-models" id="toc-network-generative-models" class="nav-link" data-scroll-target="#network-generative-models"><span class="header-section-number">3.2</span> Network Generative Models</a>
   <ul class="collapse">
-  <li><a href="#uniform-attachment-ua" id="toc-uniform-attachment-ua" class="nav-link" data-scroll-target="#uniform-attachment-ua">Uniform Attachment (UA)</a></li>
-  <li><a href="#barabási-albert-ba" id="toc-barabási-albert-ba" class="nav-link" data-scroll-target="#barabási-albert-ba">Barabási-Albert (BA)</a></li>
   <li><a href="#general-preferential-attachment-gpa" id="toc-general-preferential-attachment-gpa" class="nav-link" data-scroll-target="#general-preferential-attachment-gpa">General Preferential Attachment (GPA)</a></li>
+  <li><a href="#barabási-albert-ba" id="toc-barabási-albert-ba" class="nav-link" data-scroll-target="#barabási-albert-ba">Barabási-Albert (BA)</a></li>
+  <li><a href="#uniform-attachment-ua" id="toc-uniform-attachment-ua" class="nav-link" data-scroll-target="#uniform-attachment-ua">Uniform Attachment (UA)</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#sec-meth" id="toc-sec-meth" class="nav-link" data-scroll-target="#sec-meth"><span class="header-section-number">4</span> Methods</a></li>
+  <li><a href="#sec-meth" id="toc-sec-meth" class="nav-link" data-scroll-target="#sec-meth"><span class="header-section-number">4</span> Methods</a>
+  <ul class="collapse">
+  <li><a href="#fitting-model-to-real-data" id="toc-fitting-model-to-real-data" class="nav-link" data-scroll-target="#fitting-model-to-real-data"><span class="header-section-number">4.1</span> Fitting model to real data</a></li>
+  <li><a href="#gpa-analyses" id="toc-gpa-analyses" class="nav-link" data-scroll-target="#gpa-analyses"><span class="header-section-number">4.2</span> GPA analyses</a></li>
+  <li><a href="#conclusion-and-a-conjecture" id="toc-conclusion-and-a-conjecture" class="nav-link" data-scroll-target="#conclusion-and-a-conjecture"><span class="header-section-number">4.3</span> Conclusion and a Conjecture</a></li>
+  </ul></li>
   <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps"><span class="header-section-number">5</span> Next Steps</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
@@ -122,69 +128,92 @@ div.csl-indent {
 </header>
 
 <section id="sec-int" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Intuition</h1>
+<h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
+<p>Since the aim is to gain understanding about the behaviour of the degree distribution of networks at the right tail, it seems natural to look to using methods from extreme value theory.</p>
 </section>
 <section id="sec-ext" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Extremes</h1>
-<p>Since the aim is to gain understanding about the behaviour of the degree distribution of networks at the right tail, it seems natural to look to using methods from extreme value theory. However, networks by their nature are discrete and so it may not be best to be using methods that are usually used in relation to continuous random variables. For this reason, this section starts with a review of what theory exists for modelling the extreme values of continuous random variables before moving to details what can be used when instead considering discrete random variables as is the case for the degree distributions of random networks.</p>
+<h1 data-number="2"><span class="header-section-number">2</span> Extreme Value Theory</h1>
+<p>This section begins with a review of the theory and methodology for modelling the extreme values of continuous random variables, before moving to considerations for modelling the extreme values of discrete random variables.</p>
 <section id="sec-ce" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="sec-ce"><span class="header-section-number">2.1</span> Continuous Extremes</h2>
-<p>Studying the properties of the right tail of the distribution of a continuous random variable, means that the focus is on the largest values that the random variable can take. So, a natural place to start is to consider the distribution of the block maxima of such a random variable. That is, for a set of iid random variables <span class="math inline">\(\{X_1,\ldots,X_n\}\)</span> with common cumulative density function (cdf) <span class="math inline">\(F\)</span> what is the distribution of <span class="math inline">\(M_n = \max\{X_1,\ldots,X_n\}\)</span>? This question is answered by the Fisher–Tippett–Gnedenko theorem <a href="or%20more%20simply%20the%20extreme%20value%20theorem">REF</a>.</p>
+<p>Studying the properties of the extreme values of a random variable first requires determining what exactly is considered to be an extreme value. In this section extreme values of two kinds are considered, both of which can be characterised.</p>
+<p>The first kind of extreme value considers the distribution of block maxima. That is, for a set of independent and identically distributed (iid) random variables <span class="math inline">\(X_1,\ldots,X_n\)</span> with common cumulative density function (cdf) <span class="math inline">\(F\)</span> what is the limiting distribution of <span class="math inline">\(M_n = \max\{X_1,\ldots,X_n\}\)</span>?</p>
+<p>Clearly, as <span class="math inline">\(n\rightarrow \infty\)</span>, the block maxima <span class="math inline">\(M_n\)</span> converges almost surely to the right endpoint of <span class="math inline">\(F\)</span>. However, standardising the block maxima allows for some characterisation of the limiting distribution.</p>
 <div id="thm-evt" class="theorem">
-<p><span class="theorem-title"><strong>Theorem 1 (Extreme Value Theorem) </strong></span>Let <span class="math inline">\(X_1,\ldots,X_n\)</span> be a sample of iid random variables with common cdf <span class="math inline">\(F\)</span> with block maxima <span class="math inline">\(M_n = \max\{X_1,\ldots,X_n\}\)</span> and suppose that there exists <span class="math inline">\(a_n&gt;0, b_n\in\mathbb R\)</span> such that <span class="math inline">\(\lim_{n\rightarrow\infty}\Pr(\frac{1}{a_n}[M_n-b_n]) = G(x)\)</span>, then <span class="math inline">\(F\)</span> is said to be in the domain of attraction of <span class="math inline">\(G\)</span>, denoted <span class="math inline">\(F\in\mathcal D(G)\)</span> ,and <span class="math inline">\(G\)</span> is of one of three types:</p>
+<p><span class="theorem-title"><strong>Theorem 1 (Fisher–Tippett–Gnedenko Theorem) </strong></span>With <span class="math inline">\(X_1, \ldots,X_n \overset{\mathrm{iid}}{\sim} F\)</span> and <span class="math inline">\(\{ a_n\}_{n\ge0}, \{ b_n\}_{n\ge0}\)</span> such that:</p>
+<p><span class="math display">\[\lim_{n\rightarrow\infty}\Pr\left(\frac{1}{a_n}[M_n-b_n]\le x\right) = G(x),\]</span> for some non-degenerate <span class="math inline">\(G\)</span>.</p>
+<p>Then <span class="math inline">\(F\)</span> is said to be in the (maximum) domain of attraction of <span class="math inline">\(G\)</span>, denoted <span class="math inline">\(F\in\mathcal D(G)\)</span> ,and <span class="math inline">\(G\)</span> is of one of three types:</p>
 <ul>
 <li>Gumbel: <span class="math inline">\(\Lambda(x) = \exp\{-\exp(-x)\},\quad x \in \mathbb R\)</span></li>
 <li>Fréchet: <span class="math inline">\(\Phi_\alpha(x) = \exp\{-x^{-\alpha}\},\quad x\ge 0,\alpha&gt;0\)</span></li>
-<li>Weibull: <span class="math inline">\(\Psi_\alpha(x) = \exp\{-x^{-a}\},\quad x&lt;0,\alpha&gt;0\)</span></li>
+<li>Negative-Weibull: <span class="math inline">\(\Psi_\alpha(x) = \exp\{-x^{-a}\},\quad x&lt;0,\alpha&gt;0\)</span></li>
 </ul>
 </div>
-<p>While this is a useful result, it may prove difficult to find the sequences <span class="math inline">\(a_n,b_n\)</span> in practice, so a simpler method to establish what domain of attraction a distribution belongs to would be nice. Luckily, this can be done through the concept of regular variation and is what will be used to define the domains of attraction and tail-heaviness through the rest of this report.</p>
+<p>Each of these three types defines a domain of attraction.</p>
 <div id="def-doa" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1 (Domains of Attraction) </strong></span>The distribution <span class="math inline">\(F\)</span> belongs to the Fréchet domain of attraction <span class="math inline">\(\mathcal D(\Phi_\alpha)\)</span> if and only if its complement (the survival function) <span class="math inline">\(\bar F\)</span> is regularly varying with index <span class="math inline">\(-\alpha\)</span> i.e.: <span class="math display">\[
-\bar F(x) = x^{-\alpha}L(x),\qquad \text{for } L \text{ slowly varying}
-\]</span> A similar condition applies to the Weibull domain of attraction <span class="math inline">\(\mathcal D(\Psi_\alpha)\)</span> in that a distribution <span class="math inline">\(F\)</span> belongs to the Weibull domain of attraction if and only if: <span class="math display">\[
-\bar F(x_F-x^{-1}) = x^{-\alpha}L(x),\qquad \text{for } L \text{ slowly varying}
-\]</span> where <span class="math inline">\(x_F\)</span> is the finite right endpoint of the support of <span class="math inline">\(F\)</span>.</p>
-<p>The condition for the Gumbel domain of attraction is not as simple, a distribution <span class="math inline">\(F\)</span> belongs to the Gumbel domain if and only if there exists a positive function <span class="math inline">\(a: \mathbb R \rightarrow \mathbb R^+\)</span> and a <span class="math inline">\(t\in \mathbb R\)</span> such that: <span class="math display">\[
-\lim_{x\rightarrow x_F} \frac{\bar F(x+ta(x))}{\bar F(x)} = e^{-t}
-\]</span></p>
+<p><span class="theorem-title"><strong>Definition 1 (Domains of Attraction) </strong></span>The three domains of attraction that result from <a href="#thm-evt">Theorem&nbsp;1</a> have the following equivalent conditions:</p>
+<p>For a distribution with cdf <span class="math inline">\(F\)</span> and survival function <span class="math inline">\(\bar F\)</span> that has right endpoint <span class="math inline">\(x_F\)</span>, the distribution belongs to each domain of attraction subject to the conditions below:</p>
+<p><strong>If <span class="math inline">\(x_F=\infty\)</span>: </strong></p>
+<ul>
+<li><p>Type I/Gumbel/<span class="math inline">\(\mathcal D(\Lambda)\)</span>: <span class="math display">\[
+\lim_{x\rightarrow\infty} \frac{\bar F(x+ta(x))}{\bar F(x)} = e^{-t},\quad \forall t&gt;0
+\]</span></p></li>
+<li><p>Type II/Fréchet/<span class="math inline">\(\mathcal D (\Phi_\alpha)\)</span>: <span class="math display">\[
+\lim_{x\rightarrow\infty} \frac{\bar F(tx)}{\bar F(x)} = x^{-\alpha}, \quad \forall t&gt;0 \quad \text{ for some } \alpha&gt;0
+\]</span> <strong>If <span class="math inline">\(x_F&lt;0\)</span>:</strong></p></li>
+<li><p>Type III/Negative-Weibull/<span class="math inline">\(\mathcal D(\Psi_\alpha)\)</span>: <span class="math display">\[
+\lim_{h\downarrow 0}\frac{\bar F(x_F-xh)}{\bar F(x_F-h)} = x^\alpha, \quad\alpha&gt;0
+\]</span></p></li>
+</ul>
 </div>
-<p>Throughout this report the term “heavy tailed” distribution will be used to describe any distribution in the Fréchet domain of attraction, although some of the literature refers to “heavy tailed” distributions as being the distributions that decay slower than the exponential.</p>
-<p>At this point it will also be useful to introduce the concept of distributions that have super-heavy tails.</p>
-<div id="def-sht" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2 (Super Heavy Tails) </strong></span>[FIND SUPER HEAVY TAILS DEFINITION]</p>
-<p>Additionally, if the survival function <span class="math inline">\(\bar F\)</span> is slowly varying itself then <span class="math inline">\(F\)</span> has super heavy tails i.e. <span class="math display">\[
-\lim_{x\rightarrow\infty}\frac{\bar F(tx)}{\bar{F}(x)} = 1, \forall t\in\mathbb R^+ \implies \text{super heavy tails}
-\]</span></p>
-</div>
-<p>It is possible to gather the main three types of extremal distributions into what is called the Generalised Extreme Value (GEV) distribution [REF].</p>
-<div id="def-gev" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 3 (Generalised Extreme Value Distribution) </strong></span>Denoted by <span class="math inline">\(\text{GEV}(\mu,\sigma,\xi)\)</span> the distribution is characterised by three parameters <span class="math inline">\(\mu \in \mathbb R\)</span> the location, <span class="math inline">\(\sigma\in \mathbb R^+\)</span> the scale, and the shape <span class="math inline">\(\xi\in \mathbb R\)</span>. It has support on <span class="math inline">\(\{x\in \mathbb R:1+\xi(x-\mu)/\sigma &gt; 0\}\)</span> and has cdf given by:</p>
+<p>The parameter <span class="math inline">\(\alpha\)</span> in <a href="#def-doa">Definition&nbsp;1</a> and <a href="#thm-evt">Theorem&nbsp;1</a> is called the extreme value index.</p>
+<p>Here, distributions in the Gumbel domain are referred to as light tailed, distributions in the Negative-Weibull domain are referred to as short tailed, and those in the Fréchet are referred to as heavy tailed.This terminology for heavy tailed distributions in different ot some of the literature that defined a heavy tailed distribution as one that decays slower than exponential. However the terminology used here is also widely used.</p>
+<p>Throughout this report functions will be referred to as regularly varying or slowly varying, what is meant by this is formally deined below:</p>
+<div id="def-rv" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2 (Regular Variation) </strong></span>A positive,real valued, measurable function <span class="math inline">\(f\)</span> is said to be regularly varying at infinity with index <span class="math inline">\(\gamma\)</span> if for all <span class="math inline">\(t&gt;0\)</span>:</p>
 <p><span class="math display">\[
-G(x) = \begin{cases}\exp\left\{-\left(1+\frac{\xi(x-\mu)}{\sigma}\right)^{-1/\xi}\right\},&amp;\xi\ne0\\
-\exp\{-\exp(-\frac{x-\mu}{\sigma})\},&amp;\xi=0
+\lim_{x\rightarrow\infty}\frac{f(tx)}{f(x)} = x^{\gamma}.
+\]</span> If <span class="math inline">\(\gamma =0\)</span>, then <span class="math inline">\(f\)</span> is instead said to be slowly varying.</p>
+</div>
+<p>Note that the condition for a distribution to belong to the Fréchet domain is equivalent to saying that the survival function <span class="math inline">\(\bar F\)</span> is regularly varying with index <span class="math inline">\(-\alpha\)</span>.</p>
+<p>In addition to heavy tailed distributions it is also useful to define what will be referred to as super heavy tailed distributions. This term is often just refers to specific distributions such as the log-Cauchy distriubtion, but <span class="citation" data-cites="fmh09">Fraga Alves, Haan, and Neves (<a href="#ref-fmh09" role="doc-biblioref">2009</a>)</span> provides the more precise definition below:</p>
+<div id="def-sup" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3 (Super Heavy Tails) </strong></span>A distribution is with survival function <span class="math inline">\(\bar F\)</span> is said to have super heavy tails if: <span class="math display">\[
+\lim_{x\rightarrow\infty}\frac{\bar F(tx)}{\bar F (x)} = 1,\qquad \forall t&gt;0
+\]</span> That is, a distribution is called super heavy if its survival function is slowly varying.</p>
+</div>
+<p>The three main types of extremal distribution (Gumbel, Fréchet and Negative-Weibull) can be united into one distribution, called the Generalised Extreme Value (GEV) distribution.</p>
+<div id="def-gev" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 4 (Generalised Extreme Value Distribution) </strong></span>Denoted by <span class="math inline">\(\text{GEV}(\mu,\sigma,\xi)\)</span> the distribution is characterised by three parameters <span class="math inline">\(\mu \in \mathbb R\)</span> the location, <span class="math inline">\(\sigma\in \mathbb R^+\)</span> the scale, and the shape <span class="math inline">\(\xi\in \mathbb R\)</span>. It has support on <span class="math inline">\(\{x\in \mathbb R:1+\xi(x-\mu)/\sigma &gt; 0\}\)</span> and has cdf given by:</p>
+<p><span class="math display">\[
+G(x) = \begin{cases}\exp\left\{-\left(1+\displaystyle\frac{\xi(x-\mu)}{\sigma}\right)_+^{-1/\xi}\right\},&amp;\xi\ne0\\
+\exp\left\{-\exp\left(-\displaystyle\frac{x-\mu}{\sigma}\right)\right\},&amp;\xi=0.
 \end{cases}
 \]</span></p>
 </div>
-<p>The three types of extremal distribution are obtained from changing the shape parameter <span class="math inline">\(\xi\)</span>, which corresponds to <span class="math inline">\(1/\alpha\)</span> in the definition of the domains of attraction. This change is generally to made so that increasing <span class="math inline">\(\xi\)</span> corresponds to increasing how heavy the tails of the distribution are. So, <span class="math inline">\(\xi&lt;0\)</span> corresponds to the Weibull, <span class="math inline">\(\xi&gt;0\)</span> the Fréchet, and <span class="math inline">\(\xi=0\)</span> the Gumbel.</p>
-<p>While this is useful for modelling the distribution of block maxima of iid random variables, as seen in <a href="#sec-int">Section&nbsp;1</a>, the data in question appears to follow power law like behaviour for the bulk of the data and then changes to various different shapes above a certain threshold. For this reason, it is perhaps more appropriate to consider the distribution of threshold exceedances.</p>
+<p>The three types of extremal distribution are obtained from changing the shape parameter <span class="math inline">\(\xi\)</span>, which corresponds to <span class="math inline">\(1/\alpha\)</span> in <a href="#thm-evt">Theorem&nbsp;1</a>. This change is generally to made so that increasing <span class="math inline">\(\xi\)</span> corresponds to increasing how heavy the tails of the distribution are. Specifically, <span class="math inline">\(\xi&lt;0\)</span>, <span class="math inline">\(\xi=0\)</span>, <span class="math inline">\(\xi&gt;0\)</span>, correspond to the negative Weibull, Gumbel and the Fréchet domains of attraction respectively.</p>
+<p>Another kind of extreme values are the observations above a large threshold, like the limiting distribution of block maxima, the limiting distribution of these extreme values can be characterised by the generalised pareto (GP) distribution.</p>
 <div id="def-gp" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 4 (Generalised Pareto Distribution) </strong></span>The Generalised Pareto (GP) distribution can be obtained by using the GEV distribution and conditional probability such that for large enough threshold the GP distribution approximately describes the conditional distribution of threshold exceedances. More precisely, for large enough threshold <span class="math inline">\(u\)</span> and the change of variable to <span class="math inline">\(Y=X-u\)</span>: <span class="math display">\[
+<p><span class="theorem-title"><strong>Definition 5 (Generalised Pareto Distribution) </strong></span>Consider a random variable <span class="math inline">\(X\)</span> with the same cdf <span class="math inline">\(F\)</span> as in <a href="#thm-evt">Theorem&nbsp;1</a>, the Generalised Pareto (GP) distribution can be obtained by using the GEV distribution and conditional probability such that for large enough threshold the GP distribution approximately describes the conditional distribution of threshold exceedances. More precisely, for sufficiently large threshold <span class="math inline">\(u\)</span> and the change of variable to <span class="math inline">\(Y=X-u\)</span>: <span class="math display">\[
 \Pr(Y\le y | Y&gt;0) = H(y) = \begin{cases}
-1-\left(1+\frac{\xi y}{\sigma}\right)^{-1/\xi},&amp;y&gt;0,\xi\ne 0 \\
-1-\exp\left(-\frac{y}{\sigma}\right),&amp;y&gt;0,\xi = 0
+1-\left(1+\displaystyle\frac{\xi y}{\sigma}\right)^{-1/\xi},&amp;y&gt;0,\xi\ne 0 \\
+1-\exp\left(-\displaystyle\frac{y}{\sigma}\right),&amp;y&gt;0,\xi = 0
 \end{cases}
 \]</span></p>
 </div>
 <p>Since this distribution was obtained using a <span class="math inline">\(\text{GEV}(\mu,\sigma^*,\xi)\)</span> the shape parameter <span class="math inline">\(\xi\)</span> is identical in both distributions and the shape parameter <span class="math inline">\(\sigma\)</span> is defined such that <span class="math inline">\(\sigma = \sigma^* + \xi(u-\mu)\)</span>.</p>
-<p>The vast majority of this theory is appropriate only for continuous data, and since the data being focused on is discrete, some results for discrete extremes should be introduced.</p>
+<p>It is also possible to derive the result without using the GEV, as shown in [REF].</p>
 </section>
 <section id="discrete-extremes" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="discrete-extremes"><span class="header-section-number">2.2</span> Discrete Extremes</h2>
-<p>Moving to modelling extremes in a discrete has the potential to cause some issues when describing how heavy the tails of a distribution are and what domain of attraction belongs to. For example, the exponential distribution belongs to the Gumbel domain <span class="math inline">\(\mathcal D(\Lambda)\)</span> but its discrete counterpart (the geometric distribution) does not belong to the Gumbel domain. So, care needs to be taken when attempting to discretise the results from <a href="#sec-ce">Section&nbsp;2.1</a>.</p>
-<p><span class="citation" data-cites="shimura12">Shimura (<a href="#ref-shimura12" role="doc-biblioref">2012</a>)</span> provides conditions for a discrete distribution to belong to the domain of attraction. In particular the following theorem which corresponds to Theorem 1 in <span class="citation" data-cites="shimura12">Shimura (<a href="#ref-shimura12" role="doc-biblioref">2012</a>)</span>.</p>
+<p>A lot of <a href="#sec-ce">Section&nbsp;2.1</a> is appropriate only for continuous random variables and some of the results may not hold in a discrete setting. In particular, a continuous distribution <span class="math inline">\(F\)</span> being in certain domain of attraction may not necessarily imply that a discretisation of <span class="math inline">\(F\)</span> remains in that domain of attraction.</p>
+<div id="def-disc" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 6 (Discretisation) </strong></span>The discretisation of a distribution with cdf <span class="math inline">\(F\)</span> is given by</p>
+<p><span class="math display">\[F^*(n) = F(n) - F(n-1), \quad n   \in \mathbb Z\]</span></p>
+</div>
+<p><span class="citation" data-cites="shimura12">Shimura (<a href="#ref-shimura12" role="doc-biblioref">2012</a>)</span> provides conditions for a discretisation of a continuous distribution to belong to the same domain of attraction. In particular the following theorem which corresponds to Theorem 1 in <span class="citation" data-cites="shimura12">Shimura (<a href="#ref-shimura12" role="doc-biblioref">2012</a>)</span>.</p>
 <div id="thm-shimura1" class="theorem">
-<p><span class="theorem-title"><strong>Theorem 2 (Discrete Domains of Attraction) </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Theorem 2 (Domain of attraction consistency) </strong></span>&nbsp;</p>
 <ol type="a">
 <li>Every discretisation of distribution in <span class="math inline">\(\mathcal D(\Phi_\alpha)\)</span> remains in <span class="math inline">\(\mathcal D(\Phi_\alpha)\)</span>.</li>
 <li>The discretisation of a distribution remains in <span class="math inline">\(\mathcal D(\Lambda)\)</span> if and only if the original is in <span class="math inline">\(\mathcal D(\Lambda)\cap \mathcal L\)</span>.</li>
@@ -193,19 +222,22 @@ G(x) = \begin{cases}\exp\left\{-\left(1+\frac{\xi(x-\mu)}{\sigma}\right)^{-1/\xi
 \lim_{x\rightarrow \infty}\frac{\overline F(x+1)}{\overline F(x)} = 1   
 \]</span></p>
 </div>
-<p>In addition to this theorem, Shimura also introduces a quantity that will become useful when deciding what domain of attraction a discrete distribution belongs to. In this report we will simply refer to it as the Omega function and is defined below:</p>
+<p>In addition <span class="citation" data-cites="shimura12">Shimura (<a href="#ref-shimura12" role="doc-biblioref">2012</a>)</span> introduces a quantity useful for determining the domain of a attraction that a discrete distribution belongs to.</p>
 <div id="def-omega" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 5 (Omega Function) </strong></span>For a distribution <span class="math inline">\(F\)</span> with survival function <span class="math inline">\(\overline F\)</span> and some <span class="math inline">\(n\in\mathbb Z^+\)</span> let:</p>
+<p><span class="theorem-title"><strong>Definition 7 (Omega Function) </strong></span>For a distribution <span class="math inline">\(F\)</span> with survival function <span class="math inline">\(\overline F\)</span> and some <span class="math inline">\(n\in\mathbb Z^+\)</span> let:</p>
 <p><span class="math display">\[
 \Omega(F,n) = \left(\log\frac{\overline F (n+1)}{\overline F (n+2)}\right)^{-1} - \left(\log\frac{\overline F (n)}{\overline F (n+1)}\right)^{-1}
 \]</span></p>
 </div>
-<p>This quantity will play an important role in <a href="#sec-meth">Section&nbsp;4</a> when determining what kinds of degree distributions different network generative models are expected to lead to.</p>
+<p>This quantity plays an important role in <a href="#sec-meth">Section&nbsp;4</a> when determining the domain of attraction to which the degree distribution of a network generative model belongs.</p>
 <p>Applying ideas from <a href="#sec-ce">Section&nbsp;2.1</a> to modelling discrete random variables has been approached from many different directions. What follows is a overview of some of the approaches that have been taken but will see use in this report.</p>
-<p>One of the main issues when it comes to applying results from <a href="#sec-ce">Section&nbsp;2.1</a> to discrete data, is the discretisation of the GP distribution and making sure that it still maintains most of the same properties.</p>
-<p>[AHMAD] introduces several ways to discretise the GP distribution including mixing the geometric distribution with a Gamma distribution, they also introduce an extended GP distribution (and its discretisation) which is obtained from a probability integral transform (PIT) of a distribution with support on <span class="math inline">\((0,1)\)</span>. This is a modification of how the regular GP is obtained, which is from a PIT uniform distribution on (0,1).</p>
-<p>Also considering mixtures, [VALIQUETTE] investigated the tail properties of Poisson mixtures and found that changing the mixing distribution changes the tail heaviness of the mixed distribution. They divided the domain of attraction of the mixing distribution into various subsets that lead to different tail behaviours, through the limit of the ratio of consecutive values of the survival function. These limits do help describe the tail behaviour of the resulting mixture but do not quite correspond to different domains of attraction.</p>
-<p>The approach used in <a href="#sec-meth">Section&nbsp;4</a> will be very similar to the one taken in [ROHRBECK] with a minor change to the derivation, this will be explained in detail in <a href="#sec-meth">Section&nbsp;4</a>.</p>
+<p><span class="citation" data-cites="hds24">Hitz, Davis, and Samorodnitsky (<a href="#ref-hds24" role="doc-biblioref">2024</a>)</span> note that using the GP distribution as an approximation in a discrete setting leads to bias in the likelihood function and can lead to it being inadequate for modelling. They propose two other peaks over threshold methods that rely on parametric families of discrete distributions. The first, what they refer to as the discrete generalised Pareto approximation is based on an extension of the discrete survival function. The second, the generalised Zipf distribution is obtained from an extension of the probability mass function. Both methods are motivated theoretically for modelling of a large class of discrete distributions and are shown in the paper to either match or outperform using the GP to model discrete data directly.</p>
+<p><span class="citation" data-cites="agn22">Ahmad, Gaetan, and Naveau (<a href="#ref-agn22" role="doc-biblioref">2022</a>)</span> first introduce an extended GP distribution, a continuous distribution that extends the idea of obtaining GP values from a probability integral transform (PIT) of <span class="math inline">\(U(0,1)\)</span> draws and instead considers a PIT of draws from any distribution on <span class="math inline">\((0,1)\)</span> such as a beta distribution. This distribution is then discretised into their discrete extended GP distribution.</p>
+</section>
+<section id="sec-mod" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="sec-mod"><span class="header-section-number">2.3</span> Modelling</h2>
+<p>The results from <a href="#sec-ce">Section&nbsp;2.1</a> allow the GEV and GP to be fitted to the block maxima and exceedances respectively. Typically, when fitting the GP, a sufficiently high threshold needs to be specified beforehand [REFER TO COLES 2001] and give examples.</p>
+<p>Another more recent approach shown in [MACDONALD 2012], uses a spliced threshold mixture to model the threshold exceedances where one distribution is assumed for the bulk of the data and the GP is used for those values above the threshold. This approach can also be applied in the discrete setting, and is what is used in <a href="#sec-meth">Section&nbsp;4</a>.</p>
 </section>
 </section>
 <section id="networks" class="level1" data-number="3">
@@ -216,11 +248,11 @@ G(x) = \begin{cases}\exp\left\{-\left(1+\frac{\xi(x-\mu)}{\sigma}\right)^{-1/\xi
 <h2 data-number="3.1" class="anchored" data-anchor-id="mathematical-definitions"><span class="header-section-number">3.1</span> Mathematical Definitions</h2>
 <p>Networks on the face of it are fairly simple objects, nothing more than a collection of objects with connections between each other. Here, graphs constructed from vertices and edges will be used as an analogue for these networks.</p>
 <div id="def-net" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 6 (Graph/Network) </strong></span>A graph <span class="math inline">\(G = (V,E)\)</span> is constructed from a vertex set <span class="math inline">\(V\in\mathbb Z^+\)</span> and an edge set <span class="math inline">\(E\)</span>. The edge set can take on one of two forms depending on if the graph is directed or un-directed. If the graph is directed then <span class="math inline">\(E\subseteq V^2\)</span> i.e the edge set is contained within the set of ordered pairs of vertices, whereas if the graph is <strong>un-directed</strong> then <span class="math inline">\(E\subseteq [V]^2\)</span> i.e.&nbsp;the edge set is contained within the set of un-ordered pairs of vertices. The focus from now on will be on un-directed networks and graphs.</p>
+<p><span class="theorem-title"><strong>Definition 8 (Graph/Network) </strong></span>A graph <span class="math inline">\(G = (V,E)\)</span> is constructed from a vertex set <span class="math inline">\(V\in\mathbb Z^+\)</span> and an edge set <span class="math inline">\(E\)</span>. The edge set can take on one of two forms depending on if the graph is directed or un-directed. If the graph is directed then <span class="math inline">\(E\subseteq V^2\)</span> i.e the edge set is contained within the set of ordered pairs of vertices, whereas if the graph is <strong>un-directed</strong> then <span class="math inline">\(E\subseteq [V]^2\)</span> i.e.&nbsp;the edge set is contained within the set of un-ordered pairs of vertices. The focus from now on will be on un-directed networks and graphs.</p>
 </div>
 <p>Throughout this section and the next the concept of a vertices “degree” will come up, and in fact the main focus of <a href="#sec-meth">Section&nbsp;4</a> is the degree distribution of networks.</p>
 <div id="def-deg" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 7 (Degree) </strong></span>For an un-directed graph a vertex’s degree denoted <span class="math inline">\(d(v)\)</span> or <span class="math inline">\(k_v\)</span> for <span class="math inline">\(v\in V\)</span> is the number of edges that are connected to vertex <span class="math inline">\(v\)</span>: <span class="math display">\[
+<p><span class="theorem-title"><strong>Definition 9 (Degree) </strong></span>For an un-directed graph a vertex’s degree denoted <span class="math inline">\(d(v)\)</span> or <span class="math inline">\(k_v\)</span> for <span class="math inline">\(v\in V\)</span> is the number of edges that are connected to vertex <span class="math inline">\(v\)</span>: <span class="math display">\[
 d(v) = |\{e\in E : v \in e\}|
 \]</span> Directed graphs have something analogous, called the in-degree <span class="math inline">\(d_{in}\)</span>, out-degree <span class="math inline">\(d_{out}\)</span> and total degree <span class="math inline">\(d_{tot}\)</span>. The in-degree of a vertex <span class="math inline">\(v\)</span> is the number edges with endpoint at <span class="math inline">\(v\)</span>, whereas the out-degree is the number of edges with start point at <span class="math inline">\(v\)</span> and the total degree is the sum of these i.e.:</p>
 <span class="math display">\[\begin{align*}
@@ -233,12 +265,68 @@ d_{tot}(v) &amp;= d_{in}(v) + d_{out}(v)
 </section>
 <section id="network-generative-models" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="network-generative-models"><span class="header-section-number">3.2</span> Network Generative Models</h2>
-<p>The models in this section are nested within one another, they all follow the same regiment that at each time-step a vertex is added to the network along with one or more edges that connect the new vertex to those already in the network.</p>
+<p>The models in this section begin with the most general considered in this report, and then two special cases of this model are introduced.</p>
+<section id="general-preferential-attachment-gpa" class="level3">
+<h3 class="anchored" data-anchor-id="general-preferential-attachment-gpa">General Preferential Attachment (GPA)</h3>
+<p>Under this model, at each time step one vertex is added to the network and brings an edge with it that connects the existing vertices with a probability proportional to some function of the vertices’ degrees.</p>
+<div id="def-gpa" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 10 (General Preferential Attachment Model) </strong></span>Starting with a graph <span class="math inline">\(G_1 = (V_1, E_1) = (\{1,\ldots,m_0\}, \emptyset)\)</span>, at each following time step <span class="math inline">\(t&gt;1\)</span> the graph is denoted by <span class="math inline">\(G_t = (V_t, E_t)\)</span> and is generated by repeating:</p>
+<ol type="1">
+<li><strong>Growth:</strong> Add a new vertex to the vertex set i.e. <span class="math display">\[
+V_t = V_{t-1} \cup \{t\}
+\]</span></li>
+<li><strong>Preferential Attachment:</strong> Add <span class="math inline">\(m\le m_0\)</span> edges connecting the new vertex to those already in the graph selected at random proportional to a function of their degree(minus one)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> i.e.: <span class="math display">\[
+E_t  = E_{t-1} \cup \tilde E
+\]</span> where <span class="math inline">\(\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}\)</span> and <span class="math inline">\(\tilde e_i = \{t,\tilde v_i\}\)</span> for <span class="math inline">\(\tilde v_i \sim \text{Cat}(V_{t-1}, P)\)</span></li>
+</ol>
+<span class="math display">\[\begin{align*}
+P &amp;= \left\{\frac{g(k_v-1)}{\sum_{w\in V_{t-1}} g(k_w-1)} : v \in V_{t-1}\right\}
+\end{align*}\]</span>
+<p>for some function <span class="math inline">\(g: \mathbb Z \mapsto \mathbb R^+\setminus\{0\}\)</span>, which will be referred to as the preferential attachment function</p>
+</div>
+<section id="expected-degree-dristribution" class="level4">
+<h4 class="anchored" data-anchor-id="expected-degree-dristribution">Expected Degree Dristribution</h4>
+<p>In [GPA REF] the expected degree distribution for <span class="math inline">\(m=1\)</span> was calculated in terms of the preferential attachment function does not have a general explicit form. It is defined as follows, let <span class="math inline">\(\lambda^*\)</span> be the solution, if it exists, to:</p>
+<p><span class="math display">\[
+1=\sum_{n=1}^\infty \prod_{i=1}^{n-1}\frac{g(i)}{g(i)+\lambda}
+\]</span> then the expected degree distribution resulting from the GPA model has pmf:</p>
+<p><span class="math display">\[
+f(k) = \frac{\lambda^*}{g(k) + \lambda^*}\prod_{i=0}^{k-1}\frac{g(i)}{g(i)+\lambda^*}
+\]</span></p>
+</section>
+</section>
+<section id="barabási-albert-ba" class="level3">
+<h3 class="anchored" data-anchor-id="barabási-albert-ba">Barabási-Albert (BA)</h3>
+<p>The first special case is the Barabási-Albert model, which is equivalent to setting the preferential attachment function <span class="math inline">\(g\)</span> to be the identity function <span class="math inline">\(g(k)=k\)</span></p>
+<p>This model defined in <span class="citation" data-cites="Barabasi99">Barabási and Albert (<a href="#ref-Barabasi99" role="doc-biblioref">1999</a>)</span> and also very closely related to the Yule-Simon process from [YS REF] changes the attachment mechanism from being purely uniform on the vertices already in the network to being random with a probability proportional to the degrees of the vertices in the network.</p>
+<div id="def-ba" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 11 (Barabási-Albert Model) </strong></span>Starting with a graph <span class="math inline">\(G_1 = (V_1, E_1)\)</span> where <span class="math inline">\(V_1 = \{1,\ldots,m_0\}\)</span> and <span class="math inline">\(E_1 = \{\{v\}:v\in V_1\}\)</span> i.e a graph with <span class="math inline">\(m_0\)</span> vertices with one self-loop each. At each time step <span class="math inline">\(t&gt;1\)</span> the graph denoted by <span class="math inline">\(G_t = (V_1, E_1)\)</span> is generated by repeating the following:</p>
+<ol type="1">
+<li><strong>Growth:</strong> Add a new vertex to the vertex set i.e. <span class="math display">\[
+V_t = V_{t-1} \cup \{t\}
+\]</span></li>
+<li><strong>Preferential Attachment:</strong> Add <span class="math inline">\(m\le m_0\)</span> edges between the new vertex and those already in the graph with probability proportional to each vertices degree i.e:</li>
+</ol>
+<p><span class="math display">\[
+E_t= E_{t-1} \cup \tilde E
+\]</span> where <span class="math inline">\(\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}\)</span> and <span class="math inline">\(\tilde e_i = \{t,\tilde v_i\}\)</span> for <span class="math inline">\(\tilde v_i \sim \text{Cat}(V_{t-1}, P)\)</span></p>
+<span class="math display">\[\begin{align*}
+P &amp;= \left\{\frac{d(v)}{\sum_{w\in V_{t-1}} d(w)} : v \in V_{t-1}\right\}
+\end{align*}\]</span>
+</div>
+<section id="expected-degree-distriubtion" class="level4">
+<h4 class="anchored" data-anchor-id="expected-degree-distriubtion">Expected Degree Distriubtion</h4>
+<p>In the same paper (<span class="citation" data-cites="Barabasi99">Barabási and Albert (<a href="#ref-Barabasi99" role="doc-biblioref">1999</a>)</span>) it was shown that for large values of <span class="math inline">\(t\)</span> the expected degree distribution for this model is approximately: <span class="math display">\[
+f(k) = \frac{2m^2t}{m_0+t}k^{-3} \approx 2m^2k^{-3},\qquad k\ge m
+\]</span></p>
+<p>This is clearly a regularly varying function and therefore in in the Fréchet domain of attraction <span class="math inline">\(\mathcal D(\Phi_2)\)</span>.</p>
+</section>
+</section>
 <section id="uniform-attachment-ua" class="level3">
 <h3 class="anchored" data-anchor-id="uniform-attachment-ua">Uniform Attachment (UA)</h3>
-<p>The first model dubbed the “uniform attachment model” is a simple model first presented in [UA REF] and is defined as follows:</p>
+<p>The final special case presented here is obtained from setting the preferential attachment function <span class="math inline">\(g\)</span> to be some constant value.</p>
 <div id="def-ua" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 8 (Uniform Attachment Model) </strong></span>Start with a graph <span class="math inline">\(G_1 = (V_1, E_1) = (\{1,\ldots,m_0\}, \emptyset)\)</span>, at each time step <span class="math inline">\(t&gt;1\)</span> the graph is denoted by <span class="math inline">\(G_t=(V_t, E_t)\)</span> and generated by repeating the following two steps:</p>
+<p><span class="theorem-title"><strong>Definition 12 (Uniform Attachment Model) </strong></span>Start with a graph <span class="math inline">\(G_1 = (V_1, E_1) = (\{1,\ldots,m_0\}, \emptyset)\)</span>, at each time step <span class="math inline">\(t&gt;1\)</span> the graph is denoted by <span class="math inline">\(G_t=(V_t, E_t)\)</span> and generated by repeating the following two steps:</p>
 <ol type="1">
 <li><strong>Growth:</strong> Add a new vertex to the vertex set i.e.&nbsp; <span class="math display">\[
 V_t=V_{t-1}\cup\{t\}
@@ -255,67 +343,36 @@ f(k) = \frac{e}{m}\exp\left(-\frac{k}{m}\right),\qquad k \ge m
 \]</span> Since this distribution has exponential form, it is in the Gumbel domain of attraction.</p>
 </section>
 </section>
-<section id="barabási-albert-ba" class="level3">
-<h3 class="anchored" data-anchor-id="barabási-albert-ba">Barabási-Albert (BA)</h3>
-<p>This model defined in <span class="citation" data-cites="Barabasi99">Barabási and Albert (<a href="#ref-Barabasi99" role="doc-biblioref">1999</a>)</span> and also very closely related to the Yule-Simon process from [YS REF] changes the attachment mechanism from being purely uniform on the vertices already in the network to being random with a probability proportional to the degrees of the vertices in the network.</p>
-<div id="def-ba" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 9 (Barabási-Albert Model) </strong></span>Starting with a graph <span class="math inline">\(G_1 = (V_1, E_1)\)</span> where <span class="math inline">\(V_1 = \{1,\ldots,m_0\}\)</span> and <span class="math inline">\(E_1 = \{\{v\}:v\in V_1\}\)</span> i.e a graph with <span class="math inline">\(m_0\)</span> vertices with one self-loop each. At each time step <span class="math inline">\(t&gt;1\)</span> the graph denoted by <span class="math inline">\(G_t = (V_1, E_1)\)</span> is generated by repeating the following:</p>
-<ol type="1">
-<li><strong>Growth:</strong> Add a new vertex to the vertex set i.e. <span class="math display">\[
-V_t = V_{t-1} \cup \{t\}
-\]</span></li>
-<li><strong>Preferential Attachment:</strong> Add <span class="math inline">\(m\le m_0\)</span> edges between the new vertex and those already in the graph with probability proportional to each vertices degree i.e:</li>
-</ol>
-<p><span class="math display">\[
-E_t= E_{t-1} \cup \tilde E
-\]</span> where <span class="math inline">\(\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}\)</span> and</p>
-<span class="math display">\[\begin{align*}
-\tilde e_i &amp;\sim \text{Cat}\left(V_{t-1},P \right)\\
-P &amp;= \left\{\frac{d(v)}{\sum_{w\in V_{t-1}} d(w)} : v \in V_{t-1}\right\}
-\end{align*}\]</span>
-</div>
-<section id="expected-degree-distriubtion" class="level4">
-<h4 class="anchored" data-anchor-id="expected-degree-distriubtion">Expected Degree Distriubtion</h4>
-<p>In the same paper (<span class="citation" data-cites="Barabasi99">Barabási and Albert (<a href="#ref-Barabasi99" role="doc-biblioref">1999</a>)</span>) it was shown that for large values of <span class="math inline">\(t\)</span> the expected degree distribution for this model is approximately: <span class="math display">\[
-f(k) = \frac{2m^2t}{m_0+t}k^{-3} \approx 2m^2k^{-3},\qquad k\ge m
-\]</span></p>
-<p>This is clearly a regularly varying function and therefore in in the Fréchet domain of attraction <span class="math inline">\(\mathcal D(\Phi_2)\)</span>.</p>
-</section>
-</section>
-<section id="general-preferential-attachment-gpa" class="level3">
-<h3 class="anchored" data-anchor-id="general-preferential-attachment-gpa">General Preferential Attachment (GPA)</h3>
-<p>This model generalises the BA model by instead of attaching the new edges with a probability proportional to vertices’ degrees, the new edges are attached with probability proportional to some function of the vertices’ degrees.</p>
-<div id="def-gpa" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 10 (General Preferential Attachment Model) </strong></span>Starting with a graph <span class="math inline">\(G_1 = (V_1, E_1) = (\{1,\ldots,m_0\}, \emptyset)\)</span>, at each following time step <span class="math inline">\(t&gt;1\)</span> the graph is denoted by <span class="math inline">\(G_t = (V_t, E_t)\)</span> and is generated by repeating:</p>
-<ol type="1">
-<li><strong>Growth:</strong> Add a new vertex to the vertex set i.e. <span class="math display">\[
-V_t = V_{t-1} \cup \{t\}
-\]</span></li>
-<li><strong>Preferential Attachment:</strong> Add <span class="math inline">\(m\le m_0\)</span> edges connecting the new vertex to those already in the graph selected at random proportional to a function of their degree(minus one)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> i.e.: <span class="math display">\[
-E_t  = E_{t-1} \cup \tilde E
-\]</span> where <span class="math inline">\(\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}\)</span> and</li>
-</ol>
-<span class="math display">\[\begin{align*}
-\tilde e_i &amp;\sim \text{Cat}\left([V_{t-1}]^2 \cap \{t\},P \right)\\
-P &amp;= \left\{\frac{g(k_v-1)}{\sum_{w\in V_{t-1}} g(k_w-1)} : v \in V_{t-1}\right\}
-\end{align*}\]</span>
-<p>for some function <span class="math inline">\(g: \mathbb Z \mapsto \mathbb R^+\setminus\{0\}\)</span>, which will be referred to as the preferential attachment function</p>
-</div>
-<section id="expected-degree-dristribution" class="level4">
-<h4 class="anchored" data-anchor-id="expected-degree-dristribution">Expected Degree Dristribution</h4>
-<p>In [GPA REF] the expected degree distribution for <span class="math inline">\(m=1\)</span> was calculated in terms of the preferential attachment function does not have a general explicit form. It is defined as follows, let <span class="math inline">\(\lambda^*\)</span> be the solution, if it exists, to:</p>
-<p><span class="math display">\[
-1=\sum_{n=1}^\infty \prod_{i=1}^{n-1}\frac{g(i)}{g(i)+\lambda}
-\]</span> then the expected degree distribution resulting from the GPA model has pmf:</p>
-<p><span class="math display">\[
-f(k) = \frac{\lambda^*}{g(k) + \lambda^*}\prod_{i=0}^{k-1}\frac{g(i)}{g(i)+\lambda^*}
-\]</span> It is hard to see how this may behave in the tails for different preferential attachment functions, this will one the main foucses of the next section.</p>
-</section>
-</section>
 </section>
 </section>
 <section id="sec-meth" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Methods</h1>
+<p>As mentioned in <a href="#sec-mod">Section&nbsp;2.3</a>, the method used here to model the extreme values of the data will be a spliced threshold mixture. Specifically, it will be a spliced threshold mixture of a power law and a discretisation of the generalised pareto distribution similar to what is defined in [ROHRBECK].</p>
+<div id="def-igp" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 13 (Intergral Generalised Pareto Distribution (IGP)) </strong></span>Consider a random variable <span class="math inline">\(X\)</span> with cdf <span class="math inline">\(F\)</span>, and consider the random variable <span class="math inline">\(Y=\lfloor X \rfloor\)</span>. From <a href="#def-gp">Definition&nbsp;5</a>, <span class="math inline">\(X|X&gt;u \sim GP(\sigma, \xi)\)</span> for some sufficiently large <span class="math inline">\(u\in \mathbb R^+\)</span> and it can be obtained that the distribution of <span class="math inline">\(Y|Y&gt;u\)</span> has distribution defined below:</p>
+<p><span class="math display">\[
+\Pr(Y=y&gt;Y&gt;u) = \left(1+\frac{\xi(y+1-\lceil u\rceil)}{\sigma_0+\xi\lceil u\rceil}\right)_+^{-1/\xi}-\left(1+\frac{\xi(y-\lceil u\rceil)}{\sigma_0+\xi\lceil u\rceil}\right)_+^{-1/\xi}
+\]</span></p>
+<p>For <span class="math inline">\(y=\lceil u\rceil,\lceil u\rceil+1, \ldots\)</span> and <span class="math inline">\(\xi \in \mathbb R\)</span> and <span class="math inline">\(u, \sigma_0 \in \mathbb R^+.\)</span></p>
+</div>
+<p>Since the some degree distributions of real networks seen in [FIG] seem to be approximately linear for the bulk of the data and then begin to change, the spliced threshold mixture that will be used consists of a truncated discrete power law for the bulk of the data and a GP above a threshold.</p>
+<div id="def-pligp" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 14 (Power-Law IGP Distribution) </strong></span><span class="math display">\[
+f(y) = \begin{cases}
+(1-\phi)\frac{y^{-(\alpha+1})}{\sum_{k=1}^v}, &amp; y=1,2,\ldots, v\\
+\phi\left[\left(1+\frac{\xi(y+1-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}-\left(1+\frac{\xi(y-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}\right],&amp;y=v+1, v+2,\ldots
+\end{cases}
+\]</span></p>
+</div>
+<section id="fitting-model-to-real-data" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="fitting-model-to-real-data"><span class="header-section-number">4.1</span> Fitting model to real data</h2>
+</section>
+<section id="gpa-analyses" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="gpa-analyses"><span class="header-section-number">4.2</span> GPA analyses</h2>
+</section>
+<section id="conclusion-and-a-conjecture" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="conclusion-and-a-conjecture"><span class="header-section-number">4.3</span> Conclusion and a Conjecture</h2>
+</section>
 </section>
 <section id="next-steps" class="level1" data-number="5">
 <h1 data-number="5"><span class="header-section-number">5</span> Next Steps</h1>
@@ -328,11 +385,20 @@ f(k) = \frac{\lambda^*}{g(k) + \lambda^*}\prod_{i=0}^{k-1}\frac{g(i)}{g(i)+\lamb
 
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-agn22" class="csl-entry" role="listitem">
+Ahmad, Touqeer, Carlo Gaetan, and Philippe Naveau. 2022. <span>“Modelling of Discrete Extremes Through Extended Versions of Discrete Generalized Pareto Distribution.”</span> <em>ArXiv e-Prints</em>. <a href="https://arxiv.org/abs/2210.15253">https://arxiv.org/abs/2210.15253</a>.
+</div>
 <div id="ref-Barabasi99" class="csl-entry" role="listitem">
 Barabási, Albert-László, and Réka Albert. 1999. <span>“Emergence of Scaling in Random Networks.”</span> <em>Science</em> 286 (5439): 509–12. <a href="https://doi.org/10.1126/science.286.5439.509">https://doi.org/10.1126/science.286.5439.509</a>.
 </div>
+<div id="ref-fmh09" class="csl-entry" role="listitem">
+Fraga Alves, Maria, Laurens Haan, and Cláudia Neves. 2009. <span>“A Test Procedure for Detecting Super-Heavy Tails.”</span> <em>Journal of Statistical Planning and Inference</em> 139 (February). <a href="https://doi.org/10.1016/j.jspi.2008.04.026">https://doi.org/10.1016/j.jspi.2008.04.026</a>.
+</div>
+<div id="ref-hds24" class="csl-entry" role="listitem">
+Hitz, Adrien S., Richard A. Davis, and Gennady Samorodnitsky. 2024. <span>“Discrete Extremes.”</span> <em>Journal of Data Science</em>, 1–13. <a href="https://doi.org/10.6339/24-JDS1120">https://doi.org/10.6339/24-JDS1120</a>.
+</div>
 <div id="ref-shimura12" class="csl-entry" role="listitem">
-Shimura, Takaaki. 2012. <span>“Discretization of Distributions in the Maximum Domain of Attraction.”</span> <em>Extremes</em> 15 (September): 1–19. <a href="https://doi.org/10.1007/s10687-011-0137-7">https://doi.org/10.1007/s10687-011-0137-7</a>.
+Shimura, Takaaki. 2012. <span>“Discretization of Distributions in the Maximum Domain of Attraction.”</span> <em>Extremes</em> 15: 299–317. <a href="https://doi.org/10.1007/s10687-011-0137-7">https://doi.org/10.1007/s10687-011-0137-7</a>.
 </div>
 </div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 

@@ -149,10 +149,10 @@
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[section]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -220,7 +220,7 @@
 %}
 \footnote{An html version of this report can be found at \url{www.twboughen.github.io/phd/APR/report}}
 \justifying
-\noindent\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, boxrule=0pt, breakable, sharp corners, borderline west={3pt}{0pt}{shadecolor}, interior hidden, enhanced]}{\end{tcolorbox}}\fi
+\noindent\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, frame hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced, breakable, interior hidden, boxrule=0pt]}{\end{tcolorbox}}\fi
 
 \hypertarget{sec-int}{%
 \chapter{Introduction}\label{sec-int}}
@@ -247,23 +247,26 @@ which can be characterised.
 
 The first kind of extreme value considers the distribution of block
 maxima. That is, for a set of independent and identically distributed
-(iid) random variables \(\{X_1,\ldots,X_n\}\) with common cumulative
-density function (cdf) \(F\) what is the limiting distribution of
-\(M_n = \max\{X_1,\ldots,X_n\}\)? This is answered by the
-Fisher--Tippett--Gnedenko theorem
-\href{or\%20more\%20simply\%20the\%20extreme\%20value\%20theorem}{REF}.
+(iid) random variables \(X_1,\ldots,X_n\) with common cumulative density
+function (cdf) \(F\) what is the limiting distribution of
+\(M_n = \max\{X_1,\ldots,X_n\}\)?
 
-\begin{theorem}[Extreme Value
+Clearly, as \(n\rightarrow \infty\), the block maxima \(M_n\) converges
+almost surely to the right endpoint of \(F\). However, standardising the
+block maxima allows for some characterisation of the limiting
+distribution.
+
+\begin{theorem}[Fisher--Tippett--Gnedenko
 Theorem]\protect\hypertarget{thm-evt}{}\label{thm-evt}
 
-Let \(X_1,\ldots,X_n\) be a sample of iid random variables with common
-cdf \(F\) with block maxima \(M_n = \max\{X_1,\ldots,X_n\}\) and suppose
-that there exists \(a_n>0, b_n\in\mathbb R\) such that
+With \(X_1, \ldots,X_n \overset{\mathrm{iid}}{\sim} F\) and
+\(\{ a_n\}_{n\ge0}, \{ b_n\}_{n\ge0}\) such that:
 
-\[\lim_{n\rightarrow\infty}\Pr\left(\frac{1}{a_n}[M_n-b_n]\right) = G(x),\]
+\[\lim_{n\rightarrow\infty}\Pr\left(\frac{1}{a_n}[M_n-b_n]\le x\right) = G(x),\]
+for some non-degenerate \(G\).
 
-then \(F\) is said to be in the domain of attraction of \(G\), denoted
-\(F\in\mathcal D(G)\) ,and \(G\) is of one of three types:
+Then \(F\) is said to be in the (maximum) domain of attraction of \(G\),
+denoted \(F\in\mathcal D(G)\) ,and \(G\) is of one of three types:
 
 \begin{itemize}
 \tightlist
@@ -279,9 +282,88 @@ then \(F\) is said to be in the domain of attraction of \(G\), denoted
 
 \end{theorem}
 
-These three types of distribution can be collected into one more general
-distribution, called the generalised extreme value (GEV) distribution
-which is defined below.
+Each of these three types defines a domain of attraction.
+
+\begin{definition}[Domains of
+Attraction]\protect\hypertarget{def-doa}{}\label{def-doa}
+
+The three domains of attraction that result from Theorem~\ref{thm-evt}
+have the following equivalent conditions:
+
+For a distribution with cdf \(F\) and survival function \(\bar F\) that
+has right endpoint \(x_F\), the distribution belongs to each domain of
+attraction subject to the conditions below:
+
+\textbf{If \(x_F=\infty\): }
+
+\begin{itemize}
+\item
+  Type I/Gumbel/\(\mathcal D(\Lambda)\): \[
+  \lim_{x\rightarrow\infty} \frac{\bar F(x+ta(x))}{\bar F(x)} = e^{-t},\quad \forall t>0 
+  \]
+\item
+  Type II/Fréchet/\(\mathcal D (\Phi_\alpha)\): \[
+  \lim_{x\rightarrow\infty} \frac{\bar F(tx)}{\bar F(x)} = x^{-\alpha}, \quad \forall t>0 \quad \text{ for some } \alpha>0
+  \] \textbf{If \(x_F<0\):}
+\item
+  Type III/Negative-Weibull/\(\mathcal D(\Psi_\alpha)\): \[
+  \lim_{h\downarrow 0}\frac{\bar F(x_F-xh)}{\bar F(x_F-h)} = x^\alpha, \quad\alpha>0
+  \]
+\end{itemize}
+
+\end{definition}
+
+The parameter \(\alpha\) in Definition~\ref{def-doa} and
+Theorem~\ref{thm-evt} is called the extreme value index.
+
+Here, distributions in the Gumbel domain are referred to as light
+tailed, distributions in the Negative-Weibull domain are referred to as
+short tailed, and those in the Fréchet are referred to as heavy
+tailed.This terminology for heavy tailed distributions in different ot
+some of the literature that defined a heavy tailed distribution as one
+that decays slower than exponential. However the terminology used here
+is also widely used.
+
+Throughout this report functions will be referred to as regularly
+varying or slowly varying, what is meant by this is formally deined
+below:
+
+\begin{definition}[Regular
+Variation]\protect\hypertarget{def-rv}{}\label{def-rv}
+
+A positive,real valued, measurable function \(f\) is said to be
+regularly varying at infinity with index \(\gamma\) if for all \(t>0\):
+
+\[
+\lim_{x\rightarrow\infty}\frac{f(tx)}{f(x)} = x^{\gamma}.
+\] If \(\gamma =0\), then \(f\) is instead said to be slowly varying.
+
+\end{definition}
+
+Note that the condition for a distribution to belong to the Fréchet
+domain is equivalent to saying that the survival function \(\bar F\) is
+regularly varying with index \(-\alpha\).
+
+In addition to heavy tailed distributions it is also useful to define
+what will be referred to as super heavy tailed distributions. This term
+is often just refers to specific distributions such as the log-Cauchy
+distriubtion, but Fraga Alves, Haan, and Neves (2009) provides the more
+precise definition below:
+
+\begin{definition}[Super Heavy
+Tails]\protect\hypertarget{def-sup}{}\label{def-sup}
+
+A distribution is with survival function \(\bar F\) is said to have
+super heavy tails if: \[
+\lim_{x\rightarrow\infty}\frac{\bar F(tx)}{\bar F (x)} = 1,\qquad \forall t>0
+\] That is, a distribution is called super heavy if its survival
+function is slowly varying.
+
+\end{definition}
+
+The three main types of extremal distribution (Gumbel, Fréchet and
+Negative-Weibull) can be united into one distribution, called the
+Generalised Extreme Value (GEV) distribution.
 
 \begin{definition}[Generalised Extreme Value
 Distribution]\protect\hypertarget{def-gev}{}\label{def-gev}
@@ -293,8 +375,8 @@ It has support on \(\{x\in \mathbb R:1+\xi(x-\mu)/\sigma > 0\}\) and has
 cdf given by:
 
 \[
-G(x) = \begin{cases}\exp\left\{-\left(1+\frac{\xi(x-\mu)}{\sigma}\right)_+^{-1/\xi}\right\},&\xi\ne0\\
-\exp\{-\exp(-\frac{x-\mu}{\sigma})\},&\xi=0.
+G(x) = \begin{cases}\exp\left\{-\left(1+\displaystyle\frac{\xi(x-\mu)}{\sigma}\right)_+^{-1/\xi}\right\},&\xi\ne0\\
+\exp\left\{-\exp\left(-\displaystyle\frac{x-\mu}{\sigma}\right)\right\},&\xi=0.
 \end{cases}
 \]
 
@@ -307,53 +389,6 @@ increasing \(\xi\) corresponds to increasing how heavy the tails of the
 distribution are. Specifically, \(\xi<0\), \(\xi=0\), \(\xi>0\),
 correspond to the negative Weibull, Gumbel and the Fréchet domains of
 attraction respectively.
-
-Identifying what domain of attraction a distribution belongs to via
-Theorem~\ref{thm-evt} may not be so trivial, however, there are other
-ways to determine what domain of attraction a distribution belongs to.
-
-\begin{definition}[Conditions for Domains of
-Attraction]\protect\hypertarget{def-doa}{}\label{def-doa}
-
-The distribution \(F\) belongs to the Fréchet domain of attraction
-\(\mathcal D(\Phi_\alpha)\) if and only if the survival function
-\(\bar F = 1-F\) is regularly varying with index \(-\alpha\) i.e.: \[
-\bar F(x) = x^{-\alpha}L(x),\qquad \text{for } L \text{ slowly varying}
-\] A similar condition applies to the Weibull domain of attraction
-\(\mathcal D(\Psi_\alpha)\) in that a distribution \(F\) belongs to the
-Weibull domain of attraction if and only if: \[
-\bar F(x_F-x^{-1}) = x^{-\alpha}L(x),\qquad \text{for } L \text{ slowly varying}
-\] where \(x_F\) is the finite right endpoint of the support of \(F\).
-
-The condition for the Gumbel domain of attraction is not defined through
-regular variation but instead, a distribution \(F\) belongs to the
-Gumbel domain if and only if there exists a positive function
-\(a: \mathbb R \rightarrow \mathbb R^+\) and a \(t\in \mathbb R\) such
-that: \[
-\lim_{x\rightarrow x_F} \frac{\bar F(x+ta(x))}{\bar F(x)} = e^{-t}
-\]
-
-\end{definition}
-
-Throughout this report the term ``heavy tailed'' distribution will be
-used to describe any distribution in the Fréchet domain of attraction,
-although some of the literature refers to ``heavy tailed'' distributions
-as being the distributions that decay slower than the exponential.
-
-At this point it will also be useful to introduce the concept of
-distributions that have super-heavy tails.
-
-\begin{definition}[Super Heavy
-Tails]\protect\hypertarget{def-sht}{}\label{def-sht}
-
-{[}FIND SUPER HEAVY TAILS DEFINITION{]}
-
-Additionally, if the survival function \(\bar F\) is slowly varying
-itself then \(F\) has super heavy tails i.e. \[
-\lim_{x\rightarrow\infty}\frac{\bar F(tx)}{\bar{F}(x)} = 1, \forall t\in\mathbb R^+ \implies \text{super heavy tails} 
-\]
-
-\end{definition}
 
 Another kind of extreme values are the observations above a large
 threshold, like the limiting distribution of block maxima, the limiting
@@ -371,8 +406,8 @@ describes the conditional distribution of threshold exceedances. More
 precisely, for sufficiently large threshold \(u\) and the change of
 variable to \(Y=X-u\): \[
 \Pr(Y\le y | Y>0) = H(y) = \begin{cases}
-1-\left(1+\frac{\xi y}{\sigma}\right)^{-1/\xi},&y>0,\xi\ne 0 \\
-1-\exp\left(-\frac{y}{\sigma}\right),&y>0,\xi = 0
+1-\left(1+\displaystyle\frac{\xi y}{\sigma}\right)^{-1/\xi},&y>0,\xi\ne 0 \\
+1-\exp\left(-\displaystyle\frac{y}{\sigma}\right),&y>0,\xi = 0
 \end{cases}
 \]
 
@@ -395,9 +430,17 @@ particular, a continuous distribution \(F\) being in certain domain of
 attraction may not necessarily imply that a discretisation of \(F\)
 remains in that domain of attraction.
 
-Shimura (2012) provides conditions for a discrete distribution to belong
-to the domain of attraction. In particular the following theorem which
-corresponds to Theorem 1 in Shimura (2012).
+\begin{definition}[Discretisation]\protect\hypertarget{def-disc}{}\label{def-disc}
+
+The discretisation of a distribution with cdf \(F\) is given by
+
+\[F^*(n) = F(n) - F(n-1), \quad n   \in \mathbb Z\]
+
+\end{definition}
+
+Shimura (2012) provides conditions for a discretisation of a continuous
+distribution to belong to the same domain of attraction. In particular
+the following theorem which corresponds to Theorem 1 in Shimura (2012).
 
 \begin{theorem}[Domain of attraction
 consistency]\protect\hypertarget{thm-shimura1}{}\label{thm-shimura1}
@@ -447,38 +490,31 @@ variables has been approached from many different directions. What
 follows is a overview of some of the approaches that have been taken but
 will see use in this report.
 
-One of the main issues when it comes to applying results from
-Section~\ref{sec-ce} to discrete data, is the discretisation of the GP
-distribution and making sure that it still maintains most of the same
-properties.
+Hitz, Davis, and Samorodnitsky (2024) note that using the GP
+distribution as an approximation in a discrete setting leads to bias in
+the likelihood function and can lead to it being inadequate for
+modelling. They propose two other peaks over threshold methods that rely
+on parametric families of discrete distributions. The first, what they
+refer to as the discrete generalised Pareto approximation is based on an
+extension of the discrete survival function. The second, the generalised
+Zipf distribution is obtained from an extension of the probability mass
+function. Both methods are motivated theoretically for modelling of a
+large class of discrete distributions and are shown in the paper to
+either match or outperform using the GP to model discrete data directly.
 
-{[}AHMAD{]} introduces several ways to discretise the GP distribution
-including mixing the geometric distribution with a Gamma distribution,
-they also introduce an extended GP distribution (and its discretisation)
-which is obtained from a probability integral transform (PIT) of a
-distribution with support on \((0,1)\). This is a modification of how
-the regular GP is obtained, which is from a PIT uniform distribution on
-(0,1).
-
-Also considering mixtures, {[}VALIQUETTE{]} investigated the tail
-properties of Poisson mixtures and found that changing the mixing
-distribution changes the tail heaviness of the mixed distribution. They
-divided the domain of attraction of the mixing distribution into various
-subsets that lead to different tail behaviours, through the limit of the
-ratio of consecutive values of the survival function. These limits do
-help describe the tail behaviour of the resulting mixture but do not
-quite correspond to different domains of attraction.
-
-The approach used in Section~\ref{sec-meth} will be very similar to the
-one taken in {[}ROHRBECK{]} with a minor change to the derivation, this
-will be explained in detail in Section~\ref{sec-meth}.
+Ahmad, Gaetan, and Naveau (2022) first introduce an extended GP
+distribution, a continuous distribution that extends the idea of
+obtaining GP values from a probability integral transform (PIT) of
+\(U(0,1)\) draws and instead considers a PIT of draws from any
+distribution on \((0,1)\) such as a beta distribution. This distribution
+is then discretised into their discrete extended GP distribution.
 
 \hypertarget{sec-mod}{%
 \section{Modelling}\label{sec-mod}}
 
 The results from Section~\ref{sec-ce} allow the GEV and GP to be fitted
-to the block maxima and threshold exceedances respectively. Typically,
-when fitting the GP, a sufficiently high threshold needs to be specified
+to the block maxima and exceedances respectively. Typically, when
+fitting the GP, a sufficiently high threshold needs to be specified
 beforehand {[}REFER TO COLES 2001{]} and give examples.
 
 Another more recent approach shown in {[}MACDONALD 2012{]}, uses a
@@ -758,7 +794,7 @@ Distribution]\protect\hypertarget{def-pligp}{}\label{def-pligp}
 \[
 f(y) = \begin{cases}
 (1-\phi)\frac{y^{-(\alpha+1})}{\sum_{k=1}^v}, & y=1,2,\ldots, v\\
-\phi\left[\left(1+\frac{\xi(y+1-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}-\left(1+\frac{\xi(y-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}\right]
+\phi\left[\left(1+\frac{\xi(y+1-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}-\left(1+\frac{\xi(y-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}\right],&y=v+1, v+2,\ldots
 \end{cases}
 \]
 
@@ -785,14 +821,31 @@ Conjecture}\label{conclusion-and-a-conjecture}}
 
 \hypertarget{refs}{}
 \begin{CSLReferences}{1}{0}
+\leavevmode\vadjust pre{\hypertarget{ref-agn22}{}}%
+Ahmad, Touqeer, Carlo Gaetan, and Philippe Naveau. 2022. {``Modelling of
+Discrete Extremes Through Extended Versions of Discrete Generalized
+Pareto Distribution.''} \emph{ArXiv e-Prints}.
+\url{https://arxiv.org/abs/2210.15253}.
+
 \leavevmode\vadjust pre{\hypertarget{ref-Barabasi99}{}}%
 Barabási, Albert-László, and Réka Albert. 1999. {``Emergence of Scaling
 in Random Networks.''} \emph{Science} 286 (5439): 509--12.
 \url{https://doi.org/10.1126/science.286.5439.509}.
 
+\leavevmode\vadjust pre{\hypertarget{ref-fmh09}{}}%
+Fraga Alves, Maria, Laurens Haan, and Cláudia Neves. 2009. {``A Test
+Procedure for Detecting Super-Heavy Tails.''} \emph{Journal of
+Statistical Planning and Inference} 139 (February).
+\url{https://doi.org/10.1016/j.jspi.2008.04.026}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-hds24}{}}%
+Hitz, Adrien S., Richard A. Davis, and Gennady Samorodnitsky. 2024.
+{``Discrete Extremes.''} \emph{Journal of Data Science}, 1--13.
+\url{https://doi.org/10.6339/24-JDS1120}.
+
 \leavevmode\vadjust pre{\hypertarget{ref-shimura12}{}}%
 Shimura, Takaaki. 2012. {``Discretization of Distributions in the
-Maximum Domain of Attraction.''} \emph{Extremes} 15 (September): 1--19.
+Maximum Domain of Attraction.''} \emph{Extremes} 15: 299--317.
 \url{https://doi.org/10.1007/s10687-011-0137-7}.
 
 \end{CSLReferences}

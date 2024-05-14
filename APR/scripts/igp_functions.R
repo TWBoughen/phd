@@ -1,3 +1,5 @@
+library(scales)
+
 dhms <- function(t){
   paste(t %/% (60*60*24) 
         ,paste(formatC(t %/% (60*60) %% 24, width = 2, format = "d", flag = "0")
@@ -209,18 +211,21 @@ mix_mcmc_wrap <- function(dat,iter=30000,  burn.in=10000, thin.by=10, update_per
 set.seed()
 burn.in = 1e3
 thin.by = 5
-ba_res = mix_mcmc_wrap(ba, iter=1e4, update_period = 100)
-ua_res = mix_mcmc_wrap(ua, iter=3e4, update_period = 100)
+ba_res = mix_mcmc_wrap(ba, iter=5e4, update_period = 100, burn.in=1e4, thin.by = 5)
+ba_res_n1 = mix_mcmc_wrap(ba[-1,], iter=2e4, update_period = 100, burn.in=1e4, thin.by = 5)
+
+ ua_res = mix_mcmc_wrap(ua, iter=3e4, update_period = 100)
+
 
 ip_res = mix_mcmc_wrap(ip, update_period = 1e2)
 erd_res = mix_mcmc_wrap(erd, iter =1e4,update_period = 100)
-jazz_res = mix_mcmc_wrap(jazz, update_period = 1e2, debug = F)
+jazz_res = mix_mcmc_wrap(jazz, 1e4, burn.in=2e3,update_period = 1e2, debug = F)
 pro_res = mix_mcmc_wrap(pro,iter = 3e4, update_period = 1e2)
 
 # -------------------------------------------------------------------------
-dat=ua
-x = unique(ua[,1])
-res_thinburn = ua_res
+dat=ba
+x = unique(ba[,1])
+res_thinburn = ba_res
 
 cmfs = apply(res_thinburn, 1, p_mix_apply, x=x)
 cmfs_mean = apply(cmfs, 1, mean)
@@ -233,6 +238,18 @@ abline(v=res_thinburn$v, col = alpha('blue', alpha=0.004))
 polygon(c(x, rev(x)), c(1- cmfs_95, rev(1- cmfs_05)), col=alpha('gray', 0.5), lty=0)
 lines(x, 1-cmfs_mean, col='red')
 
+
+
+
+# -------------------------------------------------------------------------
+
+net = sample_pa(1e4, power=1, m=1, directed = F, zero.appeal = 0.00000000001)
+ba = data.frame(table(degree(net)))
+names(ba) = c('x','Freq')
+ba[,1] = as.numeric(ba[,1])
+plot(ba, log='xy')
+
+plot(unique(ba[,1]), 1-cumsum(ba[,2])/sum(ba[,2]), log='xy')
 
 
 
