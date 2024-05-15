@@ -38,8 +38,8 @@ ll_mix = function(dat,v,phi,a,xi,sig){
 }
 lpri = function(phi,a,xi,sig,params){
   return(dbeta(phi,params$phi[1], params$phi[2], log = T) +
-           dnorm(a,0,sd=params$alpha,log=T) +
-           dnorm(xi,0,sd=params$shape, log=T)+
+           max(dgamma(a,1,rate=params$alpha,log=T), -1e-100) +
+           dnorm(xi,0.5,sd=params$shape, log=T)+
            dgamma(sig, 1, rate=params$scale, log=T))
 }
 lpos = function(dat,v,phi,a,xi,sig,params){
@@ -125,7 +125,7 @@ mix_mcmc_onestep = function(dat, init, params, covs, debug=F){
   if(debug) message('alpha: ', prop_state)
   #accepting/rejecting
   logA = min(0,lpos_rat(dat, prop_state, tail(acc.states,1),params))
-  if(log(runif(1))<logA | runif(1)<0.05){
+  if((log(runif(1))<logA | runif(1)<0.05) & prop_state$a>0){
     acc.states = rbind(acc.states, prop_state)
   }
   
@@ -152,6 +152,8 @@ mix_mcmc = function(iter, dat, init, params, covs,update_period = 100, debug=F){
   for(i in 2:iter){
     out = rbind(out, mix_mcmc_onestep(dat, tail(out,1)[,-ncol(out)], params, covs, debug=debug))
     if(i %% update_period == 0){
+      covs$shapescale = 2.38^2 * cov(out[,c('xi', 'sig')])/2
+      covs$alpha = 2.38^2 * var(out$a)
       recent = tail(out,1)
       message('---------------------------------')
       message('Iteration: ',i)
@@ -172,11 +174,11 @@ library(coda)
 
 
 mix_mcmc_wrap <- function(dat,iter=30000,  burn.in=10000, thin.by=10, update_period = 100, debug=F) {
-  init = data.frame(phi=0.4, a=1, xi=1, sig=1)
+  init = data.frame(phi=0.4, a=2, xi=0.5, sig=1)
   params = list(
     phi=c(1,1),
-    alpha=50,
-    shape=50,
+    alpha=0.01,
+    shape=10,
     scale=0.01
   )
   covs = list(
@@ -214,11 +216,15 @@ thin.by = 5
 ba_res = mix_mcmc_wrap(ba, iter=5e4, update_period = 100, burn.in=1e4, thin.by = 5)
 ba_res_n1 = mix_mcmc_wrap(ba[-1,], iter=2e4, update_period = 100, burn.in=1e4, thin.by = 5)
 
- ua_res = mix_mcmc_wrap(ua, iter=3e4, update_period = 100)
+ua_res = mix_mcmc_wrap(ua, iter=3e4, update_period = 100)
 
 
 ip_res = mix_mcmc_wrap(ip, update_period = 1e2)
+
+plot(ip[,1], 1-cumsum(ip[,2])/sum(ip[,2]), log='xy', pch=20)
+
 erd_res = mix_mcmc_wrap(erd, iter =1e4,update_period = 100)
+
 jazz_res = mix_mcmc_wrap(jazz, 1e4, burn.in=2e3,update_period = 1e2, debug = F)
 pro_res = mix_mcmc_wrap(pro,iter = 3e4, update_period = 1e2)
 
@@ -243,16 +249,21 @@ lines(x, 1-cmfs_mean, col='red')
 
 # -------------------------------------------------------------------------
 
-net = sample_pa(1e4, power=1, m=1, directed = F, zero.appeal = 0.00000000001)
+set.seed(Sys.time())
+start_adj = diag(1)
+start_g = graph_from_adjacency_matrix(start_adj, mode='undirected')
+net = sample_pa(1e5, power=1.3, m=1, directed = F, zero.appeal = 0, start.graph = start_g)
 ba = data.frame(table(degree(net)))
 names(ba) = c('x','Freq')
 ba[,1] = as.numeric(ba[,1])
 plot(ba, log='xy')
 
-plot(unique(ba[,1]), 1-cumsum(ba[,2])/sum(ba[,2]), log='xy')
+plot(unique(ba[,1]), 1-cumsum(ba[,2])/sum(ba[,2]), log='xy', pch=20)
 
 
+# -------------------------------------------------------------------------
 
-
+harvard_res=mix_mcmc_wrap(harvard, iter=3e4, burn.in=1e4, thin.by=5)
+ip_res = mix_mcmc_wrap(ip)
 
 

@@ -168,7 +168,7 @@ Clearly, as $n\rightarrow \infty$, the block maxima $M_n$ converges almost surel
 With $X_1, \ldots,X_n \overset{\mathrm{iid}}{\sim} F$ and $\{ a_n\}_{n\ge0}, \{ b_n\}_{n\ge0}$ such that:
 
 
-$$\lim_{n\rightarrow\infty}\Pr\left(\frac{1}{a_n}[M_n-b_n]\le x\right) = G(x),$$
+$$\lim_{n\rightarrow\infty}\Pr\left(\displaystyle\frac{1}{a_n}[M_n-b_n]\le x\right) = G(x),$$
 for some non-degenerate $G$.
 
 Then $F$ is said to be in the (maximum) domain of attraction of $G$, denoted $F\in\mathcal D(G)$ ,and $G$ is of one of three types:
@@ -193,18 +193,18 @@ For a distribution with cdf $F$ and survival function $\bar F$ that has right en
 
 - Type I/Gumbel/$\mathcal D(\Lambda)$:
 $$
-\lim_{x\rightarrow\infty} \frac{\bar F(x+ta(x))}{\bar F(x)} = e^{-t},\quad \forall t>0 
+\lim_{x\rightarrow\infty} \displaystyle\frac{\bar F(x+ta(x))}{\bar F(x)} = e^{-t},\quad \forall t>0 
 $$
 - Type II/Fréchet/$\mathcal D (\Phi_\alpha)$:
 $$
-\lim_{x\rightarrow\infty} \frac{\bar F(tx)}{\bar F(x)} = x^{-\alpha}, \quad \forall t>0 \quad \text{ for some } \alpha>0
+\lim_{x\rightarrow\infty} \displaystyle\frac{\bar F(tx)}{\bar F(x)} = x^{-\alpha}, \quad \forall t>0 \quad \text{ for some } \alpha>0
 $$
 
 **If $x_F<0$:**
 
 - Type III/Negative-Weibull/$\mathcal D(\Psi_\alpha)$:
 $$
-\lim_{h\downarrow 0}\frac{\bar F(x_F-xh)}{\bar F(x_F-h)} = x^\alpha, \quad\alpha>0
+\lim_{h\downarrow 0}\displaystyle\frac{\bar F(x_F-xh)}{\bar F(x_F-h)} = x^\alpha, \quad\alpha>0
 $$
 
 :::
@@ -222,7 +222,7 @@ Throughout this report functions will be referred to as regularly varying or slo
 A positive,real valued, measurable function $f$ is said to be regularly varying at infinity with index $\gamma$ if for all $t>0$:
 
 $$
-\lim_{x\rightarrow\infty}\frac{f(tx)}{f(x)} = x^{\gamma}.
+\lim_{x\rightarrow\infty}\displaystyle\frac{f(tx)}{f(x)} = x^{\gamma}.
 $$
 If $\gamma =0$, then $f$  is instead said to be slowly varying.
 :::
@@ -230,7 +230,7 @@ If $\gamma =0$, then $f$  is instead said to be slowly varying.
 Note that the condition for a distribution to belong to the Fréchet domain is equivalent to saying that the survival function $\bar F$ is regularly varying with index $-\alpha$.
 
 
-In addition to heavy tailed distributions it is also useful to define what will be referred to as super heavy tailed distributions. This term is often just refers to specific distributions such as the log-Cauchy distriubtion, but @fmh09 provides the more precise definition below:
+In addition to heavy tailed distributions it is also useful to define what will be referred to as super heavy tailed distributions. This term is often just refers to specific distributions such as the log-Cauchy distriubtion, but @fmh09 provides a more precise definition below:
 
 :::{#def-sup}
 
@@ -238,7 +238,7 @@ In addition to heavy tailed distributions it is also useful to define what will 
 
 A distribution is with survival function $\bar F$ is said to have super heavy tails if:
 $$
-\lim_{x\rightarrow\infty}\frac{\bar F(tx)}{\bar F (x)} = 1,\qquad \forall t>0
+\lim_{x\rightarrow\infty}\displaystyle\frac{\bar F(tx)}{\bar F (x)} = 1,\qquad \forall t>0
 $$
 That is, a distribution is called super heavy if its survival function is slowly varying.
 :::
@@ -303,7 +303,7 @@ $$F^*(n) = F(n) - F(n-1), \quad n   \in \mathbb Z$$
 
 Where $\mathcal L$ is the set of long-tailed distributions that have the property:
 $$
-\lim_{x\rightarrow \infty}\frac{\overline F(x+1)}{\overline F(x)} = 1   
+\lim_{x\rightarrow \infty}\displaystyle\frac{\overline F(x+1)}{\overline F(x)} = 1   
 $$
 :::
 In addition @shimura12 introduces a quantity useful for determining the domain of a attraction that a discrete distribution belongs to. 
@@ -315,7 +315,7 @@ In addition @shimura12 introduces a quantity useful for determining the domain o
 For a distribution $F$ with survival function $\overline F$ and some $n\in\mathbb Z^+$ let:
 
 $$
-\Omega(F,n) = \left(\log\frac{\overline F (n+1)}{\overline F (n+2)}\right)^{-1} - \left(\log\frac{\overline F (n)}{\overline F (n+1)}\right)^{-1}
+\Omega(F,n) = \left(\log\displaystyle\frac{\overline F (n+1)}{\overline F (n+2)}\right)^{-1} - \left(\log\displaystyle\frac{\overline F (n)}{\overline F (n+1)}\right)^{-1}
 $$
 :::
 
@@ -331,7 +331,15 @@ Applying ideas from @sec-ce to modelling discrete random variables has been appr
 
 ## Modelling {#sec-mod}
 
-The results from @sec-ce allow the GEV and GP to be fitted to the block maxima and exceedances respectively. Typically, when fitting the GP, a sufficiently high threshold needs to be specified beforehand  [REFER TO COLES 2001] and give examples.
+The results from @sec-ce allow the GEV and GP to be fitted to the block maxima and exceedances respectively. Typically, when fitting the GP, a sufficiently high threshold needs to be specified beforehand. [COLES] provides some empirical methods for specifying the threshold, one approach is to use a threshold stability plot that uses maximum likelihood to estimate the parameters of the GP for a large range of thresholds. The threshold can be chosen as the point across all of the plots after which the values of the parameters seems stable. 
+
+```{r, echo=FALSE}
+
+
+
+
+```
+
 
 Another more recent approach shown in [MACDONALD 2012], uses a spliced threshold mixture to model the threshold exceedances where one distribution is assumed for the bulk of the data and the GP is used for those values above the threshold. This approach can also be applied in the discrete setting, and is what is used in @sec-meth.
 
@@ -399,7 +407,7 @@ $$
 where $\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}$ and $\tilde e_i = \{t,\tilde v_i\}$ for $\tilde v_i \sim \text{Cat}(V_{t-1}, P)$
 ```{=tex}
 \begin{align*}
-P &= \left\{\frac{g(k_v-1)}{\sum_{w\in V_{t-1}} g(k_w-1)} : v \in V_{t-1}\right\}
+P &= \left\{\displaystyle\frac{g(k_v-1)}{\sum_{w\in V_{t-1}} g(k_w-1)} : v \in V_{t-1}\right\}
 \end{align*}
 ```
 for some function $g: \mathbb Z \mapsto \mathbb R^+\setminus\{0\}$, which will be referred to as the preferential attachment function
@@ -411,12 +419,12 @@ for some function $g: \mathbb Z \mapsto \mathbb R^+\setminus\{0\}$, which will b
 In [GPA REF] the expected degree distribution for $m=1$ was calculated in terms of the preferential attachment function does not have a general explicit form. It is defined as follows, let $\lambda^*$ be the solution, if it exists, to:
 
 $$
-1=\sum_{n=1}^\infty \prod_{i=1}^{n-1}\frac{g(i)}{g(i)+\lambda}
+1=\sum_{n=1}^\infty \prod_{i=1}^{n-1}\displaystyle\frac{g(i)}{g(i)+\lambda}
 $$
 then the expected degree distribution resulting from the GPA model has pmf:
 
 $$
-f(k) = \frac{\lambda^*}{g(k) + \lambda^*}\prod_{i=0}^{k-1}\frac{g(i)}{g(i)+\lambda^*}
+f(k) = \displaystyle\frac{\lambda^*}{g(k) + \lambda^*}\prod_{i=0}^{k-1}\displaystyle\frac{g(i)}{g(i)+\lambda^*}
 $$
 
 
@@ -445,14 +453,14 @@ where $\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}$ and $\tilde e_i = \{t,\tild
 
 ```{=tex}
 \begin{align*}
-P &= \left\{\frac{d(v)}{\sum_{w\in V_{t-1}} d(w)} : v \in V_{t-1}\right\}
+P &= \left\{\displaystyle\frac{d(v)}{\sum_{w\in V_{t-1}} d(w)} : v \in V_{t-1}\right\}
 \end{align*}
 ```
 :::
 #### Expected Degree Distriubtion
 In the same paper (@Barabasi99) it was shown that for large values of $t$ the expected degree distribution for this model is approximately:
 $$
-f(k) = \frac{2m^2t}{m_0+t}k^{-3} \approx 2m^2k^{-3},\qquad k\ge m
+f(k) = \displaystyle\frac{2m^2t}{m_0+t}k^{-3} \approx 2m^2k^{-3},\qquad k\ge m
 $$
 
 This is clearly a regularly varying function and therefore in in the Fréchet domain of attraction $\mathcal D(\Phi_2)$.
@@ -483,7 +491,7 @@ where $\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}$ and $\tilde e_i = \{t,\tild
 #### Expected Degree Distribution
 As showing in [REF] the expected degree distribution of this model for large values of $t$ is:
 $$
-f(k) = \frac{e}{m}\exp\left(-\frac{k}{m}\right),\qquad k \ge m
+f(k) = \displaystyle\frac{e}{m}\exp\left(-\displaystyle\frac{k}{m}\right),\qquad k \ge m
 $$
 Since this distribution has exponential form, it is in the Gumbel domain of attraction.
 
@@ -498,7 +506,7 @@ As mentioned in @sec-mod, the method used here to model the extreme values of th
 Consider a random variable $X$ with cdf $F$, and consider the random variable $Y=\lfloor X \rfloor$. From @def-gp, $X|X>u \sim GP(\sigma, \xi)$ for some sufficiently large $u\in \mathbb R^+$ and it can be obtained that the distribution of $Y|Y>u$ has distribution defined below:
 
 $$
-\Pr(Y=y>Y>u) = \left(1+\frac{\xi(y+1-\lceil u\rceil)}{\sigma_0+\xi\lceil u\rceil}\right)_+^{-1/\xi}-\left(1+\frac{\xi(y-\lceil u\rceil)}{\sigma_0+\xi\lceil u\rceil}\right)_+^{-1/\xi}
+\Pr(Y=y>Y>u) = \left(1+\displaystyle\frac{\xi(y+1-\lceil u\rceil)}{\sigma_0+\xi\lceil u\rceil}\right)_+^{-1/\xi}-\left(1+\displaystyle\frac{\xi(y-\lceil u\rceil)}{\sigma_0+\xi\lceil u\rceil}\right)_+^{-1/\xi}
 $$
 
 
@@ -515,8 +523,8 @@ Since the some degree distributions of real networks seen in [FIG] seem to be ap
 
 $$
 f(y) = \begin{cases}
-(1-\phi)\frac{y^{-(\alpha+1})}{\sum_{k=1}^v}, & y=1,2,\ldots, v\\
-\phi\left[\left(1+\frac{\xi(y+1-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}-\left(1+\frac{\xi(y-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}\right],&y=v+1, v+2,\ldots
+(1-\phi)\displaystyle\frac{y^{-(\alpha+1})}{\sum_{k=1}^v}, & y=1,2,\ldots, v\\
+\phi\left[\left(1+\displaystyle\frac{\xi(y+1-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}-\left(1+\displaystyle\frac{\xi(y-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}\right],&y=v+1, v+2,\ldots
 \end{cases}
 $$
 

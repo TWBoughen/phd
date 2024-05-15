@@ -33,34 +33,40 @@ pro[,1] = as.numeric(pro[,1])
 
 library(igraph)
 library(wdnet)
-set.seed(1234)
+set.seed(Sys.time())
 #uniform attachment
-ctrl = rpa_control_preference(ftype='customized', pref = '1')
+ctrl_ua = rpa_control_preference(ftype='customized', pref = '0.4')
 init_net = list(
   edgelist = matrix(c(1, 2), nrow = 1),
   edgeweight = 1,
   directed =FALSE
 )
-net = wdnet_to_igraph(rpanet(1e4, initial.network = init_net, ctrl))
+net = wdnet_to_igraph(rpanet(1e5, initial.network = init_net, ctrl))
 
 ua = data.frame(table(degree(net)))
 names(ua) = c('x','Freq')
 ua[,1] = as.numeric(ua[,1])
 #Ba model
-ctrl = rpa_control_preference(ftype='customized', pref = 's')
+ctrl_ba = rpa_control_preference(ftype='customized', pref = 's', spref='outs', tpref='ins')
 init_net = list(
-  edgelist = matrix(c(1, 2), nrow = 1),
-  edgeweight = 1,
+  edgelist = matrix(c(1, 1,
+                      1,1), nrow = 2),
+  edgeweight = c(1,1),
   directed =FALSE
 )
-net = wdnet_to_igraph(rpanet(1e4, initial.network = init_net, ctrl))
+
+# -------------------------------------------------------------------------
+
+
+net = wdnet_to_igraph(rpanet(1e5, initial.network = init_net, ctrl))
 
 ba = data.frame(table(degree(net)))
 names(ba) = c('x','Freq')
 ba[,1] = as.numeric(ba[,1])
 
+plot(unique(ba[,1]), 1-cumsum(ba[,2])/sum(ba[,2]), log='xy', pch=20)
 
-
+plot(unique(ua[,1]), 1-cumsum(ua[,2])/sum(ua[,2]), log='xy', pch=20)
 # fitting model -----------------------------------------------------------
 
 
@@ -100,6 +106,37 @@ marrangeGrob(list(plot.pli.mcmc(ua, out$states,burn.in=1e3, thin.by=5, type=1)),
 
 out = readRDS('../data/mcmc.outputs/pli-ua.rds')
 
+# -------------------------------------------------------------------------
+
+
+gp_ll = function(y, u, shape, scale){
+  x = y[y>0]
+  return(-sum(dgpd(x,loc=0, scale=scale, shape=shape, log=T)))
+  
+}
+
+
+gp_ll_optim = function(shapescale, y, u){
+  return(gp_ll(y,u,shapescale[1], shapescale[2]+shapescale[1]*u))
+}
+
+dat=as.numeric(table(unlist(ip_raw[,1:2])))
+vals = data.frame(shape=numeric(1), scale=numeric(1))
+vs = seq(1.5e4, 1.9e4, by=1e2)
+for(v in vs){
+  print(v)
+  vals=rbind(vals, optim(c(1,1), gp_ll_optim,y=dat, u=v, method='L-BFGS-B', lower=c(0, 0.01), upper=c(Inf,Inf ))$par)
+}
+vals=vals[-1,]
+
+plot(vs,vals$shape, type='b')
+
+
+
+library(evmix)
+
+par(mfrow=c(1,1))
+mrl.plot()
 
 
 
