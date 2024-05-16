@@ -46,7 +46,7 @@ dhms <- function(t){
 d_mix = function(x,v,phi,a,xi,sig){
   out = x*0
   if(sum(x<=v)>=1){
-    out[x<=v] = (1-phi) * x[x<=v]^-(a+1) / sum((1:v)^-(a+1))
+    out[x<=v] = (1-phi) * x[x<=v]^-(a+1) / sum((min(x):v)^-(a+1))
   }
   if(sum(x>v)>=1){
     p1 = pmax(x[x>v]*0, 1 + xi * (x[x>v]+1-v)/(sig+xi*v))
@@ -58,11 +58,11 @@ d_mix = function(x,v,phi,a,xi,sig){
   }
   return(out)
 }
-p_mix = Vectorize(function(x,v,phi,a,xi,sig){
+p_mix = Vectorize(function(x,v,phi,a,xi,sig, lower=1){
   return(sum(d_mix(1:x,v,phi,a,xi,sig)))
 }, vectorize.args = c('x', 'v', 'phi', 'a', 'xi', 'sig'))
 p_mix_apply = function(pars, x){
-  return(p_mix(x,pars[5], pars[1], pars[2], pars[3], pars[4]))
+  return(p_mix(x,pars[5], pars[1], pars[2], pars[3], pars[4], lower=min(x)))
 }
 ll_mix = function(dat,v,phi,a,xi,sig){
   return(sum(dat[,2]*log(d_mix(dat[,1],v,phi,a,xi,sig))))

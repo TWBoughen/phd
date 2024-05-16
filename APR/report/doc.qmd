@@ -7,7 +7,7 @@ author:
         department: School of Mathematics, Statistics and Physics
 number-sections: true
 number-depth: 1
-format: 
+format:
   pdf:
     documentclass: scrreprt
     papersize: a4
