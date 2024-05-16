@@ -1,5 +1,5 @@
 library(foreach)
-# library(doParallel)
+library(doParallel)
 library(doSNOW)
 # library(futile.logger)
 
@@ -88,51 +88,39 @@ plot(dat[,1],c(1,y[-length(y)]) , log='xy', pch=20, type='b')
 
 # -------------------------------------------------------------------------
 
-konect_to_df = function(path){
-  dat_raw = data.table::fread(path)
-  dat = data.frame(table(table(unlist(dat_raw[,1:2]))))
-  names(dat) = c('x','Freq')
-  dat[,1] = as.numeric(dat[,1])
-  return(dat)
-}
 
-konect_to_df_dir = function(dir){
-  dat_list = list()
-  files = list.files(dir)
-  for(i in 1:length(files) ){
-    dat_list[[i]] = konect_to_df(paste0(dir,'/', files[i]))
-  }
-  return(dat_list)
-}
 
-dir_mcmc = function(dir, iter = 3e4, out.dir = '../data/mcmc.outputs', out.name='dir_out'){
-  dat_list = konect_to_df_dir(dir)
-  cl = makeCluster(6)
-  res = parSapply(cl, dat_list, FUN = mix_mcmc_wrap,iter=iter, burn.in=iter*0.1)
-  stopCluster(cl)
-  saveRDS(res, paste0(out.dir,'/',out.name,'.rds'))
-  return(res)
-}
+
+# -----------------------------------------------------------------------
 
 
 
 
-# -------------------------------------------------------------------------
+res = dir_mcmc('../data/data_for_mcmc', iter=1e4)
 
+res=readRDS('../data/mcmc.outputs/dir_out.rds')
 
-res = dir_mcmc('../data/data_for_mcmc')
+res2  =readRDS('../data/mcmc.outputs/dir_out.rds')
+
 for(i in 1:ncol(res)){
-  mcmc_plot(res[,i]$dat, as.data.frame(res[,i]$res))
+  message(i)
+  mcmc_plot(res[,i]$dat, as.data.frame(res[,i]$res_thinned))
 }
 
 dev.new(wdith=10, height=10, unit='in', res=72)
 
+# -------------------------------------------------------------------------
+
+
 
 dev.new()
-res3 = mix_mcmc_wrap(dat_list[[3]], iter=1e4, burn.in=1e3, update_period = 1e2)
+dat_list=konect_to_df_dir('../data/data_for_mcmc')
+res6 = mix_mcmc_wrap(dat_list[[4]], iter=3e4, burn.in=1e4, update_period = 1e2)
 
 
-mcmc_plot(res3$dat, res3$res)
+mcmc_plot(res6$dat, res6$res[-(1:1e3),])
+
+plot(as.mcmc(res6$res))
 
 # fitting model -----------------------------------------------------------
 

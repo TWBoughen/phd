@@ -1,5 +1,36 @@
 library(scales)
 
+
+konect_to_df = function(path){
+  dat_raw = data.table::fread(path)
+  dat = data.frame(table(table(unlist(dat_raw[,1:2]))))
+  names(dat) = c('x','Freq')
+  dat[,1] = as.numeric(dat[,1])
+  return(dat)
+}
+
+konect_to_df_dir = function(dir,lower=2){
+  dat_list = list()
+  files = list.files(dir)
+  for(i in 1:length(files) ){
+    dat_list[[i]] = konect_to_df(paste0(dir,'/', files[i]))
+    dat_list[[i]]  = dat_list[[i]][dat_list[[i]][,1]>=lower,]
+  }
+  return(dat_list)
+}
+
+dir_mcmc = function(dir, iter = 3e4, out.dir = '../data/mcmc.outputs', out.name='dir_out', lower=2){
+  message('Start Time: ', Sys.time())
+  dat_list = konect_to_df_dir(dir,lower=lower)
+  cl = makeCluster(6)
+  res = parSapply(cl, dat_list, FUN = mix_mcmc_wrap,iter=iter, burn.in=iter*0.1)
+  stopCluster(cl)
+  saveRDS(res, paste0(out.dir,'/',out.name,'.rds'))
+  message('End Time: ', Sys.time())
+  return(res)
+}
+
+
 dhms <- function(t){
   paste(t %/% (60*60*24) 
         ,paste(formatC(t %/% (60*60) %% 24, width = 2, format = "d", flag = "0")
@@ -97,9 +128,9 @@ mix_mcmc_onestep = function(dat, init, params, covs, debug=F){
   ws = poss-quantile(poss, probs=0.05)
   ws[ws<0] = 0
   
-  
-  
-  phi_star = sample(phis, 1, prob=exp(ws^0.2))
+  ps = exp(ws^0.6)
+  # print(sum(is.na(exp(ws^0.6))))
+  phi_star = sample(phis[!is.na(ps)], 1, prob=ps[!is.na(ps)])
   v_star = sample(vs, 1, prob=ws)
   prop_state = tail(acc.states,1)
   prop_state$phi=phi_star
@@ -128,7 +159,7 @@ mix_mcmc_onestep = function(dat, init, params, covs, debug=F){
   if(debug) message('alpha: ', prop_state)
   #accepting/rejecting
   logA = min(0,lpos_rat(dat, prop_state, tail(acc.states,1),params))
-  if((log(runif(1))<logA | runif(1)<0.05) & prop_state$a>0){
+  if((log(runif(1))<logA | runif(1)<0.00) & prop_state$a>0){
     acc.states = rbind(acc.states, prop_state)
   }
   
@@ -139,7 +170,7 @@ mix_mcmc_onestep = function(dat, init, params, covs, debug=F){
   prop_state$sig = shapescale_star[2]
   if(debug) message('shapescale: ',prop_state)
   #accepting/rejecting
-  if((prop_state$sig>0| runif(1)<0.05) & prop_state$xi>(-prop_state$sig/prop_state$v) ){
+  if((prop_state$sig>0| runif(1)<0.0) & prop_state$xi>(-prop_state$sig/prop_state$v) ){
     logA = min(0,lpos_rat(dat, prop_state, tail(acc.states,1),params))
     if(log(runif(1))<logA ){
       acc.states = rbind(acc.states, prop_state)
@@ -148,7 +179,7 @@ mix_mcmc_onestep = function(dat, init, params, covs, debug=F){
   return(acc.states)
 }
 
-mix_mcmc = function(iter, dat, init, params, covs,update_period = 100, debug=F){
+mix_mcmc = function(iter, dat, init, params, covs,update_period = 100, debug=F,plotting = F){
   start_time = Sys.time()
   last_time = Sys.time()
   out = mix_mcmc_onestep(dat, init, params, covs)
@@ -169,10 +200,10 @@ mix_mcmc = function(iter, dat, init, params, covs,update_period = 100, debug=F){
       message('Time since start: ', dhms(as.numeric(Sys.time())- as.numeric(start_time)))
       last_time = Sys.time()
       
-      plotting = F
+      
       if(plotting){
         par(mfrow=c(2,3))
-        hist(tail(out$v,5*update_period), type='l',breaks = max(dat[,1]), border=F)
+        hist(tail(out$v,5*update_period),breaks = max(dat[,1]), border=F)
         plot(out$a, type='l', log='y')
         lines(cummean(out$a), col='red')
         
@@ -181,14 +212,14 @@ mix_mcmc = function(iter, dat, init, params, covs,update_period = 100, debug=F){
         plot(out$xi, type='l',main=sum(is.na(out$xi)))
         lines(cummean(out$xi), col='red')
         
-        plot(dat[,1],dat[,2]/sum(dat[,2]), pch=20, log='xy')
+        plot(dat[,1],dat[,2]/sum(dat[,2]), pch=20, log='xy', col='grey')
         lines(dat[,1], d_mix(dat[,1],phi_to_u(dat, mean(tail(out$phi,5*update_period))),
                                mean(tail(out$phi,5*update_period)),
                                mean(tail(out$a,5*update_period)),
                                mean(tail(out$xi,5*update_period)),
                                mean(tail(out$sig,5*update_period))), col='blue')
         
-        plot(dat[,1],1-cumsum(dat[,2])/sum(dat[,2]), pch=20, log='xy')
+        plot(dat[,1],1-cumsum(dat[,2])/sum(dat[,2]), pch=20, log='xy', col='grey')
         abline(v = phi_to_u(dat, mean(tail(out$phi,5*update_period))), col='red')
         lines(dat[,1], 1-p_mix(dat[,1],phi_to_u(dat, mean(tail(out$phi,5*update_period))),
                                mean(tail(out$phi,5*update_period)),
@@ -227,7 +258,7 @@ mix_mcmc_wrap <- function(dat,iter=10000,  burn.in=1000, thin.by=10, update_peri
   #thinning and burning
   res_burn = res[-(1:burn.in), ]
   res_thinburn = res_burn[seq(1,nrow(res_burn), by=thin.by),]
-  return(list(dat = dat,res = res_thinburn))
+  return(list(dat = dat,res_thinned = res_thinburn, res=res))
 }
 
 mcmc_plot = function(dat, res_thinburn){
