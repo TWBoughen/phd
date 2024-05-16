@@ -1,7 +1,7 @@
 library(foreach)
-library(doParallel)
+# library(doParallel)
 library(doSNOW)
-library(futile.logger)
+# library(futile.logger)
 
 # loading data ------------------------------------------------------------
 
@@ -25,23 +25,17 @@ pro_raw = read.csv('../data/reactome/out.reactome', sep=' ', header=F)[-1,]
 pro = data.frame(table(table(unlist(pro_raw[,1:2]))))
 names(pro) = c('x','Freq')
 pro[,1] = as.numeric(pro[,1])
-
-
-
-
-
-
 library(igraph)
 library(wdnet)
 set.seed(Sys.time())
 #uniform attachment
-ctrl_ua = rpa_control_preference(ftype='customized', pref = '0.4')
+ctrl_ua = rpa_control_preference(ftype='customized', pref = '1')
 init_net = list(
   edgelist = matrix(c(1, 2), nrow = 1),
   edgeweight = 1,
   directed =FALSE
 )
-net = wdnet_to_igraph(rpanet(1e5, initial.network = init_net, ctrl))
+net = wdnet_to_igraph(rpanet(1e5, initial.network = init_net, ctrl_ua))
 
 ua = data.frame(table(degree(net)))
 names(ua) = c('x','Freq')
@@ -55,18 +49,91 @@ init_net = list(
   directed =FALSE
 )
 
+
 # -------------------------------------------------------------------------
-
-
-net = wdnet_to_igraph(rpanet(1e5, initial.network = init_net, ctrl))
+library(igraph)
+net = wdnet_to_igraph(rpanet(1e5, initial.network = init_net, ctrl_ba))
 
 ba = data.frame(table(degree(net)))
 names(ba) = c('x','Freq')
 ba[,1] = as.numeric(ba[,1])
-
+x = unique(ba[,1])
 plot(unique(ba[,1]), 1-cumsum(ba[,2])/sum(ba[,2]), log='xy', pch=20)
+lines(x, 2*x^-3)
 
-plot(unique(ua[,1]), 1-cumsum(ua[,2])/sum(ua[,2]), log='xy', pch=20)
+plot(ua[,1], ua[,2]/sum(ua[,2]), log='xy', pch=20)
+
+for(i in 1:20){
+  net = wdnet_to_igraph(rpanet(1e5, initial.network = init_net, ctrl_ua))
+  # net = sample_pa(1e5)
+  ua = data.frame(table(degree(net)))
+  names(ua) = c('x','Freq')
+  ua[,1] = as.numeric(ua[,1])
+  points(ua[,1], ua[,2]/sum(ua[,2]), pch=20)
+}
+
+e=exp(1)
+x = 1:max(ua[,1])
+
+lines(x,x^-3, col='red', lwd=2)
+
+
+
+
+dat=ua
+x =  1:max(dat[,1])
+y = 1-cumsum(dat[,2])/sum(dat[,2])
+plot(dat[,1],c(1,y[-length(y)]) , log='xy', pch=20, type='b')
+
+
+# -------------------------------------------------------------------------
+
+konect_to_df = function(path){
+  dat_raw = data.table::fread(path)
+  dat = data.frame(table(table(unlist(dat_raw[,1:2]))))
+  names(dat) = c('x','Freq')
+  dat[,1] = as.numeric(dat[,1])
+  return(dat)
+}
+
+konect_to_df_dir = function(dir){
+  dat_list = list()
+  files = list.files(dir)
+  for(i in 1:length(files) ){
+    dat_list[[i]] = konect_to_df(paste0(dir,'/', files[i]))
+  }
+  return(dat_list)
+}
+
+dir_mcmc = function(dir, iter = 3e4, out.dir = '../data/mcmc.outputs', out.name='dir_out'){
+  dat_list = konect_to_df_dir(dir)
+  cl = makeCluster(6)
+  res = parSapply(cl, dat_list, FUN = mix_mcmc_wrap,iter=iter, burn.in=iter*0.1)
+  stopCluster(cl)
+  saveRDS(res, paste0(out.dir,'/',out.name,'.rds'))
+  return(res)
+}
+
+
+
+
+# -------------------------------------------------------------------------
+
+
+res = dir_mcmc('../data/data_for_mcmc')
+for(i in 1:length(res)){
+  mcmc_plot(res[,i]$dat, as.data.frame(res[,i]$res))
+}
+
+dev.new(wdith=10, height=10, unit='in', res=72)
+
+
+dev.new()
+res3 = mix_mcmc_wrap(dat_list[[3]], iter=1e4, burn.in=1e3, update_period = 1e2)
+
+
+mcmc_plot(res3$dat, res3$res)
+
 # fitting model -----------------------------------------------------------
 
 
