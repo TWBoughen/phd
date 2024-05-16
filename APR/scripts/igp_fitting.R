@@ -121,7 +121,7 @@ dir_mcmc = function(dir, iter = 3e4, out.dir = '../data/mcmc.outputs', out.name=
 
 
 res = dir_mcmc('../data/data_for_mcmc')
-for(i in 1:length(res)){
+for(i in 1:ncol(res)){
   mcmc_plot(res[,i]$dat, as.data.frame(res[,i]$res))
 }
 
