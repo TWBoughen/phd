@@ -59,8 +59,9 @@ d_mix = function(x,v,phi,a,xi,sig){
   return(out)
 }
 p_mix = Vectorize(function(x,v,phi,a,xi,sig, lower=1){
-  return(sum(d_mix(1:x,v,phi,a,xi,sig)))
+  return(sum(d_mix(lower:x,v,phi,a,xi,sig)))
 }, vectorize.args = c('x', 'v', 'phi', 'a', 'xi', 'sig'))
+
 p_mix_apply = function(pars, x){
   return(p_mix(x,pars[5], pars[1], pars[2], pars[3], pars[4], lower=min(x)))
 }
@@ -131,10 +132,9 @@ mix_mcmc_onestep = function(dat, init, params, covs, debug=F){
   ps = exp(ws^0.6)
   # print(sum(is.na(exp(ws^0.6))))
   phi_star = sample(phis[!is.na(ps)], 1, prob=ps[!is.na(ps)])
-  v_star = sample(vs, 1, prob=ws)
   prop_state = tail(acc.states,1)
   prop_state$phi=phi_star
-  prop_state$v = v_star
+  prop_state$v = phi_to_u(dat, phi_star)
   acc.states = rbind(acc.states, prop_state)
   # mu = acc.states$phi[nrow(acc.states)]
   # be_a = ((1-mu)/covs$phi - 1/mu)*mu^2
@@ -186,8 +186,10 @@ mix_mcmc = function(iter, dat, init, params, covs,update_period = 100, debug=F,p
   for(i in 2:iter){
     out = rbind(out, mix_mcmc_onestep(dat, tail(out,1)[,-ncol(out)], params, covs, debug=debug))
     if(i %% update_period == 0){
-      covs$shapescale = 2.38^2 * cov(out[,c('xi', 'sig')][!duplicated(out[,c('xi', 'sig')]),])/2
-      covs$alpha = 2.38^2 * var(out$a)
+      if(i>2e3){
+        covs$shapescale = 2.38^2 * cov(out[,c('xi', 'sig')][!duplicated(out[,c('xi', 'sig')]),])/2
+        covs$alpha = 2.38^2 * var(out$a)
+      }
       recent = tail(out,1)
       message('---------------------------------')
       message('Iteration: ',i)
@@ -225,7 +227,18 @@ mix_mcmc = function(iter, dat, init, params, covs,update_period = 100, debug=F,p
                                mean(tail(out$phi,5*update_period)),
                                mean(tail(out$a,5*update_period)),
                                mean(tail(out$xi,5*update_period)),
-                               mean(tail(out$sig,5*update_period))), col='blue')
+                               mean(tail(out$sig,5*update_period)), lower=min(dat[,1])), col='blue')
+        # lines(dat[,1], 1-p_mix(dat[,1],phi_to_u(dat, quantile(mean(tail(out$phi,5*update_period)),0.95)),
+        #                        quantile(tail(out$phi,5*update_period),0.95),
+        #       quantile(mean(tail(out$a,5*update_period)),0.95),
+        #       quantile(mean(tail(out$xi,5*update_period)),0.95),
+        #       quantile(mean(tail(out$sig,5*update_period)),0.95), lower=min(dat[,1])), col='blue',lty=2)
+        # lines(dat[,1], 1-p_mix(dat[,1],phi_to_u(dat, quantile(mean(tail(out$phi,5*update_period)),0.05)),
+        #                        quantile(tail(out$phi,5*update_period),0.05),
+        #                        quantile(mean(tail(out$a,5*update_period)),0.05),
+        #                        quantile(mean(tail(out$xi,5*update_period)),0.05),
+        #                        quantile(mean(tail(out$sig,5*update_period)),0.05), lower=min(dat[,1])), col='blue',lty=2)
+        
       
       }
     }
@@ -237,9 +250,9 @@ library(coda)
 # -------------------------------------------------------------------------
 
 
-mix_mcmc_wrap <- function(dat,iter=10000,  burn.in=1000, thin.by=10, update_period = 1000, debug=F) {
+mix_mcmc_wrap <- function(dat,iter=10000,  burn.in=1000, thin.by=10, update_period = 1000, debug=F, plotting=F) {
   source('igp_functions.R')
-  init = data.frame(phi=0.1, a=3, xi=0.1, sig=1)
+  init = data.frame(phi=0.1, a=2, xi=0.1, sig=1)
   params = list(
     phi=c(1,1),
     alpha=0.0001,
@@ -247,14 +260,14 @@ mix_mcmc_wrap <- function(dat,iter=10000,  burn.in=1000, thin.by=10, update_peri
     scale=0.01
   )
   covs = list(
-    phi=0.001,
-    alpha=0.01,
+    phi=0.0001,
+    alpha=0.0001,
     shapescale = t(matrix(ncol=2,
-          c(1,-0.4,
-            -0.4,1)
+          c(0.03,-0.04,
+            -0.04,0.03)
       ))
   )
-  res = mix_mcmc(iter, dat, init, params, covs, update_period = update_period, debug=debug)
+  res = mix_mcmc(iter, dat, init, params, covs, update_period = update_period, debug=debug, plotting=plotting)
   #thinning and burning
   res_burn = res[-(1:burn.in), ]
   res_thinburn = res_burn[seq(1,nrow(res_burn), by=thin.by),]
@@ -268,7 +281,6 @@ mcmc_plot = function(dat, res_thinburn){
   cmfs_95 = apply(cmfs, 1, quantile, prob=0.95)
   cmfs_05 = apply(cmfs, 1, quantile, prob=0.05)
   #plotting
-  par(mfrow=c(1,1))
   plot(dat[,1], 1- cumsum(dat[,2])/sum(dat[,2]), log='xy', pch=20)
   abline(v=res_thinburn$v, col = alpha('blue', alpha=0.004))
   polygon(c(x, rev(x)), c(1- cmfs_95, rev(1- cmfs_05)), col=alpha('gray', 0.5), lty=0)

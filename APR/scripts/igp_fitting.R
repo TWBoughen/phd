@@ -101,7 +101,8 @@ res = dir_mcmc('../data/data_for_mcmc', iter=1e4)
 res=readRDS('../data/mcmc.outputs/dir_out.rds')
 
 res2  =readRDS('../data/mcmc.outputs/dir_out.rds')
-
+dev.new()
+par(mfrow=c(2,3))
 for(i in 1:ncol(res)){
   message(i)
   mcmc_plot(res[,i]$dat, as.data.frame(res[,i]$res_thinned))
@@ -115,12 +116,16 @@ dev.new(wdith=10, height=10, unit='in', res=72)
 
 dev.new()
 dat_list=konect_to_df_dir('../data/data_for_mcmc')
-res6 = mix_mcmc_wrap(dat_list[[4]], iter=3e4, burn.in=1e4, update_period = 1e2)
+res6 = mix_mcmc_wrap(dat_list[[6]][-2:-1,], iter=3e4, burn.in=1e4, update_period = 1e2, plotting=T)
 
 
-mcmc_plot(res6$dat, res6$res[-(1:1e3),])
+mcmc_plot(res5$dat, res5$res_thinned)
 
 plot(as.mcmc(res6$res))
+
+
+
+
 
 # fitting model -----------------------------------------------------------
 
