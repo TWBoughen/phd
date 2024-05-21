@@ -116,10 +116,18 @@ dev.new(wdith=10, height=10, unit='in', res=72)
 
 dev.new()
 dat_list=konect_to_df_dir('../data/data_for_mcmc')
-res6 = mix_mcmc_wrap(dat_list[[6]][-2:-1,], iter=3e4, burn.in=1e4, update_period = 1e2, plotting=T)
+
+G = barabasi.game(1e5, m=1, directed=F, zero.appeal=0.000000000000000001)
+x = degree(G, mode='in')
+x=x[x>0]
+sim = as.data.frame(table(x))
+sim[,1] = as.numeric(as.character(sim[,1]))
 
 
-mcmc_plot(res5$dat, res5$res_thinned)
+res5 = mix_mcmc_wrap(dat_list[[2]], iter=3e4, burn.in=3e6, update_period = 1e3, plotting=T)
+
+dev.new()
+mcmc_plot(res5$dat, res5$res[-(1:1e4),])
 
 plot(as.mcmc(res6$res))
 
