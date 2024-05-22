@@ -187,20 +187,25 @@ Each of these three types defines a domain of attraction.
 
 The three domains of attraction that result from @thm-evt have the following equivalent conditions:
 
-For a distribution with cdf $F$ and survival function $\bar F$ that has right endpoint $x_F$, the distribution belongs to each domain of attraction subject to the conditions below:
+For a distribution with cdf $F$ and survival function $\bar F$ that has right endpoint $x_F$ given by:
+$$
+x_F = \sup\{x \in \mathbb R \cup\{\infty\}:F(x)<1\}
+$$
+the distribution belongs to each domain of attraction subject to the conditions below:
 
-**If $x_F=\infty$: **
 
+**If there exists a positive function a**
 - Type I/Gumbel/$\mathcal D(\Lambda)$:
 $$
-\lim_{x\rightarrow\infty} \displaystyle\frac{\bar F(x+ta(x))}{\bar F(x)} = e^{-t},\quad \forall t>0 
+\lim_{x\uparrow x_F} \displaystyle\frac{\bar F(x+ta(x))}{\bar F(x)} = e^{-t},\quad \forall t\in\mathbb R
 $$
+**If $x_F=\infty$: **
 - Type II/Fréchet/$\mathcal D (\Phi_\alpha)$:
 $$
 \lim_{x\rightarrow\infty} \displaystyle\frac{\bar F(tx)}{\bar F(x)} = x^{-\alpha}, \quad \forall t>0 \quad \text{ for some } \alpha>0
 $$
 
-**If $x_F<0$:**
+**If $x_F<\infty$:**
 
 - Type III/Negative-Weibull/$\mathcal D(\Psi_\alpha)$:
 $$
@@ -224,13 +229,13 @@ A positive,real valued, measurable function $f$ is said to be regularly varying 
 $$
 \lim_{x\rightarrow\infty}\displaystyle\frac{f(tx)}{f(x)} = x^{\gamma}.
 $$
-If $\gamma =0$, then $f$  is instead said to be slowly varying.
+If $\gamma =0$, then $f$  is instead said to be slowly varying at infinity.
 :::
 
-Note that the condition for a distribution to belong to the Fréchet domain is equivalent to saying that the survival function $\bar F$ is regularly varying with index $-\alpha$.
+Note that the condition for a distribution to belong to the Fréchet domain of attraction is equivalent to saying that the survival function $\bar F$ is regularly varying with index $-\alpha$.
 
 
-In addition to heavy tailed distributions it is also useful to define what will be referred to as super heavy tailed distributions. This term is often just refers to specific distributions such as the log-Cauchy distriubtion, but @fmh09 provides a more precise definition below:
+In addition to heavy tailed distributions it is also useful to define what will be referred to as super heavy tailed distributions. This term is often just refers to specific distributions such as the log-Cauchy ,log-Gamma,and log-Weibull distributions but @fmh09 provides a more precise definition below:
 
 :::{#def-sup}
 
@@ -258,7 +263,7 @@ G(x) = \begin{cases}\exp\left\{-\left(1+\displaystyle\frac{\xi(x-\mu)}{\sigma}\r
 $$
 :::
 
-The three types of extremal distribution are obtained from changing the shape parameter $\xi$, which corresponds to $1/\alpha$ in @thm-evt. This change is generally to made so that increasing $\xi$ corresponds to increasing how heavy the tails of the distribution are. Specifically, $\xi<0$, $\xi=0$, $\xi>0$, correspond to the negative Weibull, Gumbel and the Fréchet domains of attraction respectively.
+The three types of extremal distribution are obtained from changing the shape parameter $\xi$, which corresponds to $1/\alpha$ in @thm-evt. This change is generally made so that the largest $\xi$ corresponds to heavier tails of the distribution. Specifically, $\xi<0$, $\xi=0$, $\xi>0$, correspond to the negative Weibull, Gumbel and the Fréchet domains of attraction respectively.
 
 Another kind of extreme values are the observations above a large threshold, like the limiting distribution of block maxima, the limiting distribution of these extreme values can be characterised by the generalised pareto (GP) distribution.
 
@@ -345,31 +350,40 @@ Another more recent approach shown in [MACDONALD 2012], uses a spliced threshold
 
 # Networks
 
-Networks are the structures that will be the source of data that the results from @sec-ext will be used to analyse. Networks appear across a wide range of fields when attempting to represent complex systems and the relationships between the components within, showing up in anything from micro-biology (e.g. protein interactions in cells) to sociology (e.g. the social network of Harvard graduates). 
+Networks are the data sources that the results from @sec-ext will be used to analyse. Networks appear across a wide range of fields when attempting to represent complex systems and the relationships between the components within them.
 
-This makes networks a valuable source of data and understanding the mechanics of the network generation process can provide insights to the components themselves and into the networks future.
+This section will being with an introduction to the basics of networks and working with them in mathematics and probability, including the concept of degree distribution. Then, a look at a few network generation models and limiting results for the degree distributions of the networks they generate.
 
 ## Mathematical Definitions
 
-Networks on the face of it are fairly simple objects, nothing more than a collection of objects with connections between each other. Here, graphs constructed from vertices and edges will be used as an analogue for these networks. 
+Throughout this section, graphs constructed from vertices and edges will be used as an analogue for these networks, so it is appropriate to begin with some mathematical definitions for exactly what that means.
 
 :::{#def-net}
 
-### Graph/Network
+### Graph
 
-A graph $G = (V,E)$ is constructed from a vertex set $V\in\mathbb Z^+$ and an edge set $E$. The edge set can take on one of two forms depending on if the graph is directed or un-directed. If the graph is directed then $E\subseteq V^2$ i.e the edge set is contained within the set of ordered pairs of vertices, whereas if the graph is **un-directed** then $E\subseteq [V]^2$ i.e. the edge set is contained within the set of un-ordered pairs of vertices. The focus from now on will be on un-directed networks and graphs.
+A graph $G = (V,E)$ is constructed from a vertex set $V$ and an edge set $E$. The edge set can take on one of two forms depending on if the graph is directed or un-directed. If the graph is directed then $E\subseteq V^2$ i.e the edge set is contained within the set of ordered pairs of vertices, whereas if the graph is **un-directed** then $E\subseteq [V]^2$, where
+$$
+[V]^2 = \{\{u,v\}:u,v\in V\}
+$$
+i.e. the edge set is contained within the set of un-ordered pairs of vertices.
+
 :::
 
-Throughout this section and the next the concept of a vertices "degree" will come up, and in fact the main focus of @sec-meth is the degree distribution of networks.
+
 
 :::{#def-deg}
 
-### Degree
+### Degree of un-directed graphs
 
-For an un-directed graph a vertex's degree denoted $d(v)$ or $k_v$ for $v\in V$ is the number of edges that are connected to vertex $v$:
+For an un-directed graph a vertex's degree denoted $d(v)$ for $v\in V$ is the number of edges that are connected to vertex $v$:
 $$
 d(v) = |\{e\in E : v \in e\}|
 $$
+:::
+
+:::{#def-dirdeg}
+## Degree of directed graphs
 Directed graphs have something analogous, called the in-degree $d_{in}$, out-degree $d_{out}$ and total degree $d_{tot}$. The in-degree of a vertex $v$ is the number edges with endpoint at $v$, whereas the out-degree is the number of edges with start point at $v$ and the total degree is the sum of these i.e.:
 ```{=tex}
 \begin{align*}
@@ -380,9 +394,15 @@ d_{tot}(v) &= d_{in}(v) + d_{out}(v)
 ```
 :::
 
-There are many reasons to analyse network like data, one of which is to gain an insight into the mechanics that governed the growth of the network. The next sub-section is focused on presenting several network generative models increasing in generality.
+
+
+
+
+
+There are many reasons to analyse network like data, one of which is to gain an insight into the mechanics that governed the growth of the network. The next sub-section is focused on presenting several network generative models, that may be able to describe how real networks grow. For now, the focus will be on the degree distributions of these network generative models. 
 
 ## Network Generative Models
+
 
 The models in this section begin with the most general considered in this report, and then two special cases of this model are introduced.  
 
