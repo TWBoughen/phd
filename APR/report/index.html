@@ -2,11 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.3.433">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Thomas William Boughen">
+<meta name="dcterms.date" content="2024-05-31">
 
 <title>Annual Progress Review</title>
 <style>
@@ -71,13 +72,13 @@ div.csl-indent {
   <li><a href="#sec-ext" id="toc-sec-ext" class="nav-link" data-scroll-target="#sec-ext"><span class="header-section-number">2</span> Extreme Value Theory</a>
   <ul class="collapse">
   <li><a href="#sec-ce" id="toc-sec-ce" class="nav-link" data-scroll-target="#sec-ce"><span class="header-section-number">2.1</span> Continuous Extremes</a></li>
-  <li><a href="#discrete-extremes" id="toc-discrete-extremes" class="nav-link" data-scroll-target="#discrete-extremes"><span class="header-section-number">2.2</span> Discrete Extremes</a></li>
+  <li><a href="#sec-disc" id="toc-sec-disc" class="nav-link" data-scroll-target="#sec-disc"><span class="header-section-number">2.2</span> Discrete Extremes</a></li>
   <li><a href="#sec-mod" id="toc-sec-mod" class="nav-link" data-scroll-target="#sec-mod"><span class="header-section-number">2.3</span> Modelling</a></li>
   </ul></li>
-  <li><a href="#networks" id="toc-networks" class="nav-link" data-scroll-target="#networks"><span class="header-section-number">3</span> Networks</a>
+  <li><a href="#sec-net" id="toc-sec-net" class="nav-link" data-scroll-target="#sec-net"><span class="header-section-number">3</span> Networks</a>
   <ul class="collapse">
   <li><a href="#mathematical-definitions" id="toc-mathematical-definitions" class="nav-link" data-scroll-target="#mathematical-definitions"><span class="header-section-number">3.1</span> Mathematical Definitions</a></li>
-  <li><a href="#network-generative-models" id="toc-network-generative-models" class="nav-link" data-scroll-target="#network-generative-models"><span class="header-section-number">3.2</span> Network Generative Models</a>
+  <li><a href="#sec-gen" id="toc-sec-gen" class="nav-link" data-scroll-target="#sec-gen"><span class="header-section-number">3.2</span> Network Generative Models</a>
   <ul class="collapse">
   <li><a href="#general-preferential-attachment-gpa" id="toc-general-preferential-attachment-gpa" class="nav-link" data-scroll-target="#general-preferential-attachment-gpa">General Preferential Attachment (GPA)</a></li>
   <li><a href="#barabási-albert-ba" id="toc-barabási-albert-ba" class="nav-link" data-scroll-target="#barabási-albert-ba">Barabási-Albert (BA)</a></li>
@@ -86,11 +87,18 @@ div.csl-indent {
   </ul></li>
   <li><a href="#sec-meth" id="toc-sec-meth" class="nav-link" data-scroll-target="#sec-meth"><span class="header-section-number">4</span> Methods</a>
   <ul class="collapse">
-  <li><a href="#fitting-model-to-real-data" id="toc-fitting-model-to-real-data" class="nav-link" data-scroll-target="#fitting-model-to-real-data"><span class="header-section-number">4.1</span> Fitting model to real data</a></li>
-  <li><a href="#gpa-analyses" id="toc-gpa-analyses" class="nav-link" data-scroll-target="#gpa-analyses"><span class="header-section-number">4.2</span> GPA analyses</a></li>
-  <li><a href="#conclusion-and-a-conjecture" id="toc-conclusion-and-a-conjecture" class="nav-link" data-scroll-target="#conclusion-and-a-conjecture"><span class="header-section-number">4.3</span> Conclusion and a Conjecture</a></li>
+  <li><a href="#sec-realmodel" id="toc-sec-realmodel" class="nav-link" data-scroll-target="#sec-realmodel"><span class="header-section-number">4.1</span> Modelling degree distributions</a></li>
+  <li><a href="#fitting-model-to-the-data" id="toc-fitting-model-to-the-data" class="nav-link" data-scroll-target="#fitting-model-to-the-data"><span class="header-section-number">4.2</span> Fitting model to the data</a></li>
+  <li><a href="#gpa-analyses" id="toc-gpa-analyses" class="nav-link" data-scroll-target="#gpa-analyses"><span class="header-section-number">4.3</span> GPA analyses</a>
+  <ul class="collapse">
+  <li><a href="#the-preferential-attachment-function" id="toc-the-preferential-attachment-function" class="nav-link" data-scroll-target="#the-preferential-attachment-function">The Preferential Attachment Function</a></li>
+  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
+  </ul></li>
+  <li><a href="#a-conjecture" id="toc-a-conjecture" class="nav-link" data-scroll-target="#a-conjecture"><span class="header-section-number">4.4</span> A Conjecture</a></li>
   </ul></li>
   <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps"><span class="header-section-number">5</span> Next Steps</a></li>
+  
+  
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="doc.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li><li><a href="doc.odt"><i class="bi bi-file"></i>OpenOffice</a></li></ul></div></nav>
@@ -120,6 +128,12 @@ div.csl-indent {
 <div class="quarto-title-meta">
 
       
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">May 31, 2024</p>
+    </div>
+  </div>
   
     
   </div>
@@ -141,7 +155,7 @@ div.csl-indent {
 <p>Clearly, as <span class="math inline">\(n\rightarrow \infty\)</span>, the block maxima <span class="math inline">\(M_n\)</span> converges almost surely to the right endpoint of <span class="math inline">\(F\)</span>. However, standardising the block maxima allows for some characterisation of the limiting distribution.</p>
 <div id="thm-evt" class="theorem">
 <p><span class="theorem-title"><strong>Theorem 1 (Fisher–Tippett–Gnedenko Theorem) </strong></span>With <span class="math inline">\(X_1, \ldots,X_n \overset{\mathrm{iid}}{\sim} F\)</span> and <span class="math inline">\(\{ a_n\}_{n\ge0}, \{ b_n\}_{n\ge0}\)</span> such that:</p>
-<p><span class="math display">\[\lim_{n\rightarrow\infty}\Pr\left(\frac{1}{a_n}[M_n-b_n]\le x\right) = G(x),\]</span> for some non-degenerate <span class="math inline">\(G\)</span>.</p>
+<p><span class="math display">\[\lim_{n\rightarrow\infty}\Pr\left(\displaystyle\frac{1}{a_n}[M_n-b_n]\le x\right) = G(x),\]</span> for some non-degenerate <span class="math inline">\(G\)</span>.</p>
 <p>Then <span class="math inline">\(F\)</span> is said to be in the (maximum) domain of attraction of <span class="math inline">\(G\)</span>, denoted <span class="math inline">\(F\in\mathcal D(G)\)</span> ,and <span class="math inline">\(G\)</span> is of one of three types:</p>
 <ul>
 <li>Gumbel: <span class="math inline">\(\Lambda(x) = \exp\{-\exp(-x)\},\quad x \in \mathbb R\)</span></li>
@@ -152,22 +166,30 @@ div.csl-indent {
 <p>Each of these three types defines a domain of attraction.</p>
 <div id="def-doa" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 1 (Domains of Attraction) </strong></span>The three domains of attraction that result from <a href="#thm-evt">Theorem&nbsp;1</a> have the following equivalent conditions:</p>
-<p>For a distribution with cdf <span class="math inline">\(F\)</span> and survival function <span class="math inline">\(\bar F\)</span> that has right endpoint <span class="math inline">\(x_F\)</span>, the distribution belongs to each domain of attraction subject to the conditions below:</p>
-<p><strong>If <span class="math inline">\(x_F=\infty\)</span>: </strong></p>
+<p>For a distribution with cdf <span class="math inline">\(F\)</span> and survival function <span class="math inline">\(\bar F\)</span> that has right endpoint <span class="math inline">\(x_F\)</span> given by: <span class="math display">\[
+x_F = \sup\{x \in \mathbb R \cup\{\infty\}:F(x)&lt;1\}
+\]</span> the distribution belongs to each domain of attraction subject to the conditions below:</p>
+<p><strong>If there exists a positive function a</strong></p>
 <ul>
-<li>Type I/Gumbel/<span class="math inline">\(\mathcal D(\Lambda)\)</span>: <span class="math display">\[
-\lim_{x\rightarrow\infty} \frac{\bar F(x+ta(x))}{\bar F(x)} = e^{-t},\quad \forall t&gt;0
-\]</span></li>
-<li>Type II/Fréchet/<span class="math inline">\(\mathcal D (\Phi_\alpha)\)</span>: <span class="math display">\[
-\lim_{x\rightarrow\infty} \frac{\bar F(tx)}{\bar F(x)} = x^{-\alpha}, \quad \forall t&gt;0 \quad \text{ for some } \alpha&gt;0
-\]</span></li>
+<li>Type I/Gumbel/<span class="math inline">\(\mathcal D(\Lambda)\)</span>:</li>
 </ul>
-<p><strong>If <span class="math inline">\(x_F&lt;0\)</span>:</strong></p>
+<p><span class="math display">\[
+\lim_{x\uparrow x_F} \displaystyle\frac{\bar F(x+ta(x))}{\bar F(x)} = e^{-t},\quad \forall t\in\mathbb R
+\]</span></p>
+<p><strong>If</strong> <span class="math inline">\(x_F=\infty\)</span>:</p>
 <ul>
-<li>Type III/Negative-Weibull/<span class="math inline">\(\mathcal D(\Psi_\alpha)\)</span>: <span class="math display">\[
-\lim_{h\downarrow 0}\frac{\bar F(x_F-xh)}{\bar F(x_F-h)} = x^\alpha, \quad\alpha&gt;0
-\]</span></li>
+<li>Type II/Fréchet/<span class="math inline">\(\mathcal D (\Phi_\alpha)\)</span>:</li>
 </ul>
+<p><span class="math display">\[
+\lim_{x\rightarrow\infty} \displaystyle\frac{\bar F(tx)}{\bar F(x)} = x^{-\alpha}, \quad \forall t&gt;0 \quad \text{ for some } \alpha&gt;0
+\]</span></p>
+<p><strong>If</strong> <span class="math inline">\(x_F&lt;\infty\)</span>:</p>
+<ul>
+<li>Type III/Negative-Weibull/<span class="math inline">\(\mathcal D(\Psi_\alpha)\)</span>:</li>
+</ul>
+<p><span class="math display">\[
+\lim_{h\downarrow 0}\displaystyle\frac{\bar F(x_F-xh)}{\bar F(x_F-h)} = x^\alpha, \quad\alpha&gt;0
+\]</span></p>
 </div>
 <p>The parameter <span class="math inline">\(\alpha\)</span> in <a href="#def-doa">Definition&nbsp;1</a> and <a href="#thm-evt">Theorem&nbsp;1</a> is called the extreme value index.</p>
 <p>Here, distributions in the Gumbel domain are referred to as light tailed, distributions in the Negative-Weibull domain are referred to as short tailed, and those in the Fréchet are referred to as heavy tailed.This terminology for heavy tailed distributions in different ot some of the literature that defined a heavy tailed distribution as one that decays slower than exponential. However the terminology used here is also widely used.</p>
@@ -175,14 +197,14 @@ div.csl-indent {
 <div id="def-rv" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 2 (Regular Variation) </strong></span>A positive,real valued, measurable function <span class="math inline">\(f\)</span> is said to be regularly varying at infinity with index <span class="math inline">\(\gamma\)</span> if for all <span class="math inline">\(t&gt;0\)</span>:</p>
 <p><span class="math display">\[
-\lim_{x\rightarrow\infty}\frac{f(tx)}{f(x)} = x^{\gamma}.
-\]</span> If <span class="math inline">\(\gamma =0\)</span>, then <span class="math inline">\(f\)</span> is instead said to be slowly varying.</p>
+\lim_{x\rightarrow\infty}\displaystyle\frac{f(tx)}{f(x)} = x^{\gamma}.
+\]</span> If <span class="math inline">\(\gamma =0\)</span>, then <span class="math inline">\(f\)</span> is instead said to be slowly varying at infinity.</p>
 </div>
-<p>Note that the condition for a distribution to belong to the Fréchet domain is equivalent to saying that the survival function <span class="math inline">\(\bar F\)</span> is regularly varying with index <span class="math inline">\(-\alpha\)</span>.</p>
-<p>In addition to heavy tailed distributions it is also useful to define what will be referred to as super heavy tailed distributions. This term is often just refers to specific distributions such as the log-Cauchy distriubtion, but <span class="citation" data-cites="fmh09">Fraga Alves, Haan, and Neves (<a href="#ref-fmh09" role="doc-biblioref">2009</a>)</span> provides the more precise definition below:</p>
+<p>Note that the condition for a distribution to belong to the Fréchet domain of attraction is equivalent to saying that the survival function <span class="math inline">\(\bar F\)</span> is regularly varying with index <span class="math inline">\(-\alpha\)</span>.</p>
+<p>In addition to heavy tailed distributions it is also useful to define what will be referred to as super heavy tailed distributions. This term is often just refers to specific distributions such as the log-Cauchy ,log-Gamma,and log-Weibull distributions but <span class="citation" data-cites="fmh09">Fraga Alves, Haan, and Neves (<a href="#ref-fmh09" role="doc-biblioref">2009</a>)</span> provides a more precise definition below:</p>
 <div id="def-sup" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 3 (Super Heavy Tails) </strong></span>A distribution is with survival function <span class="math inline">\(\bar F\)</span> is said to have super heavy tails if: <span class="math display">\[
-\lim_{x\rightarrow\infty}\frac{\bar F(tx)}{\bar F (x)} = 1,\qquad \forall t&gt;0
+\lim_{x\rightarrow\infty}\displaystyle\frac{\bar F(tx)}{\bar F (x)} = 1,\qquad \forall t&gt;0
 \]</span> That is, a distribution is called super heavy if its survival function is slowly varying.</p>
 </div>
 <p>The three main types of extremal distribution (Gumbel, Fréchet and Negative-Weibull) can be united into one distribution, called the Generalised Extreme Value (GEV) distribution.</p>
@@ -194,7 +216,7 @@ G(x) = \begin{cases}\exp\left\{-\left(1+\displaystyle\frac{\xi(x-\mu)}{\sigma}\r
 \end{cases}
 \]</span></p>
 </div>
-<p>The three types of extremal distribution are obtained from changing the shape parameter <span class="math inline">\(\xi\)</span>, which corresponds to <span class="math inline">\(1/\alpha\)</span> in <a href="#thm-evt">Theorem&nbsp;1</a>. This change is generally to made so that increasing <span class="math inline">\(\xi\)</span> corresponds to increasing how heavy the tails of the distribution are. Specifically, <span class="math inline">\(\xi&lt;0\)</span>, <span class="math inline">\(\xi=0\)</span>, <span class="math inline">\(\xi&gt;0\)</span>, correspond to the negative Weibull, Gumbel and the Fréchet domains of attraction respectively.</p>
+<p>The three types of extremal distribution are obtained from changing the shape parameter <span class="math inline">\(\xi\)</span>, which corresponds to <span class="math inline">\(1/\alpha\)</span> in <a href="#thm-evt">Theorem&nbsp;1</a>. This change is generally made so that the largest <span class="math inline">\(\xi\)</span> corresponds to heavier tails of the distribution. Specifically, <span class="math inline">\(\xi&lt;0\)</span>, <span class="math inline">\(\xi=0\)</span>, <span class="math inline">\(\xi&gt;0\)</span>, correspond to the negative Weibull, Gumbel and the Fréchet domains of attraction respectively.</p>
 <p>Another kind of extreme values are the observations above a large threshold, like the limiting distribution of block maxima, the limiting distribution of these extreme values can be characterised by the generalised pareto (GP) distribution.</p>
 <div id="def-gp" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 5 (Generalised Pareto Distribution) </strong></span>Consider a random variable <span class="math inline">\(X\)</span> with the same cdf <span class="math inline">\(F\)</span> as in <a href="#thm-evt">Theorem&nbsp;1</a>, the Generalised Pareto (GP) distribution can be obtained by using the GEV distribution and conditional probability such that for large enough threshold the GP distribution approximately describes the conditional distribution of threshold exceedances. More precisely, for sufficiently large threshold <span class="math inline">\(u\)</span> and the change of variable to <span class="math inline">\(Y=X-u\)</span>: <span class="math display">\[
@@ -207,8 +229,8 @@ G(x) = \begin{cases}\exp\left\{-\left(1+\displaystyle\frac{\xi(x-\mu)}{\sigma}\r
 <p>Since this distribution was obtained using a <span class="math inline">\(\text{GEV}(\mu,\sigma^*,\xi)\)</span> the shape parameter <span class="math inline">\(\xi\)</span> is identical in both distributions and the shape parameter <span class="math inline">\(\sigma\)</span> is defined such that <span class="math inline">\(\sigma = \sigma^* + \xi(u-\mu)\)</span>.</p>
 <p>It is also possible to derive the result without using the GEV, as shown in [REF].</p>
 </section>
-<section id="discrete-extremes" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="discrete-extremes"><span class="header-section-number">2.2</span> Discrete Extremes</h2>
+<section id="sec-disc" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="sec-disc"><span class="header-section-number">2.2</span> Discrete Extremes</h2>
 <p>A lot of <a href="#sec-ce">Section&nbsp;2.1</a> is appropriate only for continuous random variables and some of the results may not hold in a discrete setting. In particular, a continuous distribution <span class="math inline">\(F\)</span> being in certain domain of attraction may not necessarily imply that a discretisation of <span class="math inline">\(F\)</span> remains in that domain of attraction.</p>
 <div id="def-disc" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 6 (Discretisation) </strong></span>The discretisation of a distribution with cdf <span class="math inline">\(F\)</span> is given by</p>
@@ -222,172 +244,829 @@ G(x) = \begin{cases}\exp\left\{-\left(1+\displaystyle\frac{\xi(x-\mu)}{\sigma}\r
 <li>The discretisation of a distribution remains in <span class="math inline">\(\mathcal D(\Lambda)\)</span> if and only if the original is in <span class="math inline">\(\mathcal D(\Lambda)\cap \mathcal L\)</span>.</li>
 </ol>
 <p>Where <span class="math inline">\(\mathcal L\)</span> is the set of long-tailed distributions that have the property: <span class="math display">\[
-\lim_{x\rightarrow \infty}\frac{\overline F(x+1)}{\overline F(x)} = 1   
+\lim_{x\rightarrow \infty}\displaystyle\frac{\overline F(x+1)}{\overline F(x)} = 1   
 \]</span></p>
 </div>
 <p>In addition <span class="citation" data-cites="shimura12">Shimura (<a href="#ref-shimura12" role="doc-biblioref">2012</a>)</span> introduces a quantity useful for determining the domain of a attraction that a discrete distribution belongs to.</p>
 <div id="def-omega" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 7 (Omega Function) </strong></span>For a distribution <span class="math inline">\(F\)</span> with survival function <span class="math inline">\(\overline F\)</span> and some <span class="math inline">\(n\in\mathbb Z^+\)</span> let:</p>
 <p><span class="math display">\[
-\Omega(F,n) = \left(\log\frac{\overline F (n+1)}{\overline F (n+2)}\right)^{-1} - \left(\log\frac{\overline F (n)}{\overline F (n+1)}\right)^{-1}
+\Omega(F,n) = \left(\log\displaystyle\frac{\overline F (n+1)}{\overline F (n+2)}\right)^{-1} - \left(\log\displaystyle\frac{\overline F (n)}{\overline F (n+1)}\right)^{-1}
 \]</span></p>
 </div>
-<p>This quantity plays an important role in <a href="#sec-meth">Section&nbsp;4</a> when determining the domain of attraction to which the degree distribution of a network generative model belongs.</p>
+<p>This quantity plays an important role in <a href="#sec-meth">Section&nbsp;4</a> when determining the domain of attraction to which the degree distribution of a network generative model belongs. In particular a discrete distribution is recoverable to the Fréchet domain of attraction <span class="math inline">\(\mathcal D(\Phi_\alpha)\)</span> if: <span class="math display">\[
+\lim_{n\rightarrow\infty}\Omega(F,n) = \alpha^{-1}
+\]</span></p>
 <p>Applying ideas from <a href="#sec-ce">Section&nbsp;2.1</a> to modelling discrete random variables has been approached from many different directions. What follows is a overview of some of the approaches that have been taken but will see use in this report.</p>
 <p><span class="citation" data-cites="hds24">Hitz, Davis, and Samorodnitsky (<a href="#ref-hds24" role="doc-biblioref">2024</a>)</span> note that using the GP distribution as an approximation in a discrete setting leads to bias in the likelihood function and can lead to it being inadequate for modelling. They propose two other peaks over threshold methods that rely on parametric families of discrete distributions. The first, what they refer to as the discrete generalised Pareto approximation is based on an extension of the discrete survival function. The second, the generalised Zipf distribution is obtained from an extension of the probability mass function. Both methods are motivated theoretically for modelling of a large class of discrete distributions and are shown in the paper to either match or outperform using the GP to model discrete data directly.</p>
 <p><span class="citation" data-cites="agn22">Ahmad, Gaetan, and Naveau (<a href="#ref-agn22" role="doc-biblioref">2022</a>)</span> first introduce an extended GP distribution, a continuous distribution that extends the idea of obtaining GP values from a probability integral transform (PIT) of <span class="math inline">\(U(0,1)\)</span> draws and instead considers a PIT of draws from any distribution on <span class="math inline">\((0,1)\)</span> such as a beta distribution. This distribution is then discretised into their discrete extended GP distribution.</p>
 </section>
 <section id="sec-mod" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="sec-mod"><span class="header-section-number">2.3</span> Modelling</h2>
-<p>The results from <a href="#sec-ce">Section&nbsp;2.1</a> allow the GEV and GP to be fitted to the block maxima and exceedances respectively. Typically, when fitting the GP, a sufficiently high threshold needs to be specified beforehand [REFER TO COLES 2001] and give examples.</p>
+<p>The results from <a href="#sec-ce">Section&nbsp;2.1</a> allow the GEV and GP to be fitted to the block maxima and exceedances respectively. Typically, when fitting the GP, a sufficiently high threshold needs to be specified beforehand. [COLES] provides some empirical methods for specifying the threshold, one approach is to use a threshold stability plot that uses maximum likelihood to estimate the parameters of the GP for a large range of thresholds. The threshold can be chosen as the point across all of the plots after which the values of the parameters seems stable.</p>
 <p>Another more recent approach shown in [MACDONALD 2012], uses a spliced threshold mixture to model the threshold exceedances where one distribution is assumed for the bulk of the data and the GP is used for those values above the threshold. This approach can also be applied in the discrete setting, and is what is used in <a href="#sec-meth">Section&nbsp;4</a>.</p>
 </section>
 </section>
-<section id="networks" class="level1" data-number="3">
+<section id="sec-net" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Networks</h1>
-<p>Networks are the structures that will be the source of data that the results from <a href="#sec-ext">Section&nbsp;2</a> will be used to analyse. Networks appear across a wide range of fields when attempting to represent complex systems and the relationships between the components within, showing up in anything from micro-biology (e.g.&nbsp;protein interactions in cells) to sociology (e.g.&nbsp;the social network of Harvard graduates).</p>
-<p>This makes networks a valuable source of data and understanding the mechanics of the network generation process can provide insights to the components themselves and into the networks future.</p>
+<p>Networks are the data sources that the results from <a href="#sec-ext">Section&nbsp;2</a> will be used to analyse. Networks appear across a wide range of fields when attempting to represent complex systems and the relationships between the components within them.</p>
+<p>This section will being with an introduction to the basics of networks and working with them in mathematics and probability, including the concept of degree distribution. Then, a look at a few network generation models and limiting results for the degree distributions of the networks they generate.</p>
 <section id="mathematical-definitions" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="mathematical-definitions"><span class="header-section-number">3.1</span> Mathematical Definitions</h2>
-<p>Networks on the face of it are fairly simple objects, nothing more than a collection of objects with connections between each other. Here, graphs constructed from vertices and edges will be used as an analogue for these networks.</p>
+<p>Throughout this section, graphs constructed from vertices and edges will be used as an analogue for these networks, so it is appropriate to begin with some mathematical definitions for exactly what that means.</p>
 <div id="def-net" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 8 (Graph/Network) </strong></span>A graph <span class="math inline">\(G = (V,E)\)</span> is constructed from a vertex set <span class="math inline">\(V\in\mathbb Z^+\)</span> and an edge set <span class="math inline">\(E\)</span>. The edge set can take on one of two forms depending on if the graph is directed or un-directed. If the graph is directed then <span class="math inline">\(E\subseteq V^2\)</span> i.e the edge set is contained within the set of ordered pairs of vertices, whereas if the graph is <strong>un-directed</strong> then <span class="math inline">\(E\subseteq [V]^2\)</span> i.e.&nbsp;the edge set is contained within the set of un-ordered pairs of vertices. The focus from now on will be on un-directed networks and graphs.</p>
+<p><span class="theorem-title"><strong>Definition 8 (Graph) </strong></span>A graph <span class="math inline">\(G = (V,E)\)</span> is constructed from a vertex set <span class="math inline">\(V\)</span> and an edge set <span class="math inline">\(E\)</span>. The edge set can take on one of two forms depending on if the graph is directed or un-directed. If the graph is directed then <span class="math inline">\(E\subseteq V^2\)</span> i.e the edge set is contained within the set of ordered pairs of vertices, whereas if the graph is <strong>un-directed</strong> then <span class="math inline">\(E\subseteq [V]^2\)</span>, where <span class="math display">\[
+[V]^2 = \{\{u,v\}:u,v\in V\}
+\]</span> i.e.&nbsp;the edge set is contained within the set of un-ordered pairs of vertices.</p>
 </div>
-<p>Throughout this section and the next the concept of a vertices “degree” will come up, and in fact the main focus of <a href="#sec-meth">Section&nbsp;4</a> is the degree distribution of networks.</p>
 <div id="def-deg" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 9 (Degree) </strong></span>For an un-directed graph a vertex’s degree denoted <span class="math inline">\(d(v)\)</span> or <span class="math inline">\(k_v\)</span> for <span class="math inline">\(v\in V\)</span> is the number of edges that are connected to vertex <span class="math inline">\(v\)</span>: <span class="math display">\[
+<p><span class="theorem-title"><strong>Definition 9 (Degree of un-directed graphs) </strong></span>For an un-directed graph a vertex’s degree denoted <span class="math inline">\(d(v)\)</span> for <span class="math inline">\(v\in V\)</span> is the number of edges that are connected to vertex <span class="math inline">\(v\)</span>: <span class="math display">\[
 d(v) = |\{e\in E : v \in e\}|
-\]</span> Directed graphs have something analogous, called the in-degree <span class="math inline">\(d_{in}\)</span>, out-degree <span class="math inline">\(d_{out}\)</span> and total degree <span class="math inline">\(d_{tot}\)</span>. The in-degree of a vertex <span class="math inline">\(v\)</span> is the number edges with endpoint at <span class="math inline">\(v\)</span>, whereas the out-degree is the number of edges with start point at <span class="math inline">\(v\)</span> and the total degree is the sum of these i.e.:</p>
+\]</span></p>
+</div>
+<div id="def-dirdeg" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 10 (Degree of directed graphs) </strong></span>Directed graphs have something analogous, called the in-degree <span class="math inline">\(d_{in}\)</span>, out-degree <span class="math inline">\(d_{out}\)</span> and total degree <span class="math inline">\(d_{tot}\)</span>. The in-degree of a vertex <span class="math inline">\(v\)</span> is the number edges with endpoint at <span class="math inline">\(v\)</span>, whereas the out-degree is the number of edges with start point at <span class="math inline">\(v\)</span> and the total degree is the sum of these i.e.:</p>
 <span class="math display">\[\begin{align*}
 d_{in}(v)&amp;= |\{(w_1,w_2)\in E: w_2=v \}|\\
 d_{out}(v) &amp;= |\{(w_1,w_2)\in E: w_1=v \}|\\
 d_{tot}(v) &amp;= d_{in}(v) + d_{out}(v)
 \end{align*}\]</span>
 </div>
-<p>There are many reasons to analyse network like data, one of which is to gain an insight into the mechanics that governed the growth of the network. The next sub-section is focused on presenting several network generative models increasing in generality.</p>
+<p>There are many reasons to analyse network like data, one of which is to gain an insight into the mechanics that governed the growth of the network. The next sub-section is focused on presenting several network generative models, that may be able to describe how real networks grow. For now, the focus will be on the degree distributions of these network generative models.</p>
 </section>
-<section id="network-generative-models" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="network-generative-models"><span class="header-section-number">3.2</span> Network Generative Models</h2>
-<p>The models in this section begin with the most general considered in this report, and then two special cases of this model are introduced.</p>
+<section id="sec-gen" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="sec-gen"><span class="header-section-number">3.2</span> Network Generative Models</h2>
+<p>It is useful to be able to model the way a network may have grown using simple rules as the subsequent model can then be used to simulate how the network may grow in future and provide insights into the underlying mechanics of the system the network represents. These models are also sometimes called mechanistic models in the literature. Also, although they are referred to as network generative models, graphs are still being used in the rules that govern how the generative model works.</p>
+<p>This section begins by detailing a fairly simple generative model and its limiting results for the degree distribution, followed by two special cases of the first model and their results.</p>
 <section id="general-preferential-attachment-gpa" class="level3">
 <h3 class="anchored" data-anchor-id="general-preferential-attachment-gpa">General Preferential Attachment (GPA)</h3>
-<p>Under this model, at each time step one vertex is added to the network and brings an edge with it that connects the existing vertices with a probability proportional to some function of the vertices’ degrees.</p>
+<p>Under this model, at each time step one vertex is added to the network and brings an edge with it that connects the existing vertices with a probability proportional to some function of the vertices degrees.</p>
 <div id="def-gpa" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 10 (General Preferential Attachment Model) </strong></span>Starting with a graph <span class="math inline">\(G_1 = (V_1, E_1) = (\{1,\ldots,m_0\}, \emptyset)\)</span>, at each following time step <span class="math inline">\(t&gt;1\)</span> the graph is denoted by <span class="math inline">\(G_t = (V_t, E_t)\)</span> and is generated by repeating:</p>
+<p><span class="theorem-title"><strong>Definition 11 (General Preferential Attachment Model) </strong></span>Starting with a graph <span class="math inline">\(G_1 = (V_1, E_1) = (\{1\}, \emptyset)\)</span>, at each following time step <span class="math inline">\(t&gt;1\)</span> the graph <span class="math inline">\(G_t = (V_t, E_t)\)</span> is generated by the following rules:</p>
 <ol type="1">
-<li><strong>Growth:</strong> Add a new vertex to the vertex set i.e. <span class="math display">\[
+<li><strong>Growth:</strong> Add a new vertex to the vertex set i.e.&nbsp;<span class="math display">\[
 V_t = V_{t-1} \cup \{t\}
 \]</span></li>
-<li><strong>Preferential Attachment:</strong> Add <span class="math inline">\(m\le m_0\)</span> edges connecting the new vertex to those already in the graph selected at random proportional to a function of their degree(minus one)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> i.e.: <span class="math display">\[
-E_t  = E_{t-1} \cup \tilde E
-\]</span> where <span class="math inline">\(\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}\)</span> and <span class="math inline">\(\tilde e_i = \{t,\tilde v_i\}\)</span> for <span class="math inline">\(\tilde v_i \sim \text{Cat}(V_{t-1}, P)\)</span></li>
+<li><strong>Preferential Attachment:</strong> Add one edge connecting the new vertex to one already in the graph <span class="math inline">\(\{1,\ldots,t-1\}\)</span> selected at random with weights proportional to a function of their degree i.e.: <span class="math display">\[
+E_t  = E_{t-1} \cup \{\tilde e\}
+\]</span> where <span class="math inline">\(\tilde e_i = \{t,\tilde v\}\)</span> and <span class="math inline">\(\tilde v = i\)</span> with probability <span class="math display">\[
+\displaystyle\frac{g(d(i))}{\sum_{w\in V_{t-1}} g(d(i))}, \qquad i\in V_{t-1}
+\]</span></li>
 </ol>
-<span class="math display">\[\begin{align*}
-P &amp;= \left\{\frac{g(k_v-1)}{\sum_{w\in V_{t-1}} g(k_w-1)} : v \in V_{t-1}\right\}
-\end{align*}\]</span>
 <p>for some function <span class="math inline">\(g: \mathbb Z \mapsto \mathbb R^+\setminus\{0\}\)</span>, which will be referred to as the preferential attachment function</p>
 </div>
-<section id="expected-degree-dristribution" class="level4">
-<h4 class="anchored" data-anchor-id="expected-degree-dristribution">Expected Degree Dristribution</h4>
-<p>In [GPA REF] the expected degree distribution for <span class="math inline">\(m=1\)</span> was calculated in terms of the preferential attachment function does not have a general explicit form. It is defined as follows, let <span class="math inline">\(\lambda^*\)</span> be the solution, if it exists, to:</p>
+<!-- [^1]: The probabilities are proportional to the degree minus one to align with the results from \[GPA REF\] -->
+<section id="limiting-degree-distribution" class="level4">
+<h4 class="anchored" data-anchor-id="limiting-degree-distribution">Limiting Degree Distribution</h4>
+<p>In [GPA REF] the limiting degree distribution was calculated in terms of the preferential attachment function and does not have a general explicit form. It is defined as follows, let <span class="math inline">\(\lambda^*\)</span> be the solution, if it exists, to:</p>
 <p><span class="math display">\[
-1=\sum_{n=1}^\infty \prod_{i=1}^{n-1}\frac{g(i)}{g(i)+\lambda}
-\]</span> then the expected degree distribution resulting from the GPA model has pmf:</p>
+1=\sum_{n=1}^\infty \prod_{i=1}^{n-1}\displaystyle\frac{g(i)}{g(i)+\lambda}
+\]</span> then the limiting degree distribution of a network resulting from the GPA model has probability mass function (pmf):</p>
 <p><span class="math display">\[
-f(k) = \frac{\lambda^*}{g(k) + \lambda^*}\prod_{i=0}^{k-1}\frac{g(i)}{g(i)+\lambda^*}
+f(k) = \displaystyle\frac{\lambda^*}{g(k) + \lambda^*}\prod_{i=0}^{k-1}\displaystyle\frac{g(i)}{g(i)+\lambda^*}
 \]</span></p>
 </section>
 </section>
 <section id="barabási-albert-ba" class="level3">
 <h3 class="anchored" data-anchor-id="barabási-albert-ba">Barabási-Albert (BA)</h3>
-<p>The first special case is the Barabási-Albert model, which is equivalent to setting the preferential attachment function <span class="math inline">\(g\)</span> to be the identity function <span class="math inline">\(g(k)=k\)</span></p>
-<p>This model defined in <span class="citation" data-cites="Barabasi99">Barabási and Albert (<a href="#ref-Barabasi99" role="doc-biblioref">1999</a>)</span> and also very closely related to the Yule-Simon process from [YS REF] changes the attachment mechanism from being purely uniform on the vertices already in the network to being random with a probability proportional to the degrees of the vertices in the network.</p>
+<p>The GPA model has several special cases, when <span class="math inline">\(g\)</span> is the identity function i.e <span class="math inline">\(g(k)=k\)</span>, it becomes the BA model <span class="citation" data-cites="Barabasi99">(<a href="#ref-Barabasi99" role="doc-biblioref">Barabási and Albert 1999</a>)</span> with <span class="math inline">\(m=1\)</span>.</p>
 <div id="def-ba" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 11 (Barabási-Albert Model) </strong></span>Starting with a graph <span class="math inline">\(G_1 = (V_1, E_1)\)</span> where <span class="math inline">\(V_1 = \{1,\ldots,m_0\}\)</span> and <span class="math inline">\(E_1 = \{\{v\}:v\in V_1\}\)</span> i.e a graph with <span class="math inline">\(m_0\)</span> vertices with one self-loop each. At each time step <span class="math inline">\(t&gt;1\)</span> the graph denoted by <span class="math inline">\(G_t = (V_1, E_1)\)</span> is generated by repeating the following:</p>
+<p><span class="theorem-title"><strong>Definition 12 (Barabási-Albert Model) </strong></span>Starting with a graph <span class="math inline">\(G_1 = (V_1, E_1)\)</span> where <span class="math inline">\(V_1 = \{1,\ldots,m_0\}\)</span> and <span class="math inline">\(E_1 = \{\{v\}:v\in V_1\}\)</span> i.e a graph with <span class="math inline">\(m_0\)</span> vertices with one self-loop each. At each time step <span class="math inline">\(t&gt;1\)</span> the graph <span class="math inline">\(G_t = (V_1, E_1)\)</span> is generated by the following rules:</p>
 <ol type="1">
-<li><strong>Growth:</strong> Add a new vertex to the vertex set i.e. <span class="math display">\[
+<li><strong>Growth:</strong> Add a new vertex to the vertex set i.e.&nbsp;<span class="math display">\[
 V_t = V_{t-1} \cup \{t\}
 \]</span></li>
-<li><strong>Preferential Attachment:</strong> Add <span class="math inline">\(m\le m_0\)</span> edges between the new vertex and those already in the graph with probability proportional to each vertices degree i.e:</li>
+<li><strong>Preferential Attachment:</strong> Add <span class="math inline">\(m\le m_0\)</span> edges between the new vertex and those already in the graph with probability proportional to each vertices degree i.e.&nbsp; <span class="math display">\[
+E_t  = E_{t-1} \cup \{\tilde e_1, \ldots, \tilde e_m\}
+\]</span> where each new edge <span class="math inline">\(\tilde e_i = \{t, \tilde v_i\}\)</span>(<span class="math inline">\(i=1,\ldots, m\)</span>) has <span class="math inline">\(\tilde v_i\)</span> sampled independently without replacement from <span class="math inline">\(V_{t-1}\)</span> with probability: <span class="math display">\[
+\frac{d(\tilde v_i)}{\sum_{u\in V_{t-1}}d(u)}
+\]</span></li>
 </ol>
-<p><span class="math display">\[
-E_t= E_{t-1} \cup \tilde E
-\]</span> where <span class="math inline">\(\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}\)</span> and <span class="math inline">\(\tilde e_i = \{t,\tilde v_i\}\)</span> for <span class="math inline">\(\tilde v_i \sim \text{Cat}(V_{t-1}, P)\)</span></p>
-<span class="math display">\[\begin{align*}
-P &amp;= \left\{\frac{d(v)}{\sum_{w\in V_{t-1}} d(w)} : v \in V_{t-1}\right\}
-\end{align*}\]</span>
 </div>
-<section id="expected-degree-distriubtion" class="level4">
-<h4 class="anchored" data-anchor-id="expected-degree-distriubtion">Expected Degree Distriubtion</h4>
-<p>In the same paper (<span class="citation" data-cites="Barabasi99">Barabási and Albert (<a href="#ref-Barabasi99" role="doc-biblioref">1999</a>)</span>) it was shown that for large values of <span class="math inline">\(t\)</span> the expected degree distribution for this model is approximately: <span class="math display">\[
-f(k) = \frac{2m^2t}{m_0+t}k^{-3} \approx 2m^2k^{-3},\qquad k\ge m
-\]</span></p>
-<p>This is clearly a regularly varying function and therefore in in the Fréchet domain of attraction <span class="math inline">\(\mathcal D(\Phi_2)\)</span>.</p>
+<section id="limiting-degree-distriubtion" class="level4">
+<h4 class="anchored" data-anchor-id="limiting-degree-distriubtion">Limiting Degree Distriubtion</h4>
+<p>In [NETWORK SCI book], it was shown that for large values of <span class="math inline">\(t\)</span>, the limiting degree distribution of a network produces by this model is:</p>
+<p><span class="math display">\[
+f(k) = \frac{2m(m+1)}{k(k+1)(k+2)}, \qquad k\geq m
+\]</span> According to [REF] this pmf is regularly varying with exponent 2, meaning that it is in the Fréchet domain of attraction <span class="math inline">\(\mathcal D(\Phi_2)\)</span>.</p>
 </section>
 </section>
 <section id="uniform-attachment-ua" class="level3">
 <h3 class="anchored" data-anchor-id="uniform-attachment-ua">Uniform Attachment (UA)</h3>
 <p>The final special case presented here is obtained from setting the preferential attachment function <span class="math inline">\(g\)</span> to be some constant value.</p>
 <div id="def-ua" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 12 (Uniform Attachment Model) </strong></span>Start with a graph <span class="math inline">\(G_1 = (V_1, E_1) = (\{1,\ldots,m_0\}, \emptyset)\)</span>, at each time step <span class="math inline">\(t&gt;1\)</span> the graph is denoted by <span class="math inline">\(G_t=(V_t, E_t)\)</span> and generated by repeating the following two steps:</p>
+<p><span class="theorem-title"><strong>Definition 13 (Uniform Attachment Model) </strong></span>Start with a graph <span class="math inline">\(G_1 = (V_1, E_1) = (\{1,\ldots,m_0\}, \emptyset)\)</span>, at each time step <span class="math inline">\(t&gt;1\)</span> the graph is denoted by <span class="math inline">\(G_t=(V_t, E_t)\)</span> and generated by repeating the following two steps:</p>
 <ol type="1">
-<li><strong>Growth:</strong> Add a new vertex to the vertex set i.e.&nbsp; <span class="math display">\[
+<li><strong>Growth:</strong> Add a new vertex to the vertex set i.e.&nbsp;<span class="math display">\[
 V_t=V_{t-1}\cup\{t\}
 \]</span></li>
-<li><strong>Attachment:</strong> Add <span class="math inline">\(m\le m_0\)</span> random edges between the new vertex and those already in the graph i.e.&nbsp; <span class="math display">\[
-E_t = E_{t-1} \cup \tilde E
-\]</span> where <span class="math inline">\(\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}\)</span> and <span class="math inline">\(\tilde e_i = \{t,\tilde v_i\}\)</span> and <span class="math inline">\(\tilde v_i \sim U(V_{t-1})\)</span>.</li>
+<li><strong>Uniform Attachment:</strong> Add <span class="math inline">\(m\le m_0\)</span> edges between the new vertex and those already in the graph with probability proportional to each vertices degree i.e.&nbsp; <span class="math display">\[
+E_t  = E_{t-1} \cup \{\tilde e_1, \ldots, \tilde e_m\}
+\]</span> where each new edge <span class="math inline">\(\tilde e_i = \{t, \tilde v_i\}\)</span>(<span class="math inline">\(i=1,\ldots, m\)</span>) has <span class="math inline">\(\tilde v_i\)</span> sampled independently without replacement from <span class="math inline">\(V_{t-1}\)</span> with probability: <span class="math display">\[
+\frac{1}{\sum_{u\in V_{t-1}}1} = \frac{1}{|V_{t-1}|}
+\]</span></li>
 </ol>
 </div>
-<section id="expected-degree-distribution" class="level4">
-<h4 class="anchored" data-anchor-id="expected-degree-distribution">Expected Degree Distribution</h4>
-<p>As showing in [REF] the expected degree distribution of this model for large values of <span class="math inline">\(t\)</span> is: <span class="math display">\[
-f(k) = \frac{e}{m}\exp\left(-\frac{k}{m}\right),\qquad k \ge m
-\]</span> Since this distribution has exponential form, it is in the Gumbel domain of attraction.</p>
+<section id="limiting-degree-distribution-1" class="level4">
+<h4 class="anchored" data-anchor-id="limiting-degree-distribution-1">Limiting Degree Distribution</h4>
+<p>As showing in [REF] the expected degree distribution of this model for large values of <span class="math inline">\(t\)</span> is approximately: <span class="math display">\[
+f(k) = \displaystyle\frac{e}{m}\exp\left(-\displaystyle\frac{k}{m}\right),\qquad k \ge m
+\]</span> Although this was not shown rigourously and treats the degree of a vertex as a continuous random variable, this is an shifted exponential distribution with left endpoint <span class="math inline">\(m\)</span> and rate parameter <span class="math inline">\(1/m\)</span> and as such is in the Gumbel domain of attraction.</p>
+<p>If <span class="math inline">\(m=1\)</span>, it is possible to get a more precise result from the result regarding the limiting degree distribution of the GPA. By setting the preferential attachment function <span class="math inline">\(g(k) = \lambda^*\)</span>, the can be shown that the limiting degree distribution is: <span class="math display">\[
+f(k) = \left(\frac{1}{2} \right)^{k}, \qquad k=1,2,\ldots
+\]</span> This distribution also occupies the Gumbel domain of attraction.</p>
 </section>
 </section>
 </section>
 </section>
 <section id="sec-meth" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Methods</h1>
+<p>The aim of this section is to investigate the degree distribution of real networks and compare them to the results obtained for the generative models in <a href="#sec-gen">Section&nbsp;3.2</a>. First, a look at what the degree distributions of real networks look like.</p>
+<div class="panel-fill panel-grid">
+<div class="g-col-24">
+<div class="cell panel-fill" data-fig-cap-location="top" data-fig.asp="1" data-hash="doc_cache/html/fig-survs_48dd677c0d39526c2d1d0cdf20f72fb1">
+<div class="cell-output-display">
+<div id="fig-survs" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="doc_files/figure-html/fig-survs-1.png" class="img-fluid figure-img" style="width:66.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;1: Plots of survial functions of real networks degrees</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p><a href="#fig-survs">Figure&nbsp;1</a> shows the survival function of the degrees of various real networks as well as “BAsim” and “UAsim” which were generated using the corresponding schemes in <a href="#sec-gen">Section&nbsp;3.2</a>. Additionally, the theoretical limiting degree distribution of both the UA model and the BA model (for m=1) are included on the plots. Visually it seems that neither of these models are adequate for modelling the growth of the real networks shown here.</p>
+<p>To further investigate this, <a href="#sec-realmodel">Section&nbsp;4.1</a> considers fitting a model to these data that will provide insight into what would be needed from a network generative model such that it flexible enough to capture the variation of shapes of degree distribution in real networks.</p>
+<section id="sec-realmodel" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="sec-realmodel"><span class="header-section-number">4.1</span> Modelling degree distributions</h2>
 <p>As mentioned in <a href="#sec-mod">Section&nbsp;2.3</a>, the method used here to model the extreme values of the data will be a spliced threshold mixture. Specifically, it will be a spliced threshold mixture of a power law and a discretisation of the generalised pareto distribution similar to what is defined in [ROHRBECK].</p>
 <div id="def-igp" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 13 (Intergral Generalised Pareto Distribution (IGP)) </strong></span>Consider a random variable <span class="math inline">\(X\)</span> with cdf <span class="math inline">\(F\)</span>, and consider the random variable <span class="math inline">\(Y=\lfloor X \rfloor\)</span>. From <a href="#def-gp">Definition&nbsp;5</a>, <span class="math inline">\(X|X&gt;u \sim GP(\sigma, \xi)\)</span> for some sufficiently large <span class="math inline">\(u\in \mathbb R^+\)</span> and it can be obtained that the distribution of <span class="math inline">\(Y|Y&gt;u\)</span> has distribution defined below:</p>
+<p><span class="theorem-title"><strong>Definition 14 (Intergral Generalised Pareto Distribution (IGP)) </strong></span>Consider a random variable <span class="math inline">\(X\)</span> with cdf <span class="math inline">\(F\)</span>, and consider the random variable <span class="math inline">\(Y=\lfloor X \rfloor\)</span>. From <a href="#def-gp">Definition&nbsp;5</a>, <span class="math inline">\(X|X&gt;u \sim GP(\sigma, \xi)\)</span> for some sufficiently large <span class="math inline">\(u\in \mathbb R^+\)</span> and it can be obtained that the distribution of <span class="math inline">\(Y|Y&gt;u\)</span> has distribution defined below:</p>
 <p><span class="math display">\[
-\Pr(Y=y&gt;Y&gt;u) = \left(1+\frac{\xi(y+1-\lceil u\rceil)}{\sigma_0+\xi\lceil u\rceil}\right)_+^{-1/\xi}-\left(1+\frac{\xi(y-\lceil u\rceil)}{\sigma_0+\xi\lceil u\rceil}\right)_+^{-1/\xi}
+\Pr(Y=y&gt;Y&gt;u) = \left(1+\displaystyle\frac{\xi(y+1-\lceil u\rceil)}{\sigma_0+\xi\lceil u\rceil}\right)_+^{-1/\xi}-\left(1+\displaystyle\frac{\xi(y-\lceil u\rceil)}{\sigma_0+\xi\lceil u\rceil}\right)_+^{-1/\xi}
 \]</span></p>
 <p>For <span class="math inline">\(y=\lceil u\rceil,\lceil u\rceil+1, \ldots\)</span> and <span class="math inline">\(\xi \in \mathbb R\)</span> and <span class="math inline">\(u, \sigma_0 \in \mathbb R^+.\)</span></p>
 </div>
-<p>Since the some degree distributions of real networks seen in [FIG] seem to be approximately linear for the bulk of the data and then begin to change, the spliced threshold mixture that will be used consists of a truncated discrete power law for the bulk of the data and a GP above a threshold.</p>
+<p>Since the some degree distributions of real networks seen in <a href="#fig-survs">Figure&nbsp;1</a> seem to be approximately linear for the bulk of the data and then begin to change, the spliced threshold mixture that will be used consists of a truncated discrete power law for the bulk of the data and a GP above a threshold.</p>
 <div id="def-pligp" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 14 (Power-Law IGP Distribution) </strong></span><span class="math display">\[
+<p><span class="theorem-title"><strong>Definition 15 (Power-Law IGP Distribution) </strong></span><span class="math display">\[
 f(y) = \begin{cases}
-(1-\phi)\frac{y^{-(\alpha+1})}{\sum_{k=1}^v}, &amp; y=1,2,\ldots, v\\
-\phi\left[\left(1+\frac{\xi(y+1-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}-\left(1+\frac{\xi(y-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}\right],&amp;y=v+1, v+2,\ldots
+(1-\phi)\displaystyle\frac{y^{-(\alpha+1})}{\sum_{k=1}^v}k^{\alpha+1}, &amp; y=1,2,\ldots, v\\
+\phi\left[\left(1+\displaystyle\frac{\xi(y+1-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}-\left(1+\displaystyle\frac{\xi(y-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}\right],&amp;y=v+1, v+2,\ldots
 \end{cases}
 \]</span></p>
 </div>
-<section id="fitting-model-to-real-data" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="fitting-model-to-real-data"><span class="header-section-number">4.1</span> Fitting model to real data</h2>
 </section>
-<section id="gpa-analyses" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="gpa-analyses"><span class="header-section-number">4.2</span> GPA analyses</h2>
+<section id="fitting-model-to-the-data" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="fitting-model-to-the-data"><span class="header-section-number">4.2</span> Fitting model to the data</h2>
+<p>The values of the parameters in the model for each data set were estimated under the Bayesian framework using a Metropolis within Gibbs sampler. Below are plots showing the same data as in <a href="#fig-survs">Figure&nbsp;1</a> but with the mean and 95% confidence intervals of the survival function of the model for each data-set.</p>
+<div class="cell" data-fig-cap-location="top" data-fig.asp="1" data-hash="doc_cache/html/fig-fits1_ab2d8fce04314272100df4845adb9ff3">
+<div class="cell-output-display">
+<div id="fig-fits1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="doc_files/figure-html/fig-fits1-1.png" class="img-fluid figure-img" style="width:66.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;2: Plots of truncated survial functions of real networks degrees</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Unfortunately, this model does not seem sufficient for these data. Perhaps, it may be better to add an additional component to the spliced mixture that is used to model the left tail. Since the focus is on the more extreme values in the distributions, instead of fitting the model to the full set of data, some of the lower values in the data sets will be removed in order to improve model fit for the remaining data. Again, in future this will likely be replaced by a third component in the spliced mixture. The fits to the truncated data sets are shown below in <a href="#fig-fits2">Figure&nbsp;3</a>.</p>
+<div class="cell" data-fig-cap-location="top" data-fig.asp="1" data-hash="doc_cache/html/fig-fits2_c53c5b2a7b78d62ac4b24cec06554d97">
+<div class="cell-output-display">
+<div id="fig-fits2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="doc_files/figure-html/fig-fits2-1.png" class="img-fluid figure-img" style="width:66.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3: Plots of truncated survial functions of real networks degrees</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>As show by <a href="#fig-fits2">Figure&nbsp;3</a> left truncating the data works well to improve the model fit for the vast majority of the data sets. The main exception being the data simulated via the UA model. It is unclear why the model fit for this is so poor but it may be because of the low number of unique values of degrees. That said, below is a summary of the model parameters for each data set:</p>
+<div class="cell" data-hash="doc_cache/html/unnamed-chunk-7_cd04bfedf87ce4dbf4b443b37a8f204c">
+<pre><code>
+Attaching package: 'kableExtra'</code></pre>
+<pre><code>The following object is masked from 'package:dplyr':
+
+    group_rows</code></pre>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-arenas-jazz" class="anchored">
+<table class="table table-sm table-striped small">
+<caption>Table&nbsp;1: arenas-jazz</caption>
+<colgroup>
+<col style="width: 3%">
+<col style="width: 18%">
+<col style="width: 22%">
+<col style="width: 19%">
+<col style="width: 17%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">phi</th>
+<th style="text-align: left;">a</th>
+<th style="text-align: left;">xi</th>
+<th style="text-align: left;">sig</th>
+<th style="text-align: left;">v</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Min. :0.8290</td>
+<td style="text-align: left;">Min. : 0.00333</td>
+<td style="text-align: left;">Min. :-0.9540</td>
+<td style="text-align: left;">Min. :35.04</td>
+<td style="text-align: left;">Min. : 2.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">1st Qu.:0.9845</td>
+<td style="text-align: left;">1st Qu.: 2.44954</td>
+<td style="text-align: left;">1st Qu.:-0.7678</td>
+<td style="text-align: left;">1st Qu.:43.47</td>
+<td style="text-align: left;">1st Qu.: 2.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Median :0.9845</td>
+<td style="text-align: left;">Median : 28.49493</td>
+<td style="text-align: left;">Median :-0.7199</td>
+<td style="text-align: left;">Median :45.89</td>
+<td style="text-align: left;">Median : 2.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Mean :0.9809</td>
+<td style="text-align: left;">Mean : 40.82553</td>
+<td style="text-align: left;">Mean :-0.7233</td>
+<td style="text-align: left;">Mean :46.09</td>
+<td style="text-align: left;">Mean : 2.227</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">3rd Qu.:0.9845</td>
+<td style="text-align: left;">3rd Qu.: 81.00571</td>
+<td style="text-align: left;">3rd Qu.:-0.6742</td>
+<td style="text-align: left;">3rd Qu.:48.72</td>
+<td style="text-align: left;">3rd Qu.: 2.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Max. :0.9845</td>
+<td style="text-align: left;">Max. :100.00000</td>
+<td style="text-align: left;">Max. :-0.5470</td>
+<td style="text-align: left;">Max. :59.77</td>
+<td style="text-align: left;">Max. :12.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-arenas-meta" class="anchored">
+<table class="table table-sm table-striped small">
+<caption>Table&nbsp;2: arenas-meta</caption>
+<colgroup>
+<col style="width: 3%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 19%">
+<col style="width: 18%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">phi</th>
+<th style="text-align: left;">a</th>
+<th style="text-align: left;">xi</th>
+<th style="text-align: left;">sig</th>
+<th style="text-align: left;">v</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Min. :0.002632</td>
+<td style="text-align: left;">Min. :0.001132</td>
+<td style="text-align: left;">Min. :-1.3389</td>
+<td style="text-align: left;">Min. : 5.829</td>
+<td style="text-align: left;">Min. : 5.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">1st Qu.:0.152632</td>
+<td style="text-align: left;">1st Qu.:0.122445</td>
+<td style="text-align: left;">1st Qu.:-0.8916</td>
+<td style="text-align: left;">1st Qu.:44.027</td>
+<td style="text-align: left;">1st Qu.:22.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Median :0.152632</td>
+<td style="text-align: left;">Median :0.207592</td>
+<td style="text-align: left;">Median :-0.7787</td>
+<td style="text-align: left;">Median :50.714</td>
+<td style="text-align: left;">Median :22.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Mean :0.221311</td>
+<td style="text-align: left;">Mean :0.344512</td>
+<td style="text-align: left;">Mean :-0.7086</td>
+<td style="text-align: left;">Mean :48.331</td>
+<td style="text-align: left;">Mean :21.44</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">3rd Qu.:0.152632</td>
+<td style="text-align: left;">3rd Qu.:0.343474</td>
+<td style="text-align: left;">3rd Qu.:-0.6485</td>
+<td style="text-align: left;">3rd Qu.:57.528</td>
+<td style="text-align: left;">3rd Qu.:22.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Max. :0.965789</td>
+<td style="text-align: left;">Max. :2.059039</td>
+<td style="text-align: left;">Max. : 0.3328</td>
+<td style="text-align: left;">Max. :84.683</td>
+<td style="text-align: left;">Max. :62.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-as-caida20071105" class="anchored">
+<table class="table table-sm table-striped small">
+<caption>Table&nbsp;3: as-caida20071105</caption>
+<colgroup>
+<col style="width: 3%">
+<col style="width: 20%">
+<col style="width: 18%">
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">phi</th>
+<th style="text-align: left;">a</th>
+<th style="text-align: left;">xi</th>
+<th style="text-align: left;">sig</th>
+<th style="text-align: left;">v</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Min. :0.03477</td>
+<td style="text-align: left;">Min. :1.916</td>
+<td style="text-align: left;">Min. :0.1950</td>
+<td style="text-align: left;">Min. : 6.248</td>
+<td style="text-align: left;">Min. : 7.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">1st Qu.:0.05424</td>
+<td style="text-align: left;">1st Qu.:2.077</td>
+<td style="text-align: left;">1st Qu.:0.3563</td>
+<td style="text-align: left;">1st Qu.:10.151</td>
+<td style="text-align: left;">1st Qu.:10.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Median :0.05424</td>
+<td style="text-align: left;">Median :2.100</td>
+<td style="text-align: left;">Median :0.3981</td>
+<td style="text-align: left;">Median :11.496</td>
+<td style="text-align: left;">Median :11.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Mean :0.05532</td>
+<td style="text-align: left;">Mean :2.100</td>
+<td style="text-align: left;">Mean :0.3989</td>
+<td style="text-align: left;">Mean :11.527</td>
+<td style="text-align: left;">Mean :10.93</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">3rd Qu.:0.06016</td>
+<td style="text-align: left;">3rd Qu.:2.125</td>
+<td style="text-align: left;">3rd Qu.:0.4405</td>
+<td style="text-align: left;">3rd Qu.:12.774</td>
+<td style="text-align: left;">3rd Qu.:11.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Max. :0.08604</td>
+<td style="text-align: left;">Max. :2.338</td>
+<td style="text-align: left;">Max. :0.6145</td>
+<td style="text-align: left;">Max. :19.167</td>
+<td style="text-align: left;">Max. :17.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-BAsim" class="anchored">
+<table class="table table-sm table-striped small">
+<caption>Table&nbsp;4: BAsim</caption>
+<colgroup>
+<col style="width: 3%">
+<col style="width: 21%">
+<col style="width: 17%">
+<col style="width: 19%">
+<col style="width: 20%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">phi</th>
+<th style="text-align: left;">a</th>
+<th style="text-align: left;">xi</th>
+<th style="text-align: left;">sig</th>
+<th style="text-align: left;">v</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Min. :6.012e-05</td>
+<td style="text-align: left;">Min. :1.562</td>
+<td style="text-align: left;">Min. :-4.3169</td>
+<td style="text-align: left;">Min. : 0.4234</td>
+<td style="text-align: left;">Min. :29.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">1st Qu.:1.202e-04</td>
+<td style="text-align: left;">1st Qu.:1.613</td>
+<td style="text-align: left;">1st Qu.:-1.2654</td>
+<td style="text-align: left;">1st Qu.: 51.9085</td>
+<td style="text-align: left;">1st Qu.:52.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Median :5.411e-04</td>
+<td style="text-align: left;">Median :1.623</td>
+<td style="text-align: left;">Median :-0.6266</td>
+<td style="text-align: left;">Median : 67.1963</td>
+<td style="text-align: left;">Median :89.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Mean :2.096e-03</td>
+<td style="text-align: left;">Mean :1.623</td>
+<td style="text-align: left;">Mean :-0.5006</td>
+<td style="text-align: left;">Mean : 87.0407</td>
+<td style="text-align: left;">Mean :76.73</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">3rd Qu.:3.908e-03</td>
+<td style="text-align: left;">3rd Qu.:1.634</td>
+<td style="text-align: left;">3rd Qu.:-0.4248</td>
+<td style="text-align: left;">3rd Qu.:125.9865</td>
+<td style="text-align: left;">3rd Qu.:96.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Max. :1.184e-02</td>
+<td style="text-align: left;">Max. :1.676</td>
+<td style="text-align: left;">Max. :29.8810</td>
+<td style="text-align: left;">Max. :490.8584</td>
+<td style="text-align: left;">Max. :97.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-pajek-erdos" class="anchored">
+<table class="table table-sm table-striped small">
+<caption>Table&nbsp;5: pajek-erdos</caption>
+<colgroup>
+<col style="width: 3%">
+<col style="width: 20%">
+<col style="width: 17%">
+<col style="width: 21%">
+<col style="width: 17%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">phi</th>
+<th style="text-align: left;">a</th>
+<th style="text-align: left;">xi</th>
+<th style="text-align: left;">sig</th>
+<th style="text-align: left;">v</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Min. :0.03667</td>
+<td style="text-align: left;">Min. :1.269</td>
+<td style="text-align: left;">Min. :-0.43807</td>
+<td style="text-align: left;">Min. :19.68</td>
+<td style="text-align: left;">Min. : 9.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">1st Qu.:0.04331</td>
+<td style="text-align: left;">1st Qu.:1.330</td>
+<td style="text-align: left;">1st Qu.:-0.26402</td>
+<td style="text-align: left;">1st Qu.:28.44</td>
+<td style="text-align: left;">1st Qu.:12.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Median :0.04706</td>
+<td style="text-align: left;">Median :1.346</td>
+<td style="text-align: left;">Median :-0.21989</td>
+<td style="text-align: left;">Median :30.50</td>
+<td style="text-align: left;">Median :13.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Mean :0.04655</td>
+<td style="text-align: left;">Mean :1.346</td>
+<td style="text-align: left;">Mean :-0.22031</td>
+<td style="text-align: left;">Mean :30.57</td>
+<td style="text-align: left;">Mean :13.33</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">3rd Qu.:0.04908</td>
+<td style="text-align: left;">3rd Qu.:1.361</td>
+<td style="text-align: left;">3rd Qu.:-0.17868</td>
+<td style="text-align: left;">3rd Qu.:32.47</td>
+<td style="text-align: left;">3rd Qu.:15.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Max. :0.05645</td>
+<td style="text-align: left;">Max. :1.440</td>
+<td style="text-align: left;">Max. : 0.02085</td>
+<td style="text-align: left;">Max. :44.27</td>
+<td style="text-align: left;">Max. :19.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-reactome" class="anchored">
+<table class="table table-sm table-striped small">
+<caption>Table&nbsp;6: reactome</caption>
+<colgroup>
+<col style="width: 3%">
+<col style="width: 19%">
+<col style="width: 21%">
+<col style="width: 19%">
+<col style="width: 18%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">phi</th>
+<th style="text-align: left;">a</th>
+<th style="text-align: left;">xi</th>
+<th style="text-align: left;">sig</th>
+<th style="text-align: left;">v</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Min. :0.04457</td>
+<td style="text-align: left;">Min. :9.940e-07</td>
+<td style="text-align: left;">Min. :-0.4912</td>
+<td style="text-align: left;">Min. : 62.10</td>
+<td style="text-align: left;">Min. : 80.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">1st Qu.:0.10684</td>
+<td style="text-align: left;">1st Qu.:1.763e-04</td>
+<td style="text-align: left;">1st Qu.:-0.3301</td>
+<td style="text-align: left;">1st Qu.: 84.46</td>
+<td style="text-align: left;">1st Qu.:140.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Median :0.10684</td>
+<td style="text-align: left;">Median :4.007e-04</td>
+<td style="text-align: left;">Median :-0.3002</td>
+<td style="text-align: left;">Median : 90.63</td>
+<td style="text-align: left;">Median :140.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Mean :0.11069</td>
+<td style="text-align: left;">Mean :4.775e-04</td>
+<td style="text-align: left;">Mean :-0.3017</td>
+<td style="text-align: left;">Mean : 91.48</td>
+<td style="text-align: left;">Mean :137.8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">3rd Qu.:0.10684</td>
+<td style="text-align: left;">3rd Qu.:4.763e-04</td>
+<td style="text-align: left;">3rd Qu.:-0.2684</td>
+<td style="text-align: left;">3rd Qu.: 96.60</td>
+<td style="text-align: left;">3rd Qu.:140.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Max. :0.21558</td>
+<td style="text-align: left;">Max. :4.340e-03</td>
+<td style="text-align: left;">Max. :-0.1467</td>
+<td style="text-align: left;">Max. :132.28</td>
+<td style="text-align: left;">Max. :184.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-UAsim" class="anchored">
+<table class="table table-sm table-striped small">
+<caption>Table&nbsp;7: UAsim</caption>
+<colgroup>
+<col style="width: 4%">
+<col style="width: 21%">
+<col style="width: 19%">
+<col style="width: 21%">
+<col style="width: 19%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">phi</th>
+<th style="text-align: left;">a</th>
+<th style="text-align: left;">xi</th>
+<th style="text-align: left;">sig</th>
+<th style="text-align: left;">v</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Min. :0.01518</td>
+<td style="text-align: left;">Min. :1.281</td>
+<td style="text-align: left;">Min. :-0.3375</td>
+<td style="text-align: left;">Min. :4.346</td>
+<td style="text-align: left;">Min. :7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">1st Qu.:0.01518</td>
+<td style="text-align: left;">1st Qu.:1.310</td>
+<td style="text-align: left;">1st Qu.:-0.3011</td>
+<td style="text-align: left;">1st Qu.:4.992</td>
+<td style="text-align: left;">1st Qu.:7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Median :0.01518</td>
+<td style="text-align: left;">Median :1.317</td>
+<td style="text-align: left;">Median :-0.2899</td>
+<td style="text-align: left;">Median :5.156</td>
+<td style="text-align: left;">Median :7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Mean :0.01518</td>
+<td style="text-align: left;">Mean :1.317</td>
+<td style="text-align: left;">Mean :-0.2904</td>
+<td style="text-align: left;">Mean :5.160</td>
+<td style="text-align: left;">Mean :7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">3rd Qu.:0.01518</td>
+<td style="text-align: left;">3rd Qu.:1.325</td>
+<td style="text-align: left;">3rd Qu.:-0.2797</td>
+<td style="text-align: left;">3rd Qu.:5.300</td>
+<td style="text-align: left;">3rd Qu.:7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Max. :0.01518</td>
+<td style="text-align: left;">Max. :1.356</td>
+<td style="text-align: left;">Max. :-0.2283</td>
+<td style="text-align: left;">Max. :5.794</td>
+<td style="text-align: left;">Max. :7</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
 </section>
-<section id="conclusion-and-a-conjecture" class="level2" data-number="4.3">
-<h2 data-number="4.3" class="anchored" data-anchor-id="conclusion-and-a-conjecture"><span class="header-section-number">4.3</span> Conclusion and a Conjecture</h2>
+<section id="gpa-analyses" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="gpa-analyses"><span class="header-section-number">4.3</span> GPA analyses</h2>
+<p>So far it has been shown that neither the BA model nor the UA model can adequately capture the range of type of degree distributions of real networks. So, a natural place to start when attempting to expand the range of possible degree distributions is the more general model, the GPA. This section, will use results from <span class="citation" data-cites="shimura12">Shimura (<a href="#ref-shimura12" role="doc-biblioref">2012</a>)</span> and <a href="#sec-ext">Section&nbsp;2</a> to investigate the possible types of degree distribution that may arise from different preferential attachment functions in the GPA model.</p>
+<section id="the-preferential-attachment-function" class="level3">
+<h3 class="anchored" data-anchor-id="the-preferential-attachment-function">The Preferential Attachment Function</h3>
+<p>From here on the preferential functions that will be used for the GPA model will be of the form: <span class="math display">\[
+g(k) = k^\gamma, \qquad \gamma&gt;0.
+\]</span></p>
+<p>This allows for investigating the cases where the preferential attachment function is sub-linear and when it is super-linear.</p>
+</section>
+<section id="section" class="level3">
+<h3 class="anchored" data-anchor-id="section"></h3>
+<p>As discussed in <a href="#sec-disc">Section&nbsp;2.2</a>, the limiting value of <span class="math inline">\(\Omega(F,n)\)</span> can give a lot of information about the behaviour of a discrete distribution at extreme values. Below is a plot showing the value of this quantity as <span class="math inline">\(n\)</span> increases for various different values of <span class="math inline">\(\gamma\)</span>.</p>
+<div class="cell" data-hash="doc_cache/html/fig-omega_8bd989601a24a20daf71ed638aeb772c">
+<div class="cell-output-display">
+<div id="fig-omega" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="doc_files/figure-html/fig-omega-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;4: Plot of <span class="math inline">\(\Omega(F,n)\)</span> for various <span class="math inline">\(\gamma \in (0.7,1.3)\)</span></figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><a href="#fig-omega">Figure&nbsp;4</a> shows that for <span class="math inline">\(\gamma&lt;1\)</span> <span class="math inline">\(\Omega(F,n)\)</span> seems to approach 0 as <span class="math inline">\(n\)</span> increases, whereas for <span class="math inline">\(\gamma=1\)</span> <span class="math inline">\(\Omega(F,n)\)</span> seems to converge to finite non-zero limit which is to be expected as this corresponds to the BA model which has limiting degree distribution in the Fréchet domain of attraction. However, for <span class="math inline">\(\gamma&gt;1\)</span> the value of <span class="math inline">\(\Omega(F,n)\)</span> appears to diverge and does not approach a finite limit.</p>
+<p><span class="citation" data-cites="shimura12">Shimura (<a href="#ref-shimura12" role="doc-biblioref">2012</a>)</span> does not provide any results in particular for the case of <span class="math inline">\(\Omega(F,n)\)</span> diverging but if the definition of slow variation and thus super-heavy tails is viewed as regular variation in the limit as <span class="math inline">\(\alpha\)</span> goes to infinity then the following can be obtained.</p>
+<div id="cor-omg" class="theorem corollary">
+<p><span class="theorem-title"><strong>Corollary 1 </strong></span>For a distribution <span class="math inline">\(F\)</span> with survival function <span class="math inline">\(\overline F\)</span> and some <span class="math inline">\(n\in\mathbb Z^+\)</span>, if: <span class="math display">\[
+\lim_{n\rightarrow\infty} \Omega(F,n) = \lim_{\alpha\downarrow0} \alpha^{-1} = \infty
+\]</span> then <span class="math inline">\(F\)</span> has super heavy tails</p>
+</div>
+<p>This is further supported by <a href="#fig-shtail">Figure&nbsp;5</a> below, which shows the value of the quantity from <a href="#def-sup">Definition&nbsp;3</a> for increasing values of <span class="math inline">\(n\)</span> and values of <span class="math inline">\(\gamma\)</span> in the range <span class="math inline">\((1,2)\)</span>. The plot shows the quantity approaching <span class="math inline">\(1\)</span> for all values of <span class="math inline">\(\gamma\)</span> as <span class="math inline">\(n\)</span> increases, suggesting that the limiting degree distribution of the GPA model with <span class="math inline">\(g(k) = k^\gamma,\gamma&gt;1\)</span> has super heavy tails.</p>
+</section>
+</section>
+<section id="a-conjecture" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="a-conjecture"><span class="header-section-number">4.4</span> A Conjecture</h2>
+<p>The results from this subsection suggest that for super-linear preferential attachment functions the GPA model has limiting degree distribution with super heavy tails. This, along with results for the linear case in <a href="#sec-gen">Section&nbsp;3.2</a> and sub-linear cases in [NETSCI BOOK] lead to the following conjecture.</p>
+<div id="cnj-gpa" class="theorem conjecture">
+<p><span class="theorem-title"><strong>Conjecture 1 </strong></span>The GPA model is only capable of producing three different types of degree distribution:</p>
+<ol type="1">
+<li>Gumbel: sub-linear preferential attachment function</li>
+<li>Fréchet <span class="math inline">\(\mathcal D(\Phi_2)\)</span>: linear preferential attachment function</li>
+<li>Super heavy tails: super-linear preferential attachment function</li>
+</ol>
+</div>
+<p>This means that under the framework presented here, even the GPA model is no where near close to being able to capture the range of types of degree distribution found in real networks.</p>
+<div class="cell" data-hash="doc_cache/html/fig-shtail_ad04d2c92b748f58139c6e5f19057de3">
+<div class="cell-output-display">
+<div id="fig-shtail" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="doc_files/figure-html/fig-shtail-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;5: Plot testing slow variation for <span class="math inline">\(\gamma \in (1,2)\)</span></figcaption>
+</figure>
+</div>
+</div>
+</div>
 </section>
 </section>
 <section id="next-steps" class="level1" data-number="5">
 <h1 data-number="5"><span class="header-section-number">5</span> Next Steps</h1>
-<div style="page-break-after: always;"></div>
+
 </section>
+
+
 <section id="references" class="level1 unnumbered">
 
 
 </section>
 
+<div id="quarto-appendix" class="default"><section id="updated-project-plan" class="level1 appendix" data-number="6"><h2 class="anchored quarto-appendix-heading"><span class="header-section-number">6</span> Updated Project Plan</h2><div class="quarto-appendix-contents">
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+</div></section><section id="training" class="level1 appendix" data-number="7"><h2 class="anchored quarto-appendix-heading"><span class="header-section-number">7</span> Training</h2><div class="quarto-appendix-contents">
+
+
+</div></section><section id="funding-and-stipend" class="level2 appendix unnumbered"><h2 class="anchored quarto-appendix-heading">Funding and Stipend</h2><div class="quarto-appendix-contents">
+
+<p>The funding for this project expires on <strong>17th March 2027</strong>.</p>
+</div></section><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-agn22" class="csl-entry" role="listitem">
 Ahmad, Touqeer, Carlo Gaetan, and Philippe Naveau. 2022. <span>“Modelling of Discrete Extremes Through Extended Versions of Discrete Generalized Pareto Distribution.”</span> <em>ArXiv e-Prints</em>. <a href="https://arxiv.org/abs/2210.15253">https://arxiv.org/abs/2210.15253</a>.
 </div>
@@ -403,12 +1082,7 @@ Hitz, Adrien S., Richard A. Davis, and Gennady Samorodnitsky. 2024. <span>“Dis
 <div id="ref-shimura12" class="csl-entry" role="listitem">
 Shimura, Takaaki. 2012. <span>“Discretization of Distributions in the Maximum Domain of Attraction.”</span> <em>Extremes</em> 15: 299–317. <a href="https://doi.org/10.1007/s10687-011-0137-7">https://doi.org/10.1007/s10687-011-0137-7</a>.
 </div>
-</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
-
-<ol>
-<li id="fn1"><p>The probabilities are proportional to the degree minus one to align with the results from [GPA REF]<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</section></div></main>
+</div></section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
