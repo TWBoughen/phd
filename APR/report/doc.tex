@@ -110,20 +110,6 @@
 \newtheorem{thm}{Theorem}[subsection]
 \renewcommand{\thethm}{\arabic{subsection}.\arabic{thm}}
 
-\usepackage{booktabs}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage{multirow}
-\usepackage{wrapfig}
-\usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabu}
-\usepackage{threeparttable}
-\usepackage{threeparttablex}
-\usepackage[normalem]{ulem}
-\usepackage{makecell}
-\usepackage{xcolor}
 \makeatletter
 \makeatother
 \makeatletter
@@ -164,9 +150,13 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{plain}
+\newtheorem{conjecture}{Conjecture}[section]
+\theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
+\theoremstyle{plain}
+\newtheorem{corollary}{Corollary}[section]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -204,7 +194,7 @@
 
 \title{Annual Progress Review}
 \author{Thomas William Boughen}
-\date{}
+\date{May 31, 2024}
 
 \begin{document}
 \cleardoublepage
@@ -218,7 +208,7 @@
 \vskip 0cm plus 2fill
 %{\bfseries\large Doctor of Philosophy \par}
 \vspace{3ex}
-{\bfseries\large  \par}
+{\bfseries\large May 31, 2024 \par}
 \vspace{12ex}
 {\includegraphics[width=0.1\linewidth]{"imgs/University_of_Newcastle_Coat_of_Arms.png"}\par}
 %
@@ -234,8 +224,14 @@
 %}
 \footnote{An html version of this report can be found at \url{www.twboughen.github.io/phd/APR/report}}
 \justifying
-\noindent\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, frame hidden, boxrule=0pt, sharp corners, enhanced, breakable, borderline west={3pt}{0pt}{shadecolor}]}{\end{tcolorbox}}\fi
+\noindent\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, sharp corners, enhanced, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, breakable, frame hidden]}{\end{tcolorbox}}\fi
 
+\renewcommand*\contentsname{Table of contents}
+{
+\hypersetup{linkcolor=}
+\setcounter{tocdepth}{1}
+\tableofcontents
+}
 \hypertarget{sec-int}{%
 \chapter{Introduction}\label{sec-int}}
 
@@ -310,11 +306,27 @@ x_F = \sup\{x \in \mathbb R \cup\{\infty\}:F(x)<1\}
 \] the distribution belongs to each domain of attraction subject to the
 conditions below:
 
-\textbf{If there exists a positive function a} - Type
-I/Gumbel/\(\mathcal D(\Lambda)\): \[
+\textbf{If there exists a positive function a}
+
+\begin{itemize}
+\tightlist
+\item
+  Type I/Gumbel/\(\mathcal D(\Lambda)\):
+\end{itemize}
+
+\[
 \lim_{x\uparrow x_F} \displaystyle\frac{\bar F(x+ta(x))}{\bar F(x)} = e^{-t},\quad \forall t\in\mathbb R
-\] \textbf{If} \(x_F=\infty\): - Type
-II/Fréchet/\(\mathcal D (\Phi_\alpha)\): \[
+\]
+
+\textbf{If} \(x_F=\infty\):
+
+\begin{itemize}
+\tightlist
+\item
+  Type II/Fréchet/\(\mathcal D (\Phi_\alpha)\):
+\end{itemize}
+
+\[
 \lim_{x\rightarrow\infty} \displaystyle\frac{\bar F(tx)}{\bar F(x)} = x^{-\alpha}, \quad \forall t>0 \quad \text{ for some } \alpha>0
 \]
 
@@ -323,10 +335,12 @@ II/Fréchet/\(\mathcal D (\Phi_\alpha)\): \[
 \begin{itemize}
 \tightlist
 \item
-  Type III/Negative-Weibull/\(\mathcal D(\Psi_\alpha)\): \[
-  \lim_{h\downarrow 0}\displaystyle\frac{\bar F(x_F-xh)}{\bar F(x_F-h)} = x^\alpha, \quad\alpha>0
-  \]
+  Type III/Negative-Weibull/\(\mathcal D(\Psi_\alpha)\):
 \end{itemize}
+
+\[
+\lim_{h\downarrow 0}\displaystyle\frac{\bar F(x_F-xh)}{\bar F(x_F-h)} = x^\alpha, \quad\alpha>0
+\]
 
 \end{definition}
 
@@ -500,7 +514,11 @@ For a distribution \(F\) with survival function \(\overline F\) and some
 
 This quantity plays an important role in Section~\ref{sec-meth} when
 determining the domain of attraction to which the degree distribution of
-a network generative model belongs.
+a network generative model belongs. In particular a discrete
+distribution is recoverable to the Fréchet domain of attraction
+\(\mathcal D(\Phi_\alpha)\) if: \[
+\lim_{n\rightarrow\infty}\Omega(F,n) = \alpha^{-1}
+\]
 
 Applying ideas from Section~\ref{sec-ce} to modelling discrete random
 variables has been approached from many different directions. What
@@ -876,7 +894,16 @@ sampler. Below are plots showing the same data as in
 Figure~\ref{fig-survs} but with the mean and 95\% confidence intervals
 of the survival function of the model for each data-set.
 
-{[}INSERT FIGURE HERE{]}
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.66\textwidth,height=\textheight]{doc_files/figure-pdf/fig-fits1-1.pdf}
+
+}
+
+\caption{\label{fig-fits1}Plots of truncated survial functions of real
+networks degrees}
+
+\end{figure}
 
 Unfortunately, this model does not seem sufficient for these data.
 Perhaps, it may be better to add an additional component to the spliced
@@ -886,7 +913,7 @@ to the full set of data, some of the lower values in the data sets will
 be removed in order to improve model fit for the remaining data. Again,
 in future this will likely be replaced by a third component in the
 spliced mixture. The fits to the truncated data sets are shown below in
-{[}FIGURE{]}.
+Figure~\ref{fig-fits2}.
 
 \begin{figure}[H]
 
@@ -1321,10 +1348,105 @@ discrete distribution at extreme values. Below is a plot showing the
 value of this quantity as \(n\) increases for various different values
 of \(\gamma\).
 
+\begin{figure}[H]
+
+{\centering \includegraphics{doc_files/figure-pdf/fig-omega-1.pdf}
+
+}
+
+\caption{\label{fig-omega}Plot of \(\Omega(F,n)\) for various
+\(\gamma \in (0.7,1.3)\)}
+
+\end{figure}
+
+Figure~\ref{fig-omega} shows that for \(\gamma<1\) \(\Omega(F,n)\) seems
+to approach 0 as \(n\) increases, whereas for \(\gamma=1\)
+\(\Omega(F,n)\) seems to converge to finite non-zero limit which is to
+be expected as this corresponds to the BA model which has limiting
+degree distribution in the Fréchet domain of attraction. However, for
+\(\gamma>1\) the value of \(\Omega(F,n)\) appears to diverge and does
+not approach a finite limit.
+
+Shimura (2012) does not provide any results in particular for the case
+of \(\Omega(F,n)\) diverging but if the definition of slow variation and
+thus super-heavy tails is viewed as regular variation in the limit as
+\(\alpha\) goes to infinity then the following can be obtained.
+
+\begin{corollary}[]\protect\hypertarget{cor-omg}{}\label{cor-omg}
+
+For a distribution \(F\) with survival function \(\overline F\) and some
+\(n\in\mathbb Z^+\), if: \[
+\lim_{n\rightarrow\infty} \Omega(F,n) = \lim_{\alpha\downarrow0} \alpha^{-1} = \infty
+\] then \(F\) has super heavy tails
+
+\end{corollary}
+
+This is further supported by Figure~\ref{fig-shtail} below, which shows
+the value of the quantity from Definition~\ref{def-sup} for increasing
+values of \(n\) and values of \(\gamma\) in the range \((1,2)\). The
+plot shows the quantity approaching \(1\) for all values of \(\gamma\)
+as \(n\) increases, suggesting that the limiting degree distribution of
+the GPA model with \(g(k) = k^\gamma,\gamma>1\) has super heavy tails.
+
+\hypertarget{a-conjecture}{%
+\section{A Conjecture}\label{a-conjecture}}
+
+The results from this subsection suggest that for super-linear
+preferential attachment functions the GPA model has limiting degree
+distribution with super heavy tails. This, along with results for the
+linear case in Section~\ref{sec-gen} and sub-linear cases in {[}NETSCI
+BOOK{]} lead to the following conjecture.
+
+\begin{conjecture}[]\protect\hypertarget{cnj-gpa}{}\label{cnj-gpa}
+
+The GPA model is only capable of producing three different types of
+degree distribution:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Gumbel: sub-linear preferential attachment function
+\item
+  Fréchet \(\mathcal D(\Phi_2)\): linear preferential attachment
+  function
+\item
+  Super heavy tails: super-linear preferential attachment function
+\end{enumerate}
+
+\end{conjecture}
+
+This means that under the framework presented here, even the GPA model
+is no where near close to being able to capture the range of types of
+degree distribution found in real networks.
+
+\begin{figure}[H]
+
+{\centering \includegraphics{doc_files/figure-pdf/fig-shtail-1.pdf}
+
+}
+
+\caption{\label{fig-shtail}Plot testing slow variation for
+\(\gamma \in (1,2)\)}
+
+\end{figure}
+
 \hypertarget{next-steps}{%
 \chapter{Next Steps}\label{next-steps}}
 
-\newpage{}
+\appendix
+
+\hypertarget{updated-project-plan}{%
+\chapter{Updated Project Plan}\label{updated-project-plan}}
+
+\hypertarget{training}{%
+\chapter{Training}\label{training}}
+
+\hypertarget{funding-and-stipend}{%
+\section*{Funding and Stipend}\label{funding-and-stipend}}
+\addcontentsline{toc}{section}{Funding and Stipend}
+
+The funding for this project expires on \textbf{17th March 2027}.
 
 \hypertarget{references}{%
 \chapter*{References}\label{references}}

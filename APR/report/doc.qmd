@@ -7,6 +7,8 @@ author:
         department: School of Mathematics, Statistics and Physics
 number-sections: true
 number-depth: 1
+date: 05/31/2024
+date-format: long
 format:
   pdf:
     fig-pos: H
@@ -17,7 +19,7 @@ format:
     template-partials:
       - before-body.tex
     indent: false
-    toc: false
+    toc: true
     toc-depth: 2
     geometry:
       - inner=2cm
@@ -185,17 +187,29 @@ For a distribution with cdf $F$ and survival function $\bar F$ that has right en
 x_F = \sup\{x \in \mathbb R \cup\{\infty\}:F(x)<1\}
 $$ the distribution belongs to each domain of attraction subject to the conditions below:
 
-**If there exists a positive function a** - Type I/Gumbel/$\mathcal D(\Lambda)$: $$
+**If there exists a positive function a** 
+
+- Type I/Gumbel/$\mathcal D(\Lambda)$: 
+
+$$
 \lim_{x\uparrow x_F} \displaystyle\frac{\bar F(x+ta(x))}{\bar F(x)} = e^{-t},\quad \forall t\in\mathbb R
-$$ **If** $x_F=\infty$:  - Type II/Fréchet/$\mathcal D (\Phi_\alpha)$: $$
+$$
+
+**If** $x_F=\infty$: 
+
+- Type II/Fréchet/$\mathcal D (\Phi_\alpha)$: 
+
+$$
 \lim_{x\rightarrow\infty} \displaystyle\frac{\bar F(tx)}{\bar F(x)} = x^{-\alpha}, \quad \forall t>0 \quad \text{ for some } \alpha>0
 $$
 
 **If** $x_F<\infty$:
 
--   Type III/Negative-Weibull/$\mathcal D(\Psi_\alpha)$: $$
-    \lim_{h\downarrow 0}\displaystyle\frac{\bar F(x_F-xh)}{\bar F(x_F-h)} = x^\alpha, \quad\alpha>0
-    $$
+-   Type III/Negative-Weibull/$\mathcal D(\Psi_\alpha)$: 
+
+$$
+\lim_{h\downarrow 0}\displaystyle\frac{\bar F(x_F-xh)}{\bar F(x_F-h)} = x^\alpha, \quad\alpha>0
+$$
 :::
 
 The parameter $\alpha$ in @def-doa and @thm-evt is called the extreme value index.
@@ -296,7 +310,10 @@ $$
 $$
 :::
 
-This quantity plays an important role in @sec-meth when determining the domain of attraction to which the degree distribution of a network generative model belongs.
+This quantity plays an important role in @sec-meth when determining the domain of attraction to which the degree distribution of a network generative model belongs. In particular a discrete distribution is recoverable to the Fréchet domain of attraction $\mathcal D(\Phi_\alpha)$ if:
+$$
+\lim_{n\rightarrow\infty}\Omega(F,n) = \alpha^{-1}
+$$
 
 Applying ideas from @sec-ce to modelling discrete random variables has been approached from many different directions. What follows is a overview of some of the approaches that have been taken but will see use in this report.
 
@@ -525,9 +542,47 @@ $$
 
 The values of the parameters in the model for each data set were estimated under the Bayesian framework using a Metropolis within Gibbs sampler. Below are plots showing the same data as in @fig-survs but with the mean and 95% confidence intervals of the survival function of the model for each data-set. 
 
-[INSERT FIGURE HERE]
+```{r,echo=FALSE, warning=FALSE, message=FALSE, cache=TRUE}
+#| fig-width: 6
+#| fig-asp: 1
+#| out-width: 66%
+#| fig-cap: "Plots of truncated survial functions of real networks degrees"
+#| fig-cap-location: top
+#| label: fig-fits1
+res=readRDS('../data/mcmc.outputs/dir_out.rds')
+n = ncol(res)
+auto.mfrow(n)
+x = par()$mfrow[1]
+y = par()$mfrow[2]
+mx_dat=0
+min_prob=1
+for(i in 1:n){
+  d = res[,i]$dat
+  mx_dat = max(mx_dat, max(d[,1]))
+  min_prob = min(min_prob, d[nrow(d),2]/sum(d[,2]))
+}
 
-Unfortunately, this model does not seem sufficient for these data. Perhaps, it may be better to add an additional component to the spliced mixture that is used to model the left tail. Since the focus is on the more extreme values in the distributions, instead of fitting the model to the full set of data, some of the lower values in the data sets will be removed in order to improve model fit for the remaining data. Again, in future this will likely be replaced by a third component in the spliced mixture. The fits to the truncated data sets are shown below in [FIGURE].
+for(i in 1:n){
+    x_ax = 'n'
+    y_ax='n'
+    marge = c(0,0,0,0)
+    if(i %% x ==1){
+      marge[2] = 0
+      y_ax = NULL
+    }
+    if(i>n-x){
+      x_ax=NULL
+    }
+    if(i>(y-1)*x){
+      marge[1] = 2
+    }
+  mcmc_plot(res[,i]$dat, as.data.frame(res[,i]$res_thinned),
+            xlim=c(1,mx_dat),ylim=c(min_prob,1),mar=marge,xaxt=x_ax, yaxt=y_ax)
+  legend('bottomleft', legend=strsplit(nms[i], 'out.')[[1]][2], pch=20)
+}
+```
+
+Unfortunately, this model does not seem sufficient for these data. Perhaps, it may be better to add an additional component to the spliced mixture that is used to model the left tail. Since the focus is on the more extreme values in the distributions, instead of fitting the model to the full set of data, some of the lower values in the data sets will be removed in order to improve model fit for the remaining data. Again, in future this will likely be replaced by a third component in the spliced mixture. The fits to the truncated data sets are shown below in @fig-fits2.
 
 ```{r,echo=FALSE, warning=FALSE, message=FALSE, cache=TRUE}
 #| fig-width: 6
@@ -570,7 +625,7 @@ for(i in 1:n){
 ```
 As show by @fig-fits2 left truncating the data works well to improve the model fit for the vast majority of the data sets. The main exception being the data simulated via the UA model. It is unclear why the model fit for this is so poor but it may be because of the low number of unique values of degrees. That said, below is a summary of the model parameters for each data set:
 
-```{r,echo=FALSE}
+```{r,echo=FALSE,cache=TRUE}
 #| output: asis
 library(kableExtra)
 library(knitr)
@@ -605,13 +660,119 @@ This allows for investigating the cases where the preferential attachment functi
 
 As discussed in @sec-disc, the limiting value of $\Omega(F,n)$ can give a lot of information about the behaviour of a discrete distribution at extreme values. Below is a plot showing the value of this quantity as $n$ increases for various different values of $\gamma$.
 
+```{r, echo=FALSE, message=FALSE,warning=FALSE,cache=TRUE}
+#| fig-cap: Plot of $\Omega(F,n)$ for various $\gamma \in (0.7,1.3)$
+#| label: fig-omega
+source('../scripts/omega.R')
+g = function(s,a=1){
+  return((s+1)^a)
+}
+
+x=1:200
+n=6
+a.list = rev(c(seq(0.7,1,length.out=n),seq(1,1.3,length.out=n)))
+a.list = unique(a.list)
+pal = fish(2*n-1,option = "Thalassoma_hardwicke")
+df = data.frame(k=x)
+df = cbind(df,omega.vec(x, g, a.list[1]))
+# plot(x,df[,2], type='l', ylim = c(5e-2,max(omega.vec(x, g, a.list[1]))),log='xy',
+#      ylab = 'omega', xlab = 'k', col=pal[1])
+i=3
+for(a in a.list[-1]){
+  df = cbind(df,omega.vec(x, g, a))
+  # lines(x,df[,i],col=pal[which(a.list==a)])
+  i=i+1
+}
+# lines(x,omega.vec(x,g, 1),col=1, lty=2)
+
+names(df)[-1] = round(a.list,3)
+
+require(ggplot2)
+require(reshape2)
+require(fishualize)
+df = melt(df, id.vars = 'k', variable.name = 'a')
 
 
 
+pal = fish(2*n-1,option = "Bodianus_rufus")
+ggplot(df, aes(k,value))+geom_line(aes(colour = a),linewidth=1) + scale_x_log10() + scale_y_log10() + 
+  scale_color_manual(values=pal)
+```
+@fig-omega shows that for $\gamma<1$ $\Omega(F,n)$ seems to approach 0 as $n$ increases, whereas for $\gamma=1$ $\Omega(F,n)$ seems to converge to finite non-zero limit which is to be expected as this corresponds to the BA model which has limiting degree distribution in the Fréchet domain of attraction. However, for $\gamma>1$ the value of $\Omega(F,n)$ appears to diverge and does not approach a finite limit. 
+
+@shimura12 does not provide any results in particular for the case of $\Omega(F,n)$ diverging but if the definition of slow variation and thus super-heavy tails is viewed as regular variation in the limit as $\alpha$ goes to infinity then the following can be obtained.
+
+:::{#cor-omg}
+For a distribution $F$ with survival function $\overline F$ and some $n\in\mathbb Z^+$, if:
+$$
+\lim_{n\rightarrow\infty} \Omega(F,n) = \lim_{\alpha\downarrow0} \alpha^{-1} = \infty
+$$
+then $F$ has super heavy tails
+:::
+
+This is further supported by @fig-shtail below, which shows the value of the quantity from @def-sup for increasing values of $n$ and values of $\gamma$ in the range $(1,2)$. The plot shows the quantity approaching $1$ for all values of $\gamma$ as $n$ increases, suggesting that the limiting degree distribution of the GPA model with $g(k) = k^\gamma,\gamma>1$ has super heavy tails.
+
+## A Conjecture
+
+The results from this subsection suggest that for super-linear preferential attachment functions the GPA model has limiting degree distribution with super heavy tails. This, along with results for the linear case in @sec-gen and sub-linear cases in [NETSCI BOOK] lead to the following conjecture.
+
+:::{#cnj-gpa}
+The GPA model is only capable of producing three different types of degree distribution:
+
+1. Gumbel: sub-linear preferential attachment function
+2. Fréchet $\mathcal D(\Phi_2)$: linear preferential attachment function
+3. Super heavy tails: super-linear preferential attachment function
+:::
+
+This means that under the framework presented here, even the GPA model is no where near close to being able to capture the range of types of degree distribution found in real networks.
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE,cache=TRUE}
+#| label: fig-shtail
+#| fig-cap: Plot testing slow variation for $\gamma \in (1,2)$
+source('../scripts/omega.R')
+g = function(s,a=1){
+  return((s+1)^a)
+}
+t=5
+k = round(10^seq(1,3,length.out=20))
+n=25
+a.list = rev(seq(1,2,length.out=2*n-1))
+a.list = unique(a.list)
+pal = fish(2*n-1,option = "Thalassoma_hardwicke")
+df = data.frame(k=k)
+df = cbind(df,CCDF_rat.vec(k,t,2,g,a.list[1]))
+# plot(df[,1],df[,2], type='l',log='xy',
+     # ylab = 'omega', xlab = 'k', col=pal[1])
+for(a in a.list[-1]){
+  df = cbind(df,CCDF_rat.vec(k,t,2,g,a))
+  # lines(x,df[,i],col=pal[which(a.list==a)])
+}
+# lines(x,CCDF_rat.vec(k,t,2,g,1),col=1, lty=2)
+
+names(df)[-1] = round(a.list,3)
 
 
+df = melt(df, id.vars = 'k', variable.name = 'a')
+
+
+
+pal = fish(2*n-1,option = "Bodianus_rufus")
+ggplot(df, aes(k,value))+geom_line(aes(colour = a),linewidth=1) + scale_x_log10()+ 
+  scale_color_manual(values=pal)+ theme(legend.position="none")
+
+```
 # Next Steps
 
-{{< pagebreak >}} 
+```{=tex}
+\appendix
+```
+
+# Updated Project Plan {.appendix}
+
+# Training {.appendix}
+
+## Funding and Stipend {.appendix .unnumbered}
+
+The funding for this project expires on **17th March 2027**.
 
 # References {.unnumbered}

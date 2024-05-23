@@ -14,3 +14,7 @@ gridExtra
 scales
 dplyr
 coda
+kableExtra
+knitr
+fishualize
+reshape2
