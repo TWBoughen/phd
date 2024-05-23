@@ -110,6 +110,20 @@
 \newtheorem{thm}{Theorem}[subsection]
 \renewcommand{\thethm}{\arabic{subsection}.\arabic{thm}}
 
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \makeatletter
 \makeatother
 \makeatletter
@@ -149,10 +163,10 @@
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[section]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -220,7 +234,7 @@
 %}
 \footnote{An html version of this report can be found at \url{www.twboughen.github.io/phd/APR/report}}
 \justifying
-\noindent\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, enhanced, sharp corners, frame hidden, breakable]}{\end{tcolorbox}}\fi
+\noindent\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, frame hidden, boxrule=0pt, sharp corners, enhanced, breakable, borderline west={3pt}{0pt}{shadecolor}]}{\end{tcolorbox}}\fi
 
 \hypertarget{sec-int}{%
 \chapter{Introduction}\label{sec-int}}
@@ -299,12 +313,12 @@ conditions below:
 \textbf{If there exists a positive function a} - Type
 I/Gumbel/\(\mathcal D(\Lambda)\): \[
 \lim_{x\uparrow x_F} \displaystyle\frac{\bar F(x+ta(x))}{\bar F(x)} = e^{-t},\quad \forall t\in\mathbb R
-\] \textbf{If \(x_F=\infty\): } - Type
+\] \textbf{If} \(x_F=\infty\): - Type
 II/Fréchet/\(\mathcal D (\Phi_\alpha)\): \[
 \lim_{x\rightarrow\infty} \displaystyle\frac{\bar F(tx)}{\bar F(x)} = x^{-\alpha}, \quad \forall t>0 \quad \text{ for some } \alpha>0
 \]
 
-\textbf{If \(x_F<\infty\):}
+\textbf{If} \(x_F<\infty\):
 
 \begin{itemize}
 \tightlist
@@ -424,8 +438,8 @@ defined such that \(\sigma = \sigma^* + \xi(u-\mu)\).
 It is also possible to derive the result without using the GEV, as shown
 in {[}REF{]}.
 
-\hypertarget{discrete-extremes}{%
-\section{Discrete Extremes}\label{discrete-extremes}}
+\hypertarget{sec-disc}{%
+\section{Discrete Extremes}\label{sec-disc}}
 
 A lot of Section~\ref{sec-ce} is appropriate only for continuous random
 variables and some of the results may not hold in a discrete setting. In
@@ -530,8 +544,8 @@ distribution is assumed for the bulk of the data and the GP is used for
 those values above the threshold. This approach can also be applied in
 the discrete setting, and is what is used in Section~\ref{sec-meth}.
 
-\hypertarget{networks}{%
-\chapter{Networks}\label{networks}}
+\hypertarget{sec-net}{%
+\chapter{Networks}\label{sec-net}}
 
 Networks are the data sources that the results from
 Section~\ref{sec-ext} will be used to analyse. Networks appear across a
@@ -565,10 +579,6 @@ vertices.
 
 \end{definition}
 
-Throughout this section and the next the concept of a vertices
-``degree'' will come up, and in fact the main focus of
-Section~\ref{sec-meth} is the degree distribution of networks.
-
 \begin{definition}[Degree of un-directed
 graphs]\protect\hypertarget{def-deg}{}\label{def-deg}
 
@@ -599,13 +609,24 @@ d_{tot}(v) &= d_{in}(v) + d_{out}(v)
 There are many reasons to analyse network like data, one of which is to
 gain an insight into the mechanics that governed the growth of the
 network. The next sub-section is focused on presenting several network
-generative models increasing in generality.
+generative models, that may be able to describe how real networks grow.
+For now, the focus will be on the degree distributions of these network
+generative models.
 
-\hypertarget{network-generative-models}{%
-\section{Network Generative Models}\label{network-generative-models}}
+\hypertarget{sec-gen}{%
+\section{Network Generative Models}\label{sec-gen}}
 
-The models in this section begin with the most general considered in
-this report, and then two special cases of this model are introduced.
+It is useful to be able to model the way a network may have grown using
+simple rules as the subsequent model can then be used to simulate how
+the network may grow in future and provide insights into the underlying
+mechanics of the system the network represents. These models are also
+sometimes called mechanistic models in the literature. Also, although
+they are referred to as network generative models, graphs are still
+being used in the rules that govern how the generative model works.
+
+This section begins by detailing a fairly simple generative model and
+its limiting results for the degree distribution, followed by two
+special cases of the first model and their results.
 
 \hypertarget{general-preferential-attachment-gpa}{%
 \subsection{General Preferential Attachment
@@ -613,57 +634,52 @@ this report, and then two special cases of this model are introduced.
 
 Under this model, at each time step one vertex is added to the network
 and brings an edge with it that connects the existing vertices with a
-probability proportional to some function of the vertices' degrees.
+probability proportional to some function of the vertices degrees.
 
 \begin{definition}[General Preferential Attachment
 Model]\protect\hypertarget{def-gpa}{}\label{def-gpa}
 
-Starting with a graph
-\(G_1 = (V_1, E_1) = (\{1,\ldots,m_0\}, \emptyset)\), at each following
-time step \(t>1\) the graph is denoted by \(G_t = (V_t, E_t)\) and is
-generated by repeating:
+Starting with a graph \(G_1 = (V_1, E_1) = (\{1\}, \emptyset)\), at each
+following time step \(t>1\) the graph \(G_t = (V_t, E_t)\) is generated
+by the following rules:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  \textbf{Growth:} Add a new vertex to the vertex set i.e. \[
+  \textbf{Growth:} Add a new vertex to the vertex set i.e.~\[
   V_t = V_{t-1} \cup \{t\}
   \]
 \item
-  \textbf{Preferential Attachment:} Add \(m\le m_0\) edges connecting
-  the new vertex to those already in the graph selected at random
-  proportional to a function of their degree(minus one)\footnote{The
-    probabilities are proportional to the degree minus one to align with
-    the results from {[}GPA REF{]}} i.e.: \[
-  E_t  = E_{t-1} \cup \tilde E
-  \] where \(\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}\) and
-  \(\tilde e_i = \{t,\tilde v_i\}\) for
-  \(\tilde v_i \sim \text{Cat}(V_{t-1}, P)\)
+  \textbf{Preferential Attachment:} Add one edge connecting the new
+  vertex to one already in the graph \(\{1,\ldots,t-1\}\) selected at
+  random with weights proportional to a function of their degree i.e.:
+  \[
+  E_t  = E_{t-1} \cup \{\tilde e\}
+  \] where \(\tilde e_i = \{t,\tilde v\}\) and \(\tilde v = i\) with
+  probability \[
+  \displaystyle\frac{g(d(i))}{\sum_{w\in V_{t-1}} g(d(i))}, \qquad i\in V_{t-1}
+  \]
 \end{enumerate}
-
-\begin{align*}
-P &= \left\{\displaystyle\frac{g(k_v-1)}{\sum_{w\in V_{t-1}} g(k_w-1)} : v \in V_{t-1}\right\}
-\end{align*}
 
 for some function \(g: \mathbb Z \mapsto \mathbb R^+\setminus\{0\}\),
 which will be referred to as the preferential attachment function
 
 \end{definition}
 
-\hypertarget{expected-degree-dristribution}{%
-\subsubsection{Expected Degree
-Dristribution}\label{expected-degree-dristribution}}
+\hypertarget{limiting-degree-distribution}{%
+\subsubsection{Limiting Degree
+Distribution}\label{limiting-degree-distribution}}
 
-In {[}GPA REF{]} the expected degree distribution for \(m=1\) was
-calculated in terms of the preferential attachment function does not
-have a general explicit form. It is defined as follows, let
-\(\lambda^*\) be the solution, if it exists, to:
+In {[}GPA REF{]} the limiting degree distribution was calculated in
+terms of the preferential attachment function and does not have a
+general explicit form. It is defined as follows, let \(\lambda^*\) be
+the solution, if it exists, to:
 
 \[
 1=\sum_{n=1}^\infty \prod_{i=1}^{n-1}\displaystyle\frac{g(i)}{g(i)+\lambda}
-\] then the expected degree distribution resulting from the GPA model
-has pmf:
+\] then the limiting degree distribution of a network resulting from the
+GPA model has probability mass function (pmf):
 
 \[
 f(k) = \displaystyle\frac{\lambda^*}{g(k) + \lambda^*}\prod_{i=0}^{k-1}\displaystyle\frac{g(i)}{g(i)+\lambda^*}
@@ -672,15 +688,9 @@ f(k) = \displaystyle\frac{\lambda^*}{g(k) + \lambda^*}\prod_{i=0}^{k-1}\displays
 \hypertarget{barabuxe1si-albert-ba}{%
 \subsection{Barabási-Albert (BA)}\label{barabuxe1si-albert-ba}}
 
-The first special case is the Barabási-Albert model, which is equivalent
-to setting the preferential attachment function \(g\) to be the identity
-function \(g(k)=k\)
-
-This model defined in Barabási and Albert (1999) and also very closely
-related to the Yule-Simon process from {[}YS REF{]} changes the
-attachment mechanism from being purely uniform on the vertices already
-in the network to being random with a probability proportional to the
-degrees of the vertices in the network.
+The GPA model has several special cases, when \(g\) is the identity
+function i.e \(g(k)=k\), it becomes the BA model (Barabási and Albert
+1999) with \(m=1\).
 
 \begin{definition}[Barabási-Albert
 Model]\protect\hypertarget{def-ba}{}\label{def-ba}
@@ -688,46 +698,42 @@ Model]\protect\hypertarget{def-ba}{}\label{def-ba}
 Starting with a graph \(G_1 = (V_1, E_1)\) where
 \(V_1 = \{1,\ldots,m_0\}\) and \(E_1 = \{\{v\}:v\in V_1\}\) i.e a graph
 with \(m_0\) vertices with one self-loop each. At each time step \(t>1\)
-the graph denoted by \(G_t = (V_1, E_1)\) is generated by repeating the
-following:
+the graph \(G_t = (V_1, E_1)\) is generated by the following rules:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  \textbf{Growth:} Add a new vertex to the vertex set i.e. \[
+  \textbf{Growth:} Add a new vertex to the vertex set i.e.~\[
   V_t = V_{t-1} \cup \{t\}
   \]
 \item
   \textbf{Preferential Attachment:} Add \(m\le m_0\) edges between the
   new vertex and those already in the graph with probability
-  proportional to each vertices degree i.e:
+  proportional to each vertices degree i.e.~ \[
+  E_t  = E_{t-1} \cup \{\tilde e_1, \ldots, \tilde e_m\}
+  \] where each new edge
+  \(\tilde e_i = \{t, \tilde v_i\}\)(\(i=1,\ldots, m\)) has
+  \(\tilde v_i\) sampled independently without replacement from
+  \(V_{t-1}\) with probability: \[
+  \frac{d(\tilde v_i)}{\sum_{u\in V_{t-1}}d(u)}
+  \]
 \end{enumerate}
-
-\[
-E_t= E_{t-1} \cup \tilde E
-\] where \(\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}\) and
-\(\tilde e_i = \{t,\tilde v_i\}\) for
-\(\tilde v_i \sim \text{Cat}(V_{t-1}, P)\)
-
-\begin{align*}
-P &= \left\{\displaystyle\frac{d(v)}{\sum_{w\in V_{t-1}} d(w)} : v \in V_{t-1}\right\}
-\end{align*}
 
 \end{definition}
 
-\hypertarget{expected-degree-distriubtion}{%
-\subsubsection{Expected Degree
-Distriubtion}\label{expected-degree-distriubtion}}
+\hypertarget{limiting-degree-distriubtion}{%
+\subsubsection{Limiting Degree
+Distriubtion}\label{limiting-degree-distriubtion}}
 
-In the same paper (Barabási and Albert (1999)) it was shown that for
-large values of \(t\) the expected degree distribution for this model is
-approximately: \[
-f(k) = \displaystyle\frac{2m^2t}{m_0+t}k^{-3} \approx 2m^2k^{-3},\qquad k\ge m
-\]
+In {[}NETWORK SCI book{]}, it was shown that for large values of \(t\),
+the limiting degree distribution of a network produces by this model is:
 
-This is clearly a regularly varying function and therefore in in the
-Fréchet domain of attraction \(\mathcal D(\Phi_2)\).
+\[
+f(k) = \frac{2m(m+1)}{k(k+1)(k+2)}, \qquad k\geq m
+\] According to {[}REF{]} this pmf is regularly varying with exponent 2,
+meaning that it is in the Fréchet domain of attraction
+\(\mathcal D(\Phi_2)\).
 
 \hypertarget{uniform-attachment-ua}{%
 \subsection{Uniform Attachment (UA)}\label{uniform-attachment-ua}}
@@ -746,31 +752,78 @@ generated by repeating the following two steps:
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  \textbf{Growth:} Add a new vertex to the vertex set i.e.~ \[
+  \textbf{Growth:} Add a new vertex to the vertex set i.e.~\[
   V_t=V_{t-1}\cup\{t\}
   \]
 \item
-  \textbf{Attachment:} Add \(m\le m_0\) random edges between the new
-  vertex and those already in the graph i.e.~ \[
-  E_t = E_{t-1} \cup \tilde E
-  \] where \(\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}\) and
-  \(\tilde e_i = \{t,\tilde v_i\}\) and \(\tilde v_i \sim U(V_{t-1})\).
+  \textbf{Uniform Attachment:} Add \(m\le m_0\) edges between the new
+  vertex and those already in the graph with probability proportional to
+  each vertices degree i.e.~ \[
+  E_t  = E_{t-1} \cup \{\tilde e_1, \ldots, \tilde e_m\}
+  \] where each new edge
+  \(\tilde e_i = \{t, \tilde v_i\}\)(\(i=1,\ldots, m\)) has
+  \(\tilde v_i\) sampled independently without replacement from
+  \(V_{t-1}\) with probability: \[
+  \frac{1}{\sum_{u\in V_{t-1}}1} = \frac{1}{|V_{t-1}|}
+  \]
 \end{enumerate}
 
 \end{definition}
 
-\hypertarget{expected-degree-distribution}{%
-\subsubsection{Expected Degree
-Distribution}\label{expected-degree-distribution}}
+\hypertarget{limiting-degree-distribution-1}{%
+\subsubsection{Limiting Degree
+Distribution}\label{limiting-degree-distribution-1}}
 
 As showing in {[}REF{]} the expected degree distribution of this model
-for large values of \(t\) is: \[
+for large values of \(t\) is approximately: \[
 f(k) = \displaystyle\frac{e}{m}\exp\left(-\displaystyle\frac{k}{m}\right),\qquad k \ge m
-\] Since this distribution has exponential form, it is in the Gumbel
-domain of attraction.
+\] Although this was not shown rigourously and treats the degree of a
+vertex as a continuous random variable, this is an shifted exponential
+distribution with left endpoint \(m\) and rate parameter \(1/m\) and as
+such is in the Gumbel domain of attraction.
+
+If \(m=1\), it is possible to get a more precise result from the result
+regarding the limiting degree distribution of the GPA. By setting the
+preferential attachment function \(g(k) = \lambda^*\), the can be shown
+that the limiting degree distribution is: \[
+f(k) = \left(\frac{1}{2} \right)^{k}, \qquad k=1,2,\ldots 
+\] This distribution also occupies the Gumbel domain of attraction.
 
 \hypertarget{sec-meth}{%
 \chapter{Methods}\label{sec-meth}}
+
+The aim of this section is to investigate the degree distribution of
+real networks and compare them to the results obtained for the
+generative models in Section~\ref{sec-gen}. First, a look at what the
+degree distributions of real networks look like.
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.66\textwidth,height=\textheight]{doc_files/figure-pdf/fig-survs-1.pdf}
+
+}
+
+\caption{\label{fig-survs}Plots of survial functions of real networks
+degrees}
+
+\end{figure}
+
+Figure~\ref{fig-survs} shows the survival function of the degrees of
+various real networks as well as ``BAsim'' and ``UAsim'' which were
+generated using the corresponding schemes in Section~\ref{sec-gen}.
+Additionally, the theoretical limiting degree distribution of both the
+UA model and the BA model (for m=1) are included on the plots. Visually
+it seems that neither of these models are adequate for modelling the
+growth of the real networks shown here.
+
+To further investigate this, Section~\ref{sec-realmodel} considers
+fitting a model to these data that will provide insight into what would
+be needed from a network generative model such that it flexible enough
+to capture the variation of shapes of degree distribution in real
+networks.
+
+\hypertarget{sec-realmodel}{%
+\section{Modelling degree distributions}\label{sec-realmodel}}
 
 As mentioned in Section~\ref{sec-mod}, the method used here to model the
 extreme values of the data will be a spliced threshold mixture.
@@ -796,33 +849,477 @@ For \(y=\lceil u\rceil,\lceil u\rceil+1, \ldots\) and
 
 \end{definition}
 
-Since the some degree distributions of real networks seen in {[}FIG{]}
-seem to be approximately linear for the bulk of the data and then begin
-to change, the spliced threshold mixture that will be used consists of a
-truncated discrete power law for the bulk of the data and a GP above a
-threshold.
+Since the some degree distributions of real networks seen in
+Figure~\ref{fig-survs} seem to be approximately linear for the bulk of
+the data and then begin to change, the spliced threshold mixture that
+will be used consists of a truncated discrete power law for the bulk of
+the data and a GP above a threshold.
 
 \begin{definition}[Power-Law IGP
 Distribution]\protect\hypertarget{def-pligp}{}\label{def-pligp}
 
 \[
 f(y) = \begin{cases}
-(1-\phi)\displaystyle\frac{y^{-(\alpha+1})}{\sum_{k=1}^v}, & y=1,2,\ldots, v\\
+(1-\phi)\displaystyle\frac{y^{-(\alpha+1})}{\sum_{k=1}^v}k^{\alpha+1}, & y=1,2,\ldots, v\\
 \phi\left[\left(1+\displaystyle\frac{\xi(y+1-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}-\left(1+\displaystyle\frac{\xi(y-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}\right],&y=v+1, v+2,\ldots
 \end{cases}
 \]
 
 \end{definition}
 
-\hypertarget{fitting-model-to-real-data}{%
-\section{Fitting model to real data}\label{fitting-model-to-real-data}}
+\hypertarget{fitting-model-to-the-data}{%
+\section{Fitting model to the data}\label{fitting-model-to-the-data}}
+
+The values of the parameters in the model for each data set were
+estimated under the Bayesian framework using a Metropolis within Gibbs
+sampler. Below are plots showing the same data as in
+Figure~\ref{fig-survs} but with the mean and 95\% confidence intervals
+of the survival function of the model for each data-set.
+
+{[}INSERT FIGURE HERE{]}
+
+Unfortunately, this model does not seem sufficient for these data.
+Perhaps, it may be better to add an additional component to the spliced
+mixture that is used to model the left tail. Since the focus is on the
+more extreme values in the distributions, instead of fitting the model
+to the full set of data, some of the lower values in the data sets will
+be removed in order to improve model fit for the remaining data. Again,
+in future this will likely be replaced by a third component in the
+spliced mixture. The fits to the truncated data sets are shown below in
+{[}FIGURE{]}.
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.66\textwidth,height=\textheight]{doc_files/figure-pdf/fig-fits2-1.pdf}
+
+}
+
+\caption{\label{fig-fits2}Plots of truncated survial functions of real
+networks degrees}
+
+\end{figure}
+
+As show by Figure~\ref{fig-fits2} left truncating the data works well to
+improve the model fit for the vast majority of the data sets. The main
+exception being the data simulated via the UA model. It is unclear why
+the model fit for this is so poor but it may be because of the low
+number of unique values of degrees. That said, below is a summary of the
+model parameters for each data set:
+
+\hypertarget{tbl-arenas-jazz}{}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0370}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1852}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2222}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1975}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1728}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1852}}@{}}
+\caption{\label{tbl-arenas-jazz}arenas-jazz}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+phi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+a
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+xi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+sig
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+v
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+phi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+a
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+xi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+sig
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+v
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+& Min. :0.8290 & Min. : 0.00333 & Min. :-0.9540 & Min. :35.04 & Min. :
+2.000 \\
+& 1st Qu.:0.9845 & 1st Qu.: 2.44954 & 1st Qu.:-0.7678 & 1st Qu.:43.47 &
+1st Qu.: 2.000 \\
+& Median :0.9845 & Median : 28.49493 & Median :-0.7199 & Median :45.89 &
+Median : 2.000 \\
+& Mean :0.9809 & Mean : 40.82553 & Mean :-0.7233 & Mean :46.09 & Mean :
+2.227 \\
+& 3rd Qu.:0.9845 & 3rd Qu.: 81.00571 & 3rd Qu.:-0.6742 & 3rd Qu.:48.72 &
+3rd Qu.: 2.000 \\
+& Max. :0.9845 & Max. :100.00000 & Max. :-0.5470 & Max. :59.77 & Max.
+:12.000 \\
+\end{longtable}
+
+\hypertarget{tbl-arenas-meta}{}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0366}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2073}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2073}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1951}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1829}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1707}}@{}}
+\caption{\label{tbl-arenas-meta}arenas-meta}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+phi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+a
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+xi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+sig
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+v
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+phi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+a
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+xi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+sig
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+v
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+& Min. :0.002632 & Min. :0.001132 & Min. :-1.3389 & Min. : 5.829 & Min.
+: 5.00 \\
+& 1st Qu.:0.152632 & 1st Qu.:0.122445 & 1st Qu.:-0.8916 & 1st Qu.:44.027
+& 1st Qu.:22.00 \\
+& Median :0.152632 & Median :0.207592 & Median :-0.7787 & Median :50.714
+& Median :22.00 \\
+& Mean :0.221311 & Mean :0.344512 & Mean :-0.7086 & Mean :48.331 & Mean
+:21.44 \\
+& 3rd Qu.:0.152632 & 3rd Qu.:0.343474 & 3rd Qu.:-0.6485 & 3rd Qu.:57.528
+& 3rd Qu.:22.00 \\
+& Max. :0.965789 & Max. :2.059039 & Max. : 0.3328 & Max. :84.683 & Max.
+:62.00 \\
+\end{longtable}
+
+\hypertarget{tbl-as-caida20071105}{}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0390}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2078}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1818}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1948}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1948}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1818}}@{}}
+\caption{\label{tbl-as-caida20071105}as-caida20071105}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+phi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+a
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+xi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+sig
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+v
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+phi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+a
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+xi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+sig
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+v
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+& Min. :0.03477 & Min. :1.916 & Min. :0.1950 & Min. : 6.248 & Min. :
+7.00 \\
+& 1st Qu.:0.05424 & 1st Qu.:2.077 & 1st Qu.:0.3563 & 1st Qu.:10.151 &
+1st Qu.:10.00 \\
+& Median :0.05424 & Median :2.100 & Median :0.3981 & Median :11.496 &
+Median :11.00 \\
+& Mean :0.05532 & Mean :2.100 & Mean :0.3989 & Mean :11.527 & Mean
+:10.93 \\
+& 3rd Qu.:0.06016 & 3rd Qu.:2.125 & 3rd Qu.:0.4405 & 3rd Qu.:12.774 &
+3rd Qu.:11.00 \\
+& Max. :0.08604 & Max. :2.338 & Max. :0.6145 & Max. :19.167 & Max.
+:17.00 \\
+\end{longtable}
+
+\hypertarget{tbl-BAsim}{}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0366}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2195}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1707}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1951}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2073}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1707}}@{}}
+\caption{\label{tbl-BAsim}BAsim}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+phi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+a
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+xi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+sig
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+v
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+phi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+a
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+xi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+sig
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+v
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+& Min. :6.012e-05 & Min. :1.562 & Min. :-4.3169 & Min. : 0.4234 & Min.
+:29.00 \\
+& 1st Qu.:1.202e-04 & 1st Qu.:1.613 & 1st Qu.:-1.2654 & 1st Qu.: 51.9085
+& 1st Qu.:52.00 \\
+& Median :5.411e-04 & Median :1.623 & Median :-0.6266 & Median : 67.1963
+& Median :89.00 \\
+& Mean :2.096e-03 & Mean :1.623 & Mean :-0.5006 & Mean : 87.0407 & Mean
+:76.73 \\
+& 3rd Qu.:3.908e-03 & 3rd Qu.:1.634 & 3rd Qu.:-0.4248 & 3rd Qu.:125.9865
+& 3rd Qu.:96.00 \\
+& Max. :1.184e-02 & Max. :1.676 & Max. :29.8810 & Max. :490.8584 & Max.
+:97.00 \\
+\end{longtable}
+
+\hypertarget{tbl-pajek-erdos}{}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0385}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2051}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1795}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2179}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1795}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1795}}@{}}
+\caption{\label{tbl-pajek-erdos}pajek-erdos}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+phi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+a
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+xi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+sig
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+v
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+phi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+a
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+xi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+sig
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+v
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+& Min. :0.03667 & Min. :1.269 & Min. :-0.43807 & Min. :19.68 & Min. :
+9.00 \\
+& 1st Qu.:0.04331 & 1st Qu.:1.330 & 1st Qu.:-0.26402 & 1st Qu.:28.44 &
+1st Qu.:12.00 \\
+& Median :0.04706 & Median :1.346 & Median :-0.21989 & Median :30.50 &
+Median :13.00 \\
+& Mean :0.04655 & Mean :1.346 & Mean :-0.22031 & Mean :30.57 & Mean
+:13.33 \\
+& 3rd Qu.:0.04908 & 3rd Qu.:1.361 & 3rd Qu.:-0.17868 & 3rd Qu.:32.47 &
+3rd Qu.:15.00 \\
+& Max. :0.05645 & Max. :1.440 & Max. : 0.02085 & Max. :44.27 & Max.
+:19.00 \\
+\end{longtable}
+
+\hypertarget{tbl-reactome}{}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0366}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1951}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2195}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1951}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1829}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1707}}@{}}
+\caption{\label{tbl-reactome}reactome}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+phi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+a
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+xi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+sig
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+v
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+phi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+a
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+xi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+sig
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+v
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+& Min. :0.04457 & Min. :9.940e-07 & Min. :-0.4912 & Min. : 62.10 & Min.
+: 80.0 \\
+& 1st Qu.:0.10684 & 1st Qu.:1.763e-04 & 1st Qu.:-0.3301 & 1st Qu.: 84.46
+& 1st Qu.:140.0 \\
+& Median :0.10684 & Median :4.007e-04 & Median :-0.3002 & Median : 90.63
+& Median :140.0 \\
+& Mean :0.11069 & Mean :4.775e-04 & Mean :-0.3017 & Mean : 91.48 & Mean
+:137.8 \\
+& 3rd Qu.:0.10684 & 3rd Qu.:4.763e-04 & 3rd Qu.:-0.2684 & 3rd Qu.: 96.60
+& 3rd Qu.:140.0 \\
+& Max. :0.21558 & Max. :4.340e-03 & Max. :-0.1467 & Max. :132.28 & Max.
+:184.0 \\
+\end{longtable}
+
+\hypertarget{tbl-UAsim}{}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0411}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2192}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1918}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2192}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1918}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1370}}@{}}
+\caption{\label{tbl-UAsim}UAsim}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+phi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+a
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+xi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+sig
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+v
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+phi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+a
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+xi
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+sig
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+v
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+& Min. :0.01518 & Min. :1.281 & Min. :-0.3375 & Min. :4.346 & Min. :7 \\
+& 1st Qu.:0.01518 & 1st Qu.:1.310 & 1st Qu.:-0.3011 & 1st Qu.:4.992 &
+1st Qu.:7 \\
+& Median :0.01518 & Median :1.317 & Median :-0.2899 & Median :5.156 &
+Median :7 \\
+& Mean :0.01518 & Mean :1.317 & Mean :-0.2904 & Mean :5.160 & Mean :7 \\
+& 3rd Qu.:0.01518 & 3rd Qu.:1.325 & 3rd Qu.:-0.2797 & 3rd Qu.:5.300 &
+3rd Qu.:7 \\
+& Max. :0.01518 & Max. :1.356 & Max. :-0.2283 & Max. :5.794 & Max. :7 \\
+\end{longtable}
 
 \hypertarget{gpa-analyses}{%
 \section{GPA analyses}\label{gpa-analyses}}
 
-\hypertarget{conclusion-and-a-conjecture}{%
-\section{Conclusion and a
-Conjecture}\label{conclusion-and-a-conjecture}}
+So far it has been shown that neither the BA model nor the UA model can
+adequately capture the range of type of degree distributions of real
+networks. So, a natural place to start when attempting to expand the
+range of possible degree distributions is the more general model, the
+GPA. This section, will use results from Shimura (2012) and
+Section~\ref{sec-ext} to investigate the possible types of degree
+distribution that may arise from different preferential attachment
+functions in the GPA model.
+
+\hypertarget{the-preferential-attachment-function}{%
+\subsection{The Preferential Attachment
+Function}\label{the-preferential-attachment-function}}
+
+From here on the preferential functions that will be used for the GPA
+model will be of the form: \[
+g(k) = k^\gamma, \qquad \gamma>0.
+\]
+
+This allows for investigating the cases where the preferential
+attachment function is sub-linear and when it is super-linear.
+
+\hypertarget{section}{%
+\subsection{}\label{section}}
+
+As discussed in Section~\ref{sec-disc}, the limiting value of
+\(\Omega(F,n)\) can give a lot of information about the behaviour of a
+discrete distribution at extreme values. Below is a plot showing the
+value of this quantity as \(n\) increases for various different values
+of \(\gamma\).
 
 \hypertarget{next-steps}{%
 \chapter{Next Steps}\label{next-steps}}

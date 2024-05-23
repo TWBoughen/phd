@@ -1,4 +1,4 @@
-
+library(fishualize)
 g = function(s,a=1){
   return((s+1)^a)
 }

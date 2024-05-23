@@ -9,12 +9,18 @@ konect_to_df = function(path){
   return(dat)
 }
 
-konect_to_df_dir = function(dir,lower=2){
+konect_to_df_dir = function(dir,lower=2, return_names=F){
   dat_list = list()
   files = list.files(dir)
+  if(length(lower)==1){
+    lower=rep(lower, length(files))
+  }
   for(i in 1:length(files) ){
     dat_list[[i]] = konect_to_df(paste0(dir,'/', files[i]))
-    dat_list[[i]]  = dat_list[[i]][dat_list[[i]][,1]>=lower,]
+    dat_list[[i]]  = dat_list[[i]][dat_list[[i]][,1]>=lower[i],]
+  }
+  if(return_names){
+    return(list(dat = dat_list, names=files))
   }
   return(dat_list)
 }
@@ -129,9 +135,18 @@ mix_mcmc_onestep = function(dat, init, params, covs, debug=F){
   ws = poss-quantile(poss, probs=0.95)
   # ws[ws<0] = 0
   
-  ps = exp(ws^0.3)
+  
   # print(sum(is.na(exp(ws^0.6))))
-  phi_star = sample(phis[!is.na(ps)], 1, prob=ps[!is.na(ps)])
+  if(runif(1)<0.95){
+    ps = exp(ws)
+    ps[ps==Inf] = 10^7
+    phi_star = sample(phis[!is.nan(ps)], 1, prob=ps[!is.nan(ps)])
+  }else{
+    ps = exp(ws^0.001)
+    ps[ps==Inf] = 10^7
+    phi_star = sample(phis[!is.nan(ps)], 1, prob=ps[!is.nan(ps)]^0.001)
+  }
+  
   prop_state = tail(acc.states,1)
   prop_state$phi=phi_star
   prop_state$v = phi_to_u(dat, phi_star)
@@ -155,11 +170,12 @@ mix_mcmc_onestep = function(dat, init, params, covs, debug=F){
   ##########################(############## alpha steps
   alpha_star = rnorm(1, tail(acc.states$a, 1), sqrt(covs$alpha))
   prop_state = tail(acc.states, 1)
-  prop_state$a = alpha_star
+  prop_state$a = min(10^2, alpha_star)
   if(debug) message('alpha: ', prop_state)
   #accepting/rejecting
   logA = min(0,lpos_rat(dat, prop_state, tail(acc.states,1),params))
-  if((log(runif(1))<logA | runif(1)<0.00) & prop_state$a>0){
+  
+  if((!is.nan(logA)& log(runif(1))<logA | runif(1)<0.00) & prop_state$a>0){
     acc.states = rbind(acc.states, prop_state)
   }
   
@@ -172,7 +188,7 @@ mix_mcmc_onestep = function(dat, init, params, covs, debug=F){
   #accepting/rejecting
   if((prop_state$sig>0| runif(1)<0.0) & prop_state$xi>(-prop_state$sig/max(dat[,1])) ){
     logA = min(0,lpos_rat(dat, prop_state, tail(acc.states,1),params))
-    if(log(runif(1))<logA ){
+    if(!is.nan(logA) & log(runif(1))<logA ){
       acc.states = rbind(acc.states, prop_state)
     }
   }
@@ -186,7 +202,11 @@ mix_mcmc = function(iter, dat, init, params, covs,update_period = 100, debug=F,p
   for(i in 2:iter){
     out = rbind(out, mix_mcmc_onestep(dat, tail(out,1)[,-ncol(out)], params, covs, debug=debug))
     if(i>10*update_period & i%%update_period==0){
+      temp = covs$shapescale
       covs$shapescale =0.1 + 2.38^2 * cov(tail(out[,c('xi', 'sig')], update_period*4)[!duplicated(tail(out[,c('xi', 'sig')], update_period*4)),])/2
+      if(sum(is.nan(covs$shapescale))>0){
+        covs$shapescale=temp
+      }
       covs$alpha = 0.1+ 2.38^2 * var(tail(out$a,update_period*4))/2
     }
     if(i %% update_period == 0){
@@ -297,17 +317,20 @@ mix_mcmc_wrap <- function(dat,iter=10000,  burn.in=1000, thin.by=10, update_peri
   return(list(dat = dat,res_thinned = res_thinburn, res=res))
 }
 
-mcmc_plot = function(dat, res_thinburn){
+mcmc_plot = function(dat, res_thinburn,ylim=c(1e-5, 1), xlim=c(1, max(dat[,1])), mar=c(1,1,1,1),xaxt=NULL, yaxt=NULL){
   x = unique(dat[,1])
   cmfs = apply(res_thinburn, 1, p_mix_apply, x=x)
   cmfs_mean = apply(cmfs, 1, mean)
   cmfs_95 = apply(cmfs, 1, quantile, prob=0.95)
   cmfs_05 = apply(cmfs, 1, quantile, prob=0.05)
   #plotting
-  plot(dat[,1], 1- cumsum(dat[,2])/sum(dat[,2]), log='xy', pch=20)
+  par(mar=mar)
+  Fk = cumsum(dat[,2])/sum(dat[,2])
+  plot(dat[,1], 1- c(0,Fk[-length(Fk)]), log='xy', pch=20,
+       xlab='Degree', ylab='Survival', xlim=xlim, ylim=ylim, xaxt=xaxt, yaxt=yaxt)
   abline(v=res_thinburn$v, col = alpha('blue', alpha=0.004))
-  polygon(c(x, rev(x)), c(1- cmfs_95, rev(1- cmfs_05)), col=alpha('gray', 0.5), lty=0)
-  lines(x, 1-cmfs_mean, col='red')
+  polygon(c(x, rev(x)), c(1- c(0,cmfs_95[-length(cmfs_95)]), rev(1- c(0,cmfs_05[-length(cmfs_05)]))), col=alpha('gray', 0.5), lty=0)
+  lines(x, 1-c(0,cmfs_mean[-length(cmfs_mean)]), col='red')
 }
 
 

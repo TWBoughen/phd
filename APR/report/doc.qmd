@@ -9,6 +9,7 @@ number-sections: true
 number-depth: 1
 format:
   pdf:
+    fig-pos: H
     documentclass: scrreprt
     papersize: a4
     fontsize: 10pt
@@ -143,11 +144,9 @@ cond.b = Vectorize(function(lambda, g){
 
 ```
 
-
 # Introduction {#sec-int}
 
 Since the aim is to gain understanding about the behaviour of the degree distribution of networks at the right tail, it seems natural to look to using methods from extreme value theory.
-
 
 # Extreme Value Theory {#sec-ext}
 
@@ -157,61 +156,46 @@ This section begins with a review of the theory and methodology for modelling th
 
 Studying the properties of the extreme values of a random variable first requires determining what exactly is considered to be an extreme value. In this section extreme values of two kinds are considered, both of which can be characterised.
 
-
 The first kind of extreme value considers the distribution of block maxima. That is, for a set of independent and identically distributed (iid) random variables $X_1,\ldots,X_n$ with common cumulative density function (cdf) $F$ what is the limiting distribution of $M_n = \max\{X_1,\ldots,X_n\}$?
 
 Clearly, as $n\rightarrow \infty$, the block maxima $M_n$ converges almost surely to the right endpoint of $F$. However, standardising the block maxima allows for some characterisation of the limiting distribution.
 
-:::{#thm-evt}
+::: {#thm-evt}
+### Fisher--Tippett--Gnedenko Theorem
 
-### Fisher–Tippett–Gnedenko Theorem
 With $X_1, \ldots,X_n \overset{\mathrm{iid}}{\sim} F$ and $\{ a_n\}_{n\ge0}, \{ b_n\}_{n\ge0}$ such that:
 
-
-$$\lim_{n\rightarrow\infty}\Pr\left(\displaystyle\frac{1}{a_n}[M_n-b_n]\le x\right) = G(x),$$
-for some non-degenerate $G$.
+$$\lim_{n\rightarrow\infty}\Pr\left(\displaystyle\frac{1}{a_n}[M_n-b_n]\le x\right) = G(x),$$ for some non-degenerate $G$.
 
 Then $F$ is said to be in the (maximum) domain of attraction of $G$, denoted $F\in\mathcal D(G)$ ,and $G$ is of one of three types:
 
-- Gumbel: $\Lambda(x) = \exp\{-\exp(-x)\},\quad x \in \mathbb R$
-- Fréchet: $\Phi_\alpha(x) = \exp\{-x^{-\alpha}\},\quad x\ge 0,\alpha>0$
-- Negative-Weibull: $\Psi_\alpha(x) = \exp\{-x^{-a}\},\quad x<0,\alpha>0$
-
+-   Gumbel: $\Lambda(x) = \exp\{-\exp(-x)\},\quad x \in \mathbb R$
+-   Fréchet: $\Phi_\alpha(x) = \exp\{-x^{-\alpha}\},\quad x\ge 0,\alpha>0$
+-   Negative-Weibull: $\Psi_\alpha(x) = \exp\{-x^{-a}\},\quad x<0,\alpha>0$
 :::
 
 Each of these three types defines a domain of attraction.
 
-:::{#def-doa}
-
+::: {#def-doa}
 ## Domains of Attraction
 
 The three domains of attraction that result from @thm-evt have the following equivalent conditions:
 
-For a distribution with cdf $F$ and survival function $\bar F$ that has right endpoint $x_F$ given by:
-$$
+For a distribution with cdf $F$ and survival function $\bar F$ that has right endpoint $x_F$ given by: $$
 x_F = \sup\{x \in \mathbb R \cup\{\infty\}:F(x)<1\}
-$$
-the distribution belongs to each domain of attraction subject to the conditions below:
+$$ the distribution belongs to each domain of attraction subject to the conditions below:
 
-
-**If there exists a positive function a**
-- Type I/Gumbel/$\mathcal D(\Lambda)$:
-$$
+**If there exists a positive function a** - Type I/Gumbel/$\mathcal D(\Lambda)$: $$
 \lim_{x\uparrow x_F} \displaystyle\frac{\bar F(x+ta(x))}{\bar F(x)} = e^{-t},\quad \forall t\in\mathbb R
-$$
-**If $x_F=\infty$: **
-- Type II/Fréchet/$\mathcal D (\Phi_\alpha)$:
-$$
+$$ **If** $x_F=\infty$:  - Type II/Fréchet/$\mathcal D (\Phi_\alpha)$: $$
 \lim_{x\rightarrow\infty} \displaystyle\frac{\bar F(tx)}{\bar F(x)} = x^{-\alpha}, \quad \forall t>0 \quad \text{ for some } \alpha>0
 $$
 
-**If $x_F<\infty$:**
+**If** $x_F<\infty$:
 
-- Type III/Negative-Weibull/$\mathcal D(\Psi_\alpha)$:
-$$
-\lim_{h\downarrow 0}\displaystyle\frac{\bar F(x_F-xh)}{\bar F(x_F-h)} = x^\alpha, \quad\alpha>0
-$$
-
+-   Type III/Negative-Weibull/$\mathcal D(\Psi_\alpha)$: $$
+    \lim_{h\downarrow 0}\displaystyle\frac{\bar F(x_F-xh)}{\bar F(x_F-h)} = x^\alpha, \quad\alpha>0
+    $$
 :::
 
 The parameter $\alpha$ in @def-doa and @thm-evt is called the extreme value index.
@@ -220,38 +204,31 @@ Here, distributions in the Gumbel domain are referred to as light tailed, distri
 
 Throughout this report functions will be referred to as regularly varying or slowly varying, what is meant by this is formally deined below:
 
-:::{#def-rv}
-
+::: {#def-rv}
 ## Regular Variation
 
 A positive,real valued, measurable function $f$ is said to be regularly varying at infinity with index $\gamma$ if for all $t>0$:
 
 $$
 \lim_{x\rightarrow\infty}\displaystyle\frac{f(tx)}{f(x)} = x^{\gamma}.
-$$
-If $\gamma =0$, then $f$  is instead said to be slowly varying at infinity.
+$$ If $\gamma =0$, then $f$ is instead said to be slowly varying at infinity.
 :::
 
 Note that the condition for a distribution to belong to the Fréchet domain of attraction is equivalent to saying that the survival function $\bar F$ is regularly varying with index $-\alpha$.
 
-
 In addition to heavy tailed distributions it is also useful to define what will be referred to as super heavy tailed distributions. This term is often just refers to specific distributions such as the log-Cauchy ,log-Gamma,and log-Weibull distributions but @fmh09 provides a more precise definition below:
 
-:::{#def-sup}
-
+::: {#def-sup}
 ## Super Heavy Tails
 
-A distribution is with survival function $\bar F$ is said to have super heavy tails if:
-$$
+A distribution is with survival function $\bar F$ is said to have super heavy tails if: $$
 \lim_{x\rightarrow\infty}\displaystyle\frac{\bar F(tx)}{\bar F (x)} = 1,\qquad \forall t>0
-$$
-That is, a distribution is called super heavy if its survival function is slowly varying.
+$$ That is, a distribution is called super heavy if its survival function is slowly varying.
 :::
 
 The three main types of extremal distribution (Gumbel, Fréchet and Negative-Weibull) can be united into one distribution, called the Generalised Extreme Value (GEV) distribution.
 
-:::{#def-gev}
-
+::: {#def-gev}
 ### Generalised Extreme Value Distribution
 
 Denoted by $\text{GEV}(\mu,\sigma,\xi)$ the distribution is characterised by three parameters $\mu \in \mathbb R$ the location, $\sigma\in \mathbb R^+$ the scale, and the shape $\xi\in \mathbb R$. It has support on $\{x\in \mathbb R:1+\xi(x-\mu)/\sigma > 0\}$ and has cdf given by:
@@ -267,54 +244,49 @@ The three types of extremal distribution are obtained from changing the shape pa
 
 Another kind of extreme values are the observations above a large threshold, like the limiting distribution of block maxima, the limiting distribution of these extreme values can be characterised by the generalised pareto (GP) distribution.
 
-
-:::{#def-gp}
-
+::: {#def-gp}
 ### Generalised Pareto Distribution
 
-Consider a random variable $X$ with the same cdf $F$ as in @thm-evt, the Generalised Pareto (GP) distribution can be obtained by using the GEV distribution and conditional probability such that for large enough threshold the GP distribution approximately describes the conditional distribution of threshold exceedances. More precisely, for sufficiently large threshold $u$ and the change of variable to $Y=X-u$:
-$$
+Consider a random variable $X$ with the same cdf $F$ as in @thm-evt, the Generalised Pareto (GP) distribution can be obtained by using the GEV distribution and conditional probability such that for large enough threshold the GP distribution approximately describes the conditional distribution of threshold exceedances. More precisely, for sufficiently large threshold $u$ and the change of variable to $Y=X-u$: $$
 \Pr(Y\le y | Y>0) = H(y) = \begin{cases}
 1-\left(1+\displaystyle\frac{\xi y}{\sigma}\right)^{-1/\xi},&y>0,\xi\ne 0 \\
 1-\exp\left(-\displaystyle\frac{y}{\sigma}\right),&y>0,\xi = 0
 \end{cases}
 $$
 :::
+
 Since this distribution was obtained using a $\text{GEV}(\mu,\sigma^*,\xi)$ the shape parameter $\xi$ is identical in both distributions and the shape parameter $\sigma$ is defined such that $\sigma = \sigma^* + \xi(u-\mu)$.
 
-It is also possible to derive the result without using the GEV, as shown in [REF].
+It is also possible to derive the result without using the GEV, as shown in \[REF\].
 
-## Discrete Extremes
+## Discrete Extremes {#sec-disc}
 
 A lot of @sec-ce is appropriate only for continuous random variables and some of the results may not hold in a discrete setting. In particular, a continuous distribution $F$ being in certain domain of attraction may not necessarily imply that a discretisation of $F$ remains in that domain of attraction.
 
-:::{#def-disc}
-
+::: {#def-disc}
 ## Discretisation
 
-The discretisation of a distribution with cdf $F$ is given by 
+The discretisation of a distribution with cdf $F$ is given by
 
 $$F^*(n) = F(n) - F(n-1), \quad n   \in \mathbb Z$$
 :::
 
 @shimura12 provides conditions for a discretisation of a continuous distribution to belong to the same domain of attraction. In particular the following theorem which corresponds to Theorem 1 in @shimura12.
 
-
-:::{#thm-shimura1}
-
+::: {#thm-shimura1}
 ### Domain of attraction consistency
-(a) Every discretisation of distribution in $\mathcal D(\Phi_\alpha)$ remains in $\mathcal D(\Phi_\alpha)$.
-(b) The discretisation of a distribution remains in $\mathcal D(\Lambda)$ if and only if the original is in $\mathcal D(\Lambda)\cap \mathcal L$. 
 
-Where $\mathcal L$ is the set of long-tailed distributions that have the property:
-$$
+(a) Every discretisation of distribution in $\mathcal D(\Phi_\alpha)$ remains in $\mathcal D(\Phi_\alpha)$.
+(b) The discretisation of a distribution remains in $\mathcal D(\Lambda)$ if and only if the original is in $\mathcal D(\Lambda)\cap \mathcal L$.
+
+Where $\mathcal L$ is the set of long-tailed distributions that have the property: $$
 \lim_{x\rightarrow \infty}\displaystyle\frac{\overline F(x+1)}{\overline F(x)} = 1   
 $$
 :::
-In addition @shimura12 introduces a quantity useful for determining the domain of a attraction that a discrete distribution belongs to. 
 
-:::{#def-omega}
+In addition @shimura12 introduces a quantity useful for determining the domain of a attraction that a discrete distribution belongs to.
 
+::: {#def-omega}
 ### Omega Function
 
 For a distribution $F$ with survival function $\overline F$ and some $n\in\mathbb Z^+$ let:
@@ -326,17 +298,15 @@ $$
 
 This quantity plays an important role in @sec-meth when determining the domain of attraction to which the degree distribution of a network generative model belongs.
 
-Applying ideas from @sec-ce to modelling discrete random variables has been approached from many different directions. What follows is a overview of some of the approaches that have been taken but will see use in this report. 
+Applying ideas from @sec-ce to modelling discrete random variables has been approached from many different directions. What follows is a overview of some of the approaches that have been taken but will see use in this report.
 
 @hds24 note that using the GP distribution as an approximation in a discrete setting leads to bias in the likelihood function and can lead to it being inadequate for modelling. They propose two other peaks over threshold methods that rely on parametric families of discrete distributions. The first, what they refer to as the discrete generalised Pareto approximation is based on an extension of the discrete survival function. The second, the generalised Zipf distribution is obtained from an extension of the probability mass function. Both methods are motivated theoretically for modelling of a large class of discrete distributions and are shown in the paper to either match or outperform using the GP to model discrete data directly.
 
 @agn22 first introduce an extended GP distribution, a continuous distribution that extends the idea of obtaining GP values from a probability integral transform (PIT) of $U(0,1)$ draws and instead considers a PIT of draws from any distribution on $(0,1)$ such as a beta distribution. This distribution is then discretised into their discrete extended GP distribution.
 
-
-
 ## Modelling {#sec-mod}
 
-The results from @sec-ce allow the GEV and GP to be fitted to the block maxima and exceedances respectively. Typically, when fitting the GP, a sufficiently high threshold needs to be specified beforehand. [COLES] provides some empirical methods for specifying the threshold, one approach is to use a threshold stability plot that uses maximum likelihood to estimate the parameters of the GP for a large range of thresholds. The threshold can be chosen as the point across all of the plots after which the values of the parameters seems stable. 
+The results from @sec-ce allow the GEV and GP to be fitted to the block maxima and exceedances respectively. Typically, when fitting the GP, a sufficiently high threshold needs to be specified beforehand. \[COLES\] provides some empirical methods for specifying the threshold, one approach is to use a threshold stability plot that uses maximum likelihood to estimate the parameters of the GP for a large range of thresholds. The threshold can be chosen as the point across all of the plots after which the values of the parameters seems stable.
 
 ```{r, echo=FALSE}
 
@@ -345,10 +315,9 @@ The results from @sec-ce allow the GEV and GP to be fitted to the block maxima a
 
 ```
 
+Another more recent approach shown in \[MACDONALD 2012\], uses a spliced threshold mixture to model the threshold exceedances where one distribution is assumed for the bulk of the data and the GP is used for those values above the threshold. This approach can also be applied in the discrete setting, and is what is used in @sec-meth.
 
-Another more recent approach shown in [MACDONALD 2012], uses a spliced threshold mixture to model the threshold exceedances where one distribution is assumed for the bulk of the data and the GP is used for those values above the threshold. This approach can also be applied in the discrete setting, and is what is used in @sec-meth.
-
-# Networks
+# Networks {#sec-net}
 
 Networks are the data sources that the results from @sec-ext will be used to analyse. Networks appear across a wide range of fields when attempting to represent complex systems and the relationships between the components within them.
 
@@ -358,33 +327,27 @@ This section will being with an introduction to the basics of networks and worki
 
 Throughout this section, graphs constructed from vertices and edges will be used as an analogue for these networks, so it is appropriate to begin with some mathematical definitions for exactly what that means.
 
-:::{#def-net}
-
+::: {#def-net}
 ### Graph
 
-A graph $G = (V,E)$ is constructed from a vertex set $V$ and an edge set $E$. The edge set can take on one of two forms depending on if the graph is directed or un-directed. If the graph is directed then $E\subseteq V^2$ i.e the edge set is contained within the set of ordered pairs of vertices, whereas if the graph is **un-directed** then $E\subseteq [V]^2$, where
-$$
+A graph $G = (V,E)$ is constructed from a vertex set $V$ and an edge set $E$. The edge set can take on one of two forms depending on if the graph is directed or un-directed. If the graph is directed then $E\subseteq V^2$ i.e the edge set is contained within the set of ordered pairs of vertices, whereas if the graph is **un-directed** then $E\subseteq [V]^2$, where $$
 [V]^2 = \{\{u,v\}:u,v\in V\}
-$$
-i.e. the edge set is contained within the set of un-ordered pairs of vertices.
-
+$$ i.e. the edge set is contained within the set of un-ordered pairs of vertices.
 :::
 
-
-
-:::{#def-deg}
-
+::: {#def-deg}
 ### Degree of un-directed graphs
 
-For an un-directed graph a vertex's degree denoted $d(v)$ for $v\in V$ is the number of edges that are connected to vertex $v$:
-$$
+For an un-directed graph a vertex's degree denoted $d(v)$ for $v\in V$ is the number of edges that are connected to vertex $v$: $$
 d(v) = |\{e\in E : v \in e\}|
 $$
 :::
 
-:::{#def-dirdeg}
+::: {#def-dirdeg}
 ## Degree of directed graphs
+
 Directed graphs have something analogous, called the in-degree $d_{in}$, out-degree $d_{out}$ and total degree $d_{tot}$. The in-degree of a vertex $v$ is the number edges with endpoint at $v$, whereas the out-degree is the number of edges with start point at $v$ and the total degree is the sum of these i.e.:
+
 ```{=tex}
 \begin{align*}
 d_{in}(v)&= |\{(w_1,w_2)\in E: w_2=v \}|\\
@@ -394,133 +357,146 @@ d_{tot}(v) &= d_{in}(v) + d_{out}(v)
 ```
 :::
 
+There are many reasons to analyse network like data, one of which is to gain an insight into the mechanics that governed the growth of the network. The next sub-section is focused on presenting several network generative models, that may be able to describe how real networks grow. For now, the focus will be on the degree distributions of these network generative models.
 
+## Network Generative Models {#sec-gen}
 
+It is useful to be able to model the way a network may have grown using simple rules as the subsequent model can then be used to simulate how the network may grow in future and provide insights into the underlying mechanics of the system the network represents. These models are also sometimes called mechanistic models in the literature. Also, although they are referred to as network generative models, graphs are still being used in the rules that govern how the generative model works.
 
-
-
-There are many reasons to analyse network like data, one of which is to gain an insight into the mechanics that governed the growth of the network. The next sub-section is focused on presenting several network generative models, that may be able to describe how real networks grow. For now, the focus will be on the degree distributions of these network generative models. 
-
-## Network Generative Models
-
-
-The models in this section begin with the most general considered in this report, and then two special cases of this model are introduced.  
+This section begins by detailing a fairly simple generative model and its limiting results for the degree distribution, followed by two special cases of the first model and their results.
 
 ### General Preferential Attachment (GPA)
 
-Under this model, at each time step one vertex is added to the network and brings an edge with it that connects the existing vertices with a probability proportional to some function of the vertices' degrees.
+Under this model, at each time step one vertex is added to the network and brings an edge with it that connects the existing vertices with a probability proportional to some function of the vertices degrees. 
 
-:::{#def-gpa}
 
+::: {#def-gpa}
 #### General Preferential Attachment Model
 
-Starting with a graph $G_1 = (V_1, E_1) = (\{1,\ldots,m_0\}, \emptyset)$, at each following time step $t>1$ the graph is denoted by $G_t = (V_t, E_t)$ and is generated by repeating:
+Starting with a graph $G_1 = (V_1, E_1) = (\{1\}, \emptyset)$, at each following time step $t>1$ the graph $G_t = (V_t, E_t)$ is generated by the following rules:
 
-1. **Growth:** Add a new vertex to the vertex set i.e.
-$$
-V_t = V_{t-1} \cup \{t\}
-$$
-2. **Preferential Attachment:** Add $m\le m_0$ edges connecting the new vertex to those already in the graph selected at random proportional to a function of their degree(minus one)[^1] i.e.:
-$$
-E_t  = E_{t-1} \cup \tilde E
-$$
-where $\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}$ and $\tilde e_i = \{t,\tilde v_i\}$ for $\tilde v_i \sim \text{Cat}(V_{t-1}, P)$
-```{=tex}
-\begin{align*}
-P &= \left\{\displaystyle\frac{g(k_v-1)}{\sum_{w\in V_{t-1}} g(k_w-1)} : v \in V_{t-1}\right\}
-\end{align*}
-```
+1.  **Growth:** Add a new vertex to the vertex set i.e. $$
+    V_t = V_{t-1} \cup \{t\}
+    $$
+2.  **Preferential Attachment:** Add one edge connecting the new vertex to one already in the graph $\{1,\ldots,t-1\}$ selected at random with weights proportional to a function of their degree i.e.: $$
+    E_t  = E_{t-1} \cup \{\tilde e\}
+    $$ where $\tilde e_i = \{t,\tilde v\}$ and $\tilde v = i$ with probability 
+    $$
+    \displaystyle\frac{g(d(i))}{\sum_{w\in V_{t-1}} g(d(i))}, \qquad i\in V_{t-1}
+    $$
+
 for some function $g: \mathbb Z \mapsto \mathbb R^+\setminus\{0\}$, which will be referred to as the preferential attachment function
 :::
-[^1]: The probabilities are proportional to the degree minus one to align with the results from [GPA REF]
 
-#### Expected Degree Dristribution
+<!-- [^1]: The probabilities are proportional to the degree minus one to align with the results from \[GPA REF\] -->
 
-In [GPA REF] the expected degree distribution for $m=1$ was calculated in terms of the preferential attachment function does not have a general explicit form. It is defined as follows, let $\lambda^*$ be the solution, if it exists, to:
+#### Limiting Degree Distribution
+
+In \[GPA REF\] the limiting degree distribution was calculated in terms of the preferential attachment function and does not have a general explicit form. It is defined as follows, let $\lambda^*$ be the solution, if it exists, to:
 
 $$
 1=\sum_{n=1}^\infty \prod_{i=1}^{n-1}\displaystyle\frac{g(i)}{g(i)+\lambda}
-$$
-then the expected degree distribution resulting from the GPA model has pmf:
+$$ then the limiting degree distribution of a network resulting from the GPA model has probability mass function (pmf):
 
 $$
 f(k) = \displaystyle\frac{\lambda^*}{g(k) + \lambda^*}\prod_{i=0}^{k-1}\displaystyle\frac{g(i)}{g(i)+\lambda^*}
 $$
 
-
-
 ### Barabási-Albert (BA)
 
-The first special case is the Barabási-Albert model, which is equivalent to setting the preferential attachment function $g$ to be the identity function $g(k)=k$
+The GPA model has several special cases, when $g$ is the identity function i.e $g(k)=k$, it becomes the BA model [@Barabasi99] with $m=1$.
 
-
-This model defined in @Barabasi99 and also very closely related to the Yule-Simon process from [YS REF] changes the attachment mechanism from being purely uniform on the vertices already in the network to being random with a probability proportional to the degrees of the vertices in the network.
-
-:::{#def-ba}
+::: {#def-ba}
 #### Barabási-Albert Model
-Starting with a graph $G_1 = (V_1, E_1)$ where $V_1 = \{1,\ldots,m_0\}$ and $E_1 = \{\{v\}:v\in V_1\}$ i.e a graph with $m_0$ vertices with one self-loop each. At each time step $t>1$ the graph denoted by $G_t = (V_1, E_1)$ is generated by repeating the following:
 
-1. **Growth:** Add a new vertex to the vertex set i.e.
-$$
-V_t = V_{t-1} \cup \{t\}
-$$
-2. **Preferential Attachment:** Add $m\le m_0$ edges between the new vertex and those already in the graph with probability proportional to each vertices degree i.e:
+Starting with a graph $G_1 = (V_1, E_1)$ where $V_1 = \{1,\ldots,m_0\}$ and $E_1 = \{\{v\}:v\in V_1\}$ i.e a graph with $m_0$ vertices with one self-loop each. At each time step $t>1$ the graph $G_t = (V_1, E_1)$ is generated by the following rules:
 
+1.  **Growth:** Add a new vertex to the vertex set i.e. $$
+    V_t = V_{t-1} \cup \{t\}
+    $$
+2.  **Preferential Attachment:** Add $m\le m_0$ edges between the new vertex and those already in the graph with probability proportional to each vertices degree i.e. 
 $$
-E_t= E_{t-1} \cup \tilde E
+E_t  = E_{t-1} \cup \{\tilde e_1, \ldots, \tilde e_m\}
 $$
-where $\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}$ and $\tilde e_i = \{t,\tilde v_i\}$ for $\tilde v_i \sim \text{Cat}(V_{t-1}, P)$
+where each new edge $\tilde e_i = \{t, \tilde v_i\}$($i=1,\ldots, m$) has $\tilde v_i$ sampled independently without replacement from $V_{t-1}$ with probability:
+$$
+\frac{d(\tilde v_i)}{\sum_{u\in V_{t-1}}d(u)}
+$$
 
-```{=tex}
-\begin{align*}
-P &= \left\{\displaystyle\frac{d(v)}{\sum_{w\in V_{t-1}} d(w)} : v \in V_{t-1}\right\}
-\end{align*}
-```
+
 :::
-#### Expected Degree Distriubtion
-In the same paper (@Barabasi99) it was shown that for large values of $t$ the expected degree distribution for this model is approximately:
-$$
-f(k) = \displaystyle\frac{2m^2t}{m_0+t}k^{-3} \approx 2m^2k^{-3},\qquad k\ge m
-$$
 
-This is clearly a regularly varying function and therefore in in the Fréchet domain of attraction $\mathcal D(\Phi_2)$.
+#### Limiting Degree Distriubtion
+
+In [NETWORK SCI book], it was shown that for large values of $t$, the limiting degree distribution of a network produces by this model is:
+
+$$
+f(k) = \frac{2m(m+1)}{k(k+1)(k+2)}, \qquad k\geq m
+$$
+According to [REF] this pmf is regularly varying with exponent 2, meaning that it is in the Fréchet domain of attraction $\mathcal D(\Phi_2)$.
 
 
 ### Uniform Attachment (UA)
 
 The final special case presented here is obtained from setting the preferential attachment function $g$ to be some constant value.
 
-:::{#def-ua}
-
+::: {#def-ua}
 #### Uniform Attachment Model
 
 Start with a graph $G_1 = (V_1, E_1) = (\{1,\ldots,m_0\}, \emptyset)$, at each time step $t>1$ the graph is denoted by $G_t=(V_t, E_t)$ and generated by repeating the following two steps:
 
-1. **Growth:** Add a new vertex to the vertex set i.e. 
+1.  **Growth:** Add a new vertex to the vertex set i.e. $$
+    V_t=V_{t-1}\cup\{t\}
+    $$
+2.  **Uniform Attachment:** Add $m\le m_0$ edges between the new vertex and those already in the graph with probability proportional to each vertices degree i.e. 
 $$
-V_t=V_{t-1}\cup\{t\}
+E_t  = E_{t-1} \cup \{\tilde e_1, \ldots, \tilde e_m\}
 $$
-2. **Attachment:** Add $m\le m_0$ random edges between the new vertex and those already in the graph i.e. 
+where each new edge $\tilde e_i = \{t, \tilde v_i\}$($i=1,\ldots, m$) has $\tilde v_i$ sampled independently without replacement from $V_{t-1}$ with probability:
 $$
-E_t = E_{t-1} \cup \tilde E
+\frac{1}{\sum_{u\in V_{t-1}}1} = \frac{1}{|V_{t-1}|}
 $$
-where $\tilde E = \{\tilde e_1,\ldots, \tilde e_m\}$ and $\tilde e_i = \{t,\tilde v_i\}$ and $\tilde v_i \sim U(V_{t-1})$.
 
+    
 :::
 
-#### Expected Degree Distribution
-As showing in [REF] the expected degree distribution of this model for large values of $t$ is:
-$$
+#### Limiting Degree Distribution
+
+As showing in \[REF\] the expected degree distribution of this model for large values of $t$ is approximately: $$
 f(k) = \displaystyle\frac{e}{m}\exp\left(-\displaystyle\frac{k}{m}\right),\qquad k \ge m
+$$ 
+Although this was not shown rigourously and treats the degree of a vertex as a continuous random variable, this is an shifted exponential distribution with left endpoint $m$ and rate parameter $1/m$ and as such is in the Gumbel domain of attraction.
+
+If $m=1$, it is possible to get a more precise result from the result  regarding the limiting degree distribution of the GPA. By setting the preferential attachment function $g(k) = \lambda^*$, the can be shown that the limiting degree distribution is:
 $$
-Since this distribution has exponential form, it is in the Gumbel domain of attraction.
+f(k) = \left(\frac{1}{2} \right)^{k}, \qquad k=1,2,\ldots 
+$$
+This distribution also occupies the Gumbel domain of attraction. 
 
 # Methods {#sec-meth}
 
-As mentioned in @sec-mod, the method used here to model the extreme values of the data will be a spliced threshold mixture. Specifically, it will be a spliced threshold mixture of a power law and a discretisation of the generalised pareto distribution similar to what is defined in [ROHRBECK].
+The aim of this section is to investigate the degree distribution of real networks and compare them to the results obtained for the generative models in @sec-gen. First, a look at what the degree distributions of real networks look like.
 
-:::{#def-igp}
+```{r,echo=FALSE, warning=FALSE, message=FALSE,cache=TRUE}
+#| fig-width: 6
+#| fig-asp: 1
+#| out-width: 66%
+#| panel: fill
+#| fig-cap: "Plots of survial functions of real networks degrees"
+#| fig-cap-location: top
+#| label: fig-survs
+source('../scripts/plot_dir.R')
+nms = plot_dir('../data/data_for_mcmc')
+```
+@fig-survs shows the survival function of the degrees of various real networks as well as "BAsim"  and "UAsim" which were generated using the corresponding schemes in @sec-gen. Additionally, the theoretical limiting degree distribution of both the UA model and the BA model (for m=1) are included on the plots. Visually it seems that neither of these models are adequate for modelling the growth of the real networks shown here. 
 
+To further investigate this, @sec-realmodel considers fitting a model to these data that will provide insight into what would be needed from a network generative model such that it flexible enough to capture the variation of shapes of degree distribution in real networks.
+
+## Modelling degree distributions {#sec-realmodel}
+
+As mentioned in @sec-mod, the method used here to model the extreme values of the data will be a spliced threshold mixture. Specifically, it will be a spliced threshold mixture of a power law and a discretisation of the generalised pareto distribution similar to what is defined in \[ROHRBECK\].
+
+::: {#def-igp}
 ## Intergral Generalised Pareto Distribution (IGP)
 
 Consider a random variable $X$ with cdf $F$, and consider the random variable $Y=\lfloor X \rfloor$. From @def-gp, $X|X>u \sim GP(\sigma, \xi)$ for some sufficiently large $u\in \mathbb R^+$ and it can be obtained that the distribution of $Y|Y>u$ has distribution defined below:
@@ -529,37 +505,113 @@ $$
 \Pr(Y=y>Y>u) = \left(1+\displaystyle\frac{\xi(y+1-\lceil u\rceil)}{\sigma_0+\xi\lceil u\rceil}\right)_+^{-1/\xi}-\left(1+\displaystyle\frac{\xi(y-\lceil u\rceil)}{\sigma_0+\xi\lceil u\rceil}\right)_+^{-1/\xi}
 $$
 
-
 For $y=\lceil u\rceil,\lceil u\rceil+1, \ldots$ and $\xi \in \mathbb R$ and $u, \sigma_0 \in \mathbb R^+.$
 :::
 
+Since the some degree distributions of real networks seen in @fig-survs seem to be approximately linear for the bulk of the data and then begin to change, the spliced threshold mixture that will be used consists of a truncated discrete power law for the bulk of the data and a GP above a threshold.
 
-Since the some degree distributions of real networks seen in [FIG] seem to be approximately linear for the bulk of the data and then begin to change, the spliced threshold mixture that will be used consists of a truncated discrete power law for the bulk of the data and a GP above a threshold.
-
-:::{#def-pligp}
-
+::: {#def-pligp}
 ## Power-Law IGP Distribution
-
 
 $$
 f(y) = \begin{cases}
-(1-\phi)\displaystyle\frac{y^{-(\alpha+1})}{\sum_{k=1}^v}, & y=1,2,\ldots, v\\
+(1-\phi)\displaystyle\frac{y^{-(\alpha+1})}{\sum_{k=1}^v}k^{\alpha+1}, & y=1,2,\ldots, v\\
 \phi\left[\left(1+\displaystyle\frac{\xi(y+1-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}-\left(1+\displaystyle\frac{\xi(y-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}\right],&y=v+1, v+2,\ldots
 \end{cases}
 $$
-
 :::
 
+## Fitting model to the data
 
-## Fitting model to real data
+The values of the parameters in the model for each data set were estimated under the Bayesian framework using a Metropolis within Gibbs sampler. Below are plots showing the same data as in @fig-survs but with the mean and 95% confidence intervals of the survival function of the model for each data-set. 
+
+[INSERT FIGURE HERE]
+
+Unfortunately, this model does not seem sufficient for these data. Perhaps, it may be better to add an additional component to the spliced mixture that is used to model the left tail. Since the focus is on the more extreme values in the distributions, instead of fitting the model to the full set of data, some of the lower values in the data sets will be removed in order to improve model fit for the remaining data. Again, in future this will likely be replaced by a third component in the spliced mixture. The fits to the truncated data sets are shown below in [FIGURE].
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE, cache=TRUE}
+#| fig-width: 6
+#| fig-asp: 1
+#| out-width: 66%
+#| fig-cap: "Plots of truncated survial functions of real networks degrees"
+#| fig-cap-location: top
+#| label: fig-fits2
+res=readRDS('../data/mcmc.outputs/dir_trunc.out.rds')
+n = ncol(res)
+auto.mfrow(n)
+x = par()$mfrow[1]
+y = par()$mfrow[2]
+mx_dat=0
+min_prob=1
+for(i in 1:n){
+  d = res[,i]$dat
+  mx_dat = max(mx_dat, max(d[,1]))
+  min_prob = min(min_prob, d[nrow(d),2]/sum(d[,2]))
+}
+
+for(i in 1:n){
+    x_ax = 'n'
+    y_ax='n'
+    marge = c(0,0,0,0)
+    if(i %% x ==1){
+      marge[2] = 0
+      y_ax = NULL
+    }
+    if(i>n-x){
+      x_ax=NULL
+    }
+    if(i>(y-1)*x){
+      marge[1] = 2
+    }
+  mcmc_plot(res[,i]$dat, as.data.frame(res[,i]$res_thinned),
+            xlim=c(1,mx_dat),ylim=c(min_prob,1),mar=marge,xaxt=x_ax, yaxt=y_ax)
+  legend('bottomleft', legend=strsplit(nms[i], 'out.')[[1]][2], pch=20)
+}
+```
+As show by @fig-fits2 left truncating the data works well to improve the model fit for the vast majority of the data sets. The main exception being the data simulated via the UA model. It is unclear why the model fit for this is so poor but it may be because of the low number of unique values of degrees. That said, below is a summary of the model parameters for each data set:
+
+```{r,echo=FALSE}
+#| output: asis
+library(kableExtra)
+library(knitr)
+summary_list = list()
+for(i in 1:n){
+  summary_list[[i]] = summary(res[,i]$res_thinned)
+  cat(sep = "\n", knitr::knit_child(quiet = TRUE, text = c(
+    "```{r}",
+    "#| echo: false",
+    sprintf("#| tbl-cap: %s", strsplit(nms[i], 'out.')[[1]][2]),
+    sprintf("#| label: tbl-%s", strsplit(nms[i], 'out.')[[1]][2]),
+    "kable(summary_list[[i]])",
+    "```")))
+}
+```
+
 
 ## GPA analyses
 
-## Conclusion and a Conjecture
+So far it has been shown that neither the BA model nor the UA model can adequately capture the range of type of degree distributions of real networks. So, a natural place to start when attempting to expand the range of possible degree distributions is the more general model, the GPA. This section, will use results from @shimura12 and @sec-ext to investigate the possible types of degree distribution that may arise from different preferential attachment functions in the GPA model.
+
+### The Preferential Attachment Function
+
+From here on the preferential functions that will be used for the GPA model will be of the form:
+$$
+g(k) = k^\gamma, \qquad \gamma>0.
+$$
+
+This allows for investigating the cases where the preferential attachment function is sub-linear and when it is super-linear.
+
+###
+
+As discussed in @sec-disc, the limiting value of $\Omega(F,n)$ can give a lot of information about the behaviour of a discrete distribution at extreme values. Below is a plot showing the value of this quantity as $n$ increases for various different values of $\gamma$.
+
+
+
+
+
 
 # Next Steps
 
+{{< pagebreak >}} 
 
-
-{{< pagebreak >}}
 # References {.unnumbered}
