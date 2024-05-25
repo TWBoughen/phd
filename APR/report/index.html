@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.433">
+<meta name="generator" content="quarto-1.3.450">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -336,7 +336,7 @@ f(k) = \displaystyle\frac{\lambda^*}{g(k) + \lambda^*}\prod_{i=0}^{k-1}\displays
 <li><strong>Growth:</strong> Add a new vertex to the vertex set i.e.&nbsp;<span class="math display">\[
 V_t = V_{t-1} \cup \{t\}
 \]</span></li>
-<li><strong>Preferential Attachment:</strong> Add <span class="math inline">\(m\le m_0\)</span> edges between the new vertex and those already in the graph with probability proportional to each vertices degree i.e.&nbsp; <span class="math display">\[
+<li><strong>Preferential Attachment:</strong> Add <span class="math inline">\(m\le m_0\)</span> edges between the new vertex and those already in the graph with probability proportional to each vertices degree i.e.&nbsp;<span class="math display">\[
 E_t  = E_{t-1} \cup \{\tilde e_1, \ldots, \tilde e_m\}
 \]</span> where each new edge <span class="math inline">\(\tilde e_i = \{t, \tilde v_i\}\)</span>(<span class="math inline">\(i=1,\ldots, m\)</span>) has <span class="math inline">\(\tilde v_i\)</span> sampled independently without replacement from <span class="math inline">\(V_{t-1}\)</span> with probability: <span class="math display">\[
 \frac{d(\tilde v_i)}{\sum_{u\in V_{t-1}}d(u)}
@@ -360,7 +360,7 @@ f(k) = \frac{2m(m+1)}{k(k+1)(k+2)}, \qquad k\geq m
 <li><strong>Growth:</strong> Add a new vertex to the vertex set i.e.&nbsp;<span class="math display">\[
 V_t=V_{t-1}\cup\{t\}
 \]</span></li>
-<li><strong>Uniform Attachment:</strong> Add <span class="math inline">\(m\le m_0\)</span> edges between the new vertex and those already in the graph with probability proportional to each vertices degree i.e.&nbsp; <span class="math display">\[
+<li><strong>Uniform Attachment:</strong> Add <span class="math inline">\(m\le m_0\)</span> edges between the new vertex and those already in the graph with probability proportional to each vertices degree i.e.&nbsp;<span class="math display">\[
 E_t  = E_{t-1} \cup \{\tilde e_1, \ldots, \tilde e_m\}
 \]</span> where each new edge <span class="math inline">\(\tilde e_i = \{t, \tilde v_i\}\)</span>(<span class="math inline">\(i=1,\ldots, m\)</span>) has <span class="math inline">\(\tilde v_i\)</span> sampled independently without replacement from <span class="math inline">\(V_{t-1}\)</span> with probability: <span class="math display">\[
 \frac{1}{\sum_{u\in V_{t-1}}1} = \frac{1}{|V_{t-1}|}
@@ -421,7 +421,7 @@ f(y) = \begin{cases}
 <section id="fitting-model-to-the-data" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="fitting-model-to-the-data"><span class="header-section-number">4.2</span> Fitting model to the data</h2>
 <p>The values of the parameters in the model for each data set were estimated under the Bayesian framework using a Metropolis within Gibbs sampler. Below are plots showing the same data as in <a href="#fig-survs">Figure&nbsp;1</a> but with the mean and 95% confidence intervals of the survival function of the model for each data-set.</p>
-<div class="cell" data-fig-cap-location="top" data-fig.asp="1" data-hash="doc_cache/html/fig-fits1_ab2d8fce04314272100df4845adb9ff3">
+<div class="cell" data-fig-cap-location="top" data-fig.asp="1">
 <div class="cell-output-display">
 <div id="fig-fits1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -431,561 +431,44 @@ f(y) = \begin{cases}
 </div>
 </div>
 </div>
-<p>Unfortunately, this model does not seem sufficient for these data. Perhaps, it may be better to add an additional component to the spliced mixture that is used to model the left tail. Since the focus is on the more extreme values in the distributions, instead of fitting the model to the full set of data, some of the lower values in the data sets will be removed in order to improve model fit for the remaining data. Again, in future this will likely be replaced by a third component in the spliced mixture. The fits to the truncated data sets are shown below in <a href="#fig-fits2">Figure&nbsp;3</a>.</p>
-<div class="cell" data-fig-cap-location="top" data-fig.asp="1" data-hash="doc_cache/html/fig-fits2_c53c5b2a7b78d62ac4b24cec06554d97">
+<p>As show by <a href="#fig-fits1">Figure&nbsp;2</a> the model seems to fit the data quite well, below are some plot summarising each of the paramters for each of the models:</p>
+<div class="cell" data-fig.asp="0.4">
 <div class="cell-output-display">
-<div id="fig-fits2" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-alpha" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="doc_files/figure-html/fig-fits2-1.png" class="img-fluid figure-img" style="width:66.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;3: Plots of truncated survial functions of real networks degrees</figcaption>
+<p><img src="doc_files/figure-html/fig-alpha-1.png" class="img-fluid figure-img" style="width:75.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3: Posterior of power law index (<span class="math inline">\(\alpha\)</span>)</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>As show by <a href="#fig-fits2">Figure&nbsp;3</a> left truncating the data works well to improve the model fit for the vast majority of the data sets. The main exception being the data simulated via the UA model. It is unclear why the model fit for this is so poor but it may be because of the low number of unique values of degrees. That said, below is a summary of the model parameters for each data set:</p>
-<div class="cell" data-hash="doc_cache/html/unnamed-chunk-7_cd04bfedf87ce4dbf4b443b37a8f204c">
-<pre><code>
-Attaching package: 'kableExtra'</code></pre>
-<pre><code>The following object is masked from 'package:dplyr':
-
-    group_rows</code></pre>
-<div class="cell">
+<div class="cell" data-fig.asp="0.4">
 <div class="cell-output-display">
-<div id="tbl-arenas-jazz" class="anchored">
-<table class="table table-sm table-striped small">
-<caption>Table&nbsp;1: arenas-jazz</caption>
-<colgroup>
-<col style="width: 3%">
-<col style="width: 18%">
-<col style="width: 22%">
-<col style="width: 19%">
-<col style="width: 17%">
-<col style="width: 18%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;"></th>
-<th style="text-align: left;">phi</th>
-<th style="text-align: left;">a</th>
-<th style="text-align: left;">xi</th>
-<th style="text-align: left;">sig</th>
-<th style="text-align: left;">v</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Min. :0.8290</td>
-<td style="text-align: left;">Min. : 0.00333</td>
-<td style="text-align: left;">Min. :-0.9540</td>
-<td style="text-align: left;">Min. :35.04</td>
-<td style="text-align: left;">Min. : 2.000</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">1st Qu.:0.9845</td>
-<td style="text-align: left;">1st Qu.: 2.44954</td>
-<td style="text-align: left;">1st Qu.:-0.7678</td>
-<td style="text-align: left;">1st Qu.:43.47</td>
-<td style="text-align: left;">1st Qu.: 2.000</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Median :0.9845</td>
-<td style="text-align: left;">Median : 28.49493</td>
-<td style="text-align: left;">Median :-0.7199</td>
-<td style="text-align: left;">Median :45.89</td>
-<td style="text-align: left;">Median : 2.000</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Mean :0.9809</td>
-<td style="text-align: left;">Mean : 40.82553</td>
-<td style="text-align: left;">Mean :-0.7233</td>
-<td style="text-align: left;">Mean :46.09</td>
-<td style="text-align: left;">Mean : 2.227</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">3rd Qu.:0.9845</td>
-<td style="text-align: left;">3rd Qu.: 81.00571</td>
-<td style="text-align: left;">3rd Qu.:-0.6742</td>
-<td style="text-align: left;">3rd Qu.:48.72</td>
-<td style="text-align: left;">3rd Qu.: 2.000</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Max. :0.9845</td>
-<td style="text-align: left;">Max. :100.00000</td>
-<td style="text-align: left;">Max. :-0.5470</td>
-<td style="text-align: left;">Max. :59.77</td>
-<td style="text-align: left;">Max. :12.000</td>
-</tr>
-</tbody>
-</table>
+<div id="fig-shape" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="doc_files/figure-html/fig-shape-1.png" class="img-fluid figure-img" style="width:75.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;4: Posterior of shape ($)</figcaption>
+</figure>
 </div>
 </div>
 </div>
-<div class="cell">
+<div class="cell" data-fig.asp="0.4">
 <div class="cell-output-display">
-<div id="tbl-arenas-meta" class="anchored">
-<table class="table table-sm table-striped small">
-<caption>Table&nbsp;2: arenas-meta</caption>
-<colgroup>
-<col style="width: 3%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 19%">
-<col style="width: 18%">
-<col style="width: 17%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;"></th>
-<th style="text-align: left;">phi</th>
-<th style="text-align: left;">a</th>
-<th style="text-align: left;">xi</th>
-<th style="text-align: left;">sig</th>
-<th style="text-align: left;">v</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Min. :0.002632</td>
-<td style="text-align: left;">Min. :0.001132</td>
-<td style="text-align: left;">Min. :-1.3389</td>
-<td style="text-align: left;">Min. : 5.829</td>
-<td style="text-align: left;">Min. : 5.00</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">1st Qu.:0.152632</td>
-<td style="text-align: left;">1st Qu.:0.122445</td>
-<td style="text-align: left;">1st Qu.:-0.8916</td>
-<td style="text-align: left;">1st Qu.:44.027</td>
-<td style="text-align: left;">1st Qu.:22.00</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Median :0.152632</td>
-<td style="text-align: left;">Median :0.207592</td>
-<td style="text-align: left;">Median :-0.7787</td>
-<td style="text-align: left;">Median :50.714</td>
-<td style="text-align: left;">Median :22.00</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Mean :0.221311</td>
-<td style="text-align: left;">Mean :0.344512</td>
-<td style="text-align: left;">Mean :-0.7086</td>
-<td style="text-align: left;">Mean :48.331</td>
-<td style="text-align: left;">Mean :21.44</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">3rd Qu.:0.152632</td>
-<td style="text-align: left;">3rd Qu.:0.343474</td>
-<td style="text-align: left;">3rd Qu.:-0.6485</td>
-<td style="text-align: left;">3rd Qu.:57.528</td>
-<td style="text-align: left;">3rd Qu.:22.00</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Max. :0.965789</td>
-<td style="text-align: left;">Max. :2.059039</td>
-<td style="text-align: left;">Max. : 0.3328</td>
-<td style="text-align: left;">Max. :84.683</td>
-<td style="text-align: left;">Max. :62.00</td>
-</tr>
-</tbody>
-</table>
+<div id="fig-scale" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="doc_files/figure-html/fig-scale-1.png" class="img-fluid figure-img" style="width:75.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;5: Posterior of scale (<span class="math inline">\(\sigma\)</span>)</figcaption>
+</figure>
 </div>
 </div>
 </div>
-<div class="cell">
+<div class="cell" data-fig.asp="0.4">
 <div class="cell-output-display">
-<div id="tbl-as-caida20071105" class="anchored">
-<table class="table table-sm table-striped small">
-<caption>Table&nbsp;3: as-caida20071105</caption>
-<colgroup>
-<col style="width: 3%">
-<col style="width: 20%">
-<col style="width: 18%">
-<col style="width: 19%">
-<col style="width: 19%">
-<col style="width: 18%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;"></th>
-<th style="text-align: left;">phi</th>
-<th style="text-align: left;">a</th>
-<th style="text-align: left;">xi</th>
-<th style="text-align: left;">sig</th>
-<th style="text-align: left;">v</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Min. :0.03477</td>
-<td style="text-align: left;">Min. :1.916</td>
-<td style="text-align: left;">Min. :0.1950</td>
-<td style="text-align: left;">Min. : 6.248</td>
-<td style="text-align: left;">Min. : 7.00</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">1st Qu.:0.05424</td>
-<td style="text-align: left;">1st Qu.:2.077</td>
-<td style="text-align: left;">1st Qu.:0.3563</td>
-<td style="text-align: left;">1st Qu.:10.151</td>
-<td style="text-align: left;">1st Qu.:10.00</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Median :0.05424</td>
-<td style="text-align: left;">Median :2.100</td>
-<td style="text-align: left;">Median :0.3981</td>
-<td style="text-align: left;">Median :11.496</td>
-<td style="text-align: left;">Median :11.00</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Mean :0.05532</td>
-<td style="text-align: left;">Mean :2.100</td>
-<td style="text-align: left;">Mean :0.3989</td>
-<td style="text-align: left;">Mean :11.527</td>
-<td style="text-align: left;">Mean :10.93</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">3rd Qu.:0.06016</td>
-<td style="text-align: left;">3rd Qu.:2.125</td>
-<td style="text-align: left;">3rd Qu.:0.4405</td>
-<td style="text-align: left;">3rd Qu.:12.774</td>
-<td style="text-align: left;">3rd Qu.:11.00</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Max. :0.08604</td>
-<td style="text-align: left;">Max. :2.338</td>
-<td style="text-align: left;">Max. :0.6145</td>
-<td style="text-align: left;">Max. :19.167</td>
-<td style="text-align: left;">Max. :17.00</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div id="tbl-BAsim" class="anchored">
-<table class="table table-sm table-striped small">
-<caption>Table&nbsp;4: BAsim</caption>
-<colgroup>
-<col style="width: 3%">
-<col style="width: 21%">
-<col style="width: 17%">
-<col style="width: 19%">
-<col style="width: 20%">
-<col style="width: 17%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;"></th>
-<th style="text-align: left;">phi</th>
-<th style="text-align: left;">a</th>
-<th style="text-align: left;">xi</th>
-<th style="text-align: left;">sig</th>
-<th style="text-align: left;">v</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Min. :6.012e-05</td>
-<td style="text-align: left;">Min. :1.562</td>
-<td style="text-align: left;">Min. :-4.3169</td>
-<td style="text-align: left;">Min. : 0.4234</td>
-<td style="text-align: left;">Min. :29.00</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">1st Qu.:1.202e-04</td>
-<td style="text-align: left;">1st Qu.:1.613</td>
-<td style="text-align: left;">1st Qu.:-1.2654</td>
-<td style="text-align: left;">1st Qu.: 51.9085</td>
-<td style="text-align: left;">1st Qu.:52.00</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Median :5.411e-04</td>
-<td style="text-align: left;">Median :1.623</td>
-<td style="text-align: left;">Median :-0.6266</td>
-<td style="text-align: left;">Median : 67.1963</td>
-<td style="text-align: left;">Median :89.00</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Mean :2.096e-03</td>
-<td style="text-align: left;">Mean :1.623</td>
-<td style="text-align: left;">Mean :-0.5006</td>
-<td style="text-align: left;">Mean : 87.0407</td>
-<td style="text-align: left;">Mean :76.73</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">3rd Qu.:3.908e-03</td>
-<td style="text-align: left;">3rd Qu.:1.634</td>
-<td style="text-align: left;">3rd Qu.:-0.4248</td>
-<td style="text-align: left;">3rd Qu.:125.9865</td>
-<td style="text-align: left;">3rd Qu.:96.00</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Max. :1.184e-02</td>
-<td style="text-align: left;">Max. :1.676</td>
-<td style="text-align: left;">Max. :29.8810</td>
-<td style="text-align: left;">Max. :490.8584</td>
-<td style="text-align: left;">Max. :97.00</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div id="tbl-pajek-erdos" class="anchored">
-<table class="table table-sm table-striped small">
-<caption>Table&nbsp;5: pajek-erdos</caption>
-<colgroup>
-<col style="width: 3%">
-<col style="width: 20%">
-<col style="width: 17%">
-<col style="width: 21%">
-<col style="width: 17%">
-<col style="width: 17%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;"></th>
-<th style="text-align: left;">phi</th>
-<th style="text-align: left;">a</th>
-<th style="text-align: left;">xi</th>
-<th style="text-align: left;">sig</th>
-<th style="text-align: left;">v</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Min. :0.03667</td>
-<td style="text-align: left;">Min. :1.269</td>
-<td style="text-align: left;">Min. :-0.43807</td>
-<td style="text-align: left;">Min. :19.68</td>
-<td style="text-align: left;">Min. : 9.00</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">1st Qu.:0.04331</td>
-<td style="text-align: left;">1st Qu.:1.330</td>
-<td style="text-align: left;">1st Qu.:-0.26402</td>
-<td style="text-align: left;">1st Qu.:28.44</td>
-<td style="text-align: left;">1st Qu.:12.00</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Median :0.04706</td>
-<td style="text-align: left;">Median :1.346</td>
-<td style="text-align: left;">Median :-0.21989</td>
-<td style="text-align: left;">Median :30.50</td>
-<td style="text-align: left;">Median :13.00</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Mean :0.04655</td>
-<td style="text-align: left;">Mean :1.346</td>
-<td style="text-align: left;">Mean :-0.22031</td>
-<td style="text-align: left;">Mean :30.57</td>
-<td style="text-align: left;">Mean :13.33</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">3rd Qu.:0.04908</td>
-<td style="text-align: left;">3rd Qu.:1.361</td>
-<td style="text-align: left;">3rd Qu.:-0.17868</td>
-<td style="text-align: left;">3rd Qu.:32.47</td>
-<td style="text-align: left;">3rd Qu.:15.00</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Max. :0.05645</td>
-<td style="text-align: left;">Max. :1.440</td>
-<td style="text-align: left;">Max. : 0.02085</td>
-<td style="text-align: left;">Max. :44.27</td>
-<td style="text-align: left;">Max. :19.00</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div id="tbl-reactome" class="anchored">
-<table class="table table-sm table-striped small">
-<caption>Table&nbsp;6: reactome</caption>
-<colgroup>
-<col style="width: 3%">
-<col style="width: 19%">
-<col style="width: 21%">
-<col style="width: 19%">
-<col style="width: 18%">
-<col style="width: 17%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;"></th>
-<th style="text-align: left;">phi</th>
-<th style="text-align: left;">a</th>
-<th style="text-align: left;">xi</th>
-<th style="text-align: left;">sig</th>
-<th style="text-align: left;">v</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Min. :0.04457</td>
-<td style="text-align: left;">Min. :9.940e-07</td>
-<td style="text-align: left;">Min. :-0.4912</td>
-<td style="text-align: left;">Min. : 62.10</td>
-<td style="text-align: left;">Min. : 80.0</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">1st Qu.:0.10684</td>
-<td style="text-align: left;">1st Qu.:1.763e-04</td>
-<td style="text-align: left;">1st Qu.:-0.3301</td>
-<td style="text-align: left;">1st Qu.: 84.46</td>
-<td style="text-align: left;">1st Qu.:140.0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Median :0.10684</td>
-<td style="text-align: left;">Median :4.007e-04</td>
-<td style="text-align: left;">Median :-0.3002</td>
-<td style="text-align: left;">Median : 90.63</td>
-<td style="text-align: left;">Median :140.0</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Mean :0.11069</td>
-<td style="text-align: left;">Mean :4.775e-04</td>
-<td style="text-align: left;">Mean :-0.3017</td>
-<td style="text-align: left;">Mean : 91.48</td>
-<td style="text-align: left;">Mean :137.8</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">3rd Qu.:0.10684</td>
-<td style="text-align: left;">3rd Qu.:4.763e-04</td>
-<td style="text-align: left;">3rd Qu.:-0.2684</td>
-<td style="text-align: left;">3rd Qu.: 96.60</td>
-<td style="text-align: left;">3rd Qu.:140.0</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Max. :0.21558</td>
-<td style="text-align: left;">Max. :4.340e-03</td>
-<td style="text-align: left;">Max. :-0.1467</td>
-<td style="text-align: left;">Max. :132.28</td>
-<td style="text-align: left;">Max. :184.0</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div id="tbl-UAsim" class="anchored">
-<table class="table table-sm table-striped small">
-<caption>Table&nbsp;7: UAsim</caption>
-<colgroup>
-<col style="width: 4%">
-<col style="width: 21%">
-<col style="width: 19%">
-<col style="width: 21%">
-<col style="width: 19%">
-<col style="width: 13%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;"></th>
-<th style="text-align: left;">phi</th>
-<th style="text-align: left;">a</th>
-<th style="text-align: left;">xi</th>
-<th style="text-align: left;">sig</th>
-<th style="text-align: left;">v</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Min. :0.01518</td>
-<td style="text-align: left;">Min. :1.281</td>
-<td style="text-align: left;">Min. :-0.3375</td>
-<td style="text-align: left;">Min. :4.346</td>
-<td style="text-align: left;">Min. :7</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">1st Qu.:0.01518</td>
-<td style="text-align: left;">1st Qu.:1.310</td>
-<td style="text-align: left;">1st Qu.:-0.3011</td>
-<td style="text-align: left;">1st Qu.:4.992</td>
-<td style="text-align: left;">1st Qu.:7</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Median :0.01518</td>
-<td style="text-align: left;">Median :1.317</td>
-<td style="text-align: left;">Median :-0.2899</td>
-<td style="text-align: left;">Median :5.156</td>
-<td style="text-align: left;">Median :7</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Mean :0.01518</td>
-<td style="text-align: left;">Mean :1.317</td>
-<td style="text-align: left;">Mean :-0.2904</td>
-<td style="text-align: left;">Mean :5.160</td>
-<td style="text-align: left;">Mean :7</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">3rd Qu.:0.01518</td>
-<td style="text-align: left;">3rd Qu.:1.325</td>
-<td style="text-align: left;">3rd Qu.:-0.2797</td>
-<td style="text-align: left;">3rd Qu.:5.300</td>
-<td style="text-align: left;">3rd Qu.:7</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">Max. :0.01518</td>
-<td style="text-align: left;">Max. :1.356</td>
-<td style="text-align: left;">Max. :-0.2283</td>
-<td style="text-align: left;">Max. :5.794</td>
-<td style="text-align: left;">Max. :7</td>
-</tr>
-</tbody>
-</table>
-</div>
+<div id="fig-thresh" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="doc_files/figure-html/fig-thresh-1.png" class="img-fluid figure-img" style="width:75.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;6: Posterior of threshold (<span class="math inline">\(v\)</span>)</figcaption>
+</figure>
 </div>
 </div>
 </div>
@@ -1008,19 +491,19 @@ g(k) = k^\gamma, \qquad \gamma&gt;0.
 <div id="fig-omega" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="doc_files/figure-html/fig-omega-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;4: Plot of <span class="math inline">\(\Omega(F,n)\)</span> for various <span class="math inline">\(\gamma \in (0.7,1.3)\)</span></figcaption>
+<figcaption class="figure-caption">Figure&nbsp;7: Plot of <span class="math inline">\(\Omega(F,n)\)</span> for various <span class="math inline">\(\gamma \in (0.7,1.3)\)</span></figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p><a href="#fig-omega">Figure&nbsp;4</a> shows that for <span class="math inline">\(\gamma&lt;1\)</span> <span class="math inline">\(\Omega(F,n)\)</span> seems to approach 0 as <span class="math inline">\(n\)</span> increases, whereas for <span class="math inline">\(\gamma=1\)</span> <span class="math inline">\(\Omega(F,n)\)</span> seems to converge to finite non-zero limit which is to be expected as this corresponds to the BA model which has limiting degree distribution in the Fréchet domain of attraction. However, for <span class="math inline">\(\gamma&gt;1\)</span> the value of <span class="math inline">\(\Omega(F,n)\)</span> appears to diverge and does not approach a finite limit.</p>
+<p><a href="#fig-omega">Figure&nbsp;7</a> shows that for <span class="math inline">\(\gamma&lt;1\)</span> <span class="math inline">\(\Omega(F,n)\)</span> seems to approach 0 as <span class="math inline">\(n\)</span> increases, whereas for <span class="math inline">\(\gamma=1\)</span> <span class="math inline">\(\Omega(F,n)\)</span> seems to converge to finite non-zero limit which is to be expected as this corresponds to the BA model which has limiting degree distribution in the Fréchet domain of attraction. However, for <span class="math inline">\(\gamma&gt;1\)</span> the value of <span class="math inline">\(\Omega(F,n)\)</span> appears to diverge and does not approach a finite limit.</p>
 <p><span class="citation" data-cites="shimura12">Shimura (<a href="#ref-shimura12" role="doc-biblioref">2012</a>)</span> does not provide any results in particular for the case of <span class="math inline">\(\Omega(F,n)\)</span> diverging but if the definition of slow variation and thus super-heavy tails is viewed as regular variation in the limit as <span class="math inline">\(\alpha\)</span> goes to infinity then the following can be obtained.</p>
 <div id="cor-omg" class="theorem corollary">
 <p><span class="theorem-title"><strong>Corollary 1 </strong></span>For a distribution <span class="math inline">\(F\)</span> with survival function <span class="math inline">\(\overline F\)</span> and some <span class="math inline">\(n\in\mathbb Z^+\)</span>, if: <span class="math display">\[
 \lim_{n\rightarrow\infty} \Omega(F,n) = \lim_{\alpha\downarrow0} \alpha^{-1} = \infty
 \]</span> then <span class="math inline">\(F\)</span> has super heavy tails</p>
 </div>
-<p>This is further supported by <a href="#fig-shtail">Figure&nbsp;5</a> below, which shows the value of the quantity from <a href="#def-sup">Definition&nbsp;3</a> for increasing values of <span class="math inline">\(n\)</span> and values of <span class="math inline">\(\gamma\)</span> in the range <span class="math inline">\((1,2)\)</span>. The plot shows the quantity approaching <span class="math inline">\(1\)</span> for all values of <span class="math inline">\(\gamma\)</span> as <span class="math inline">\(n\)</span> increases, suggesting that the limiting degree distribution of the GPA model with <span class="math inline">\(g(k) = k^\gamma,\gamma&gt;1\)</span> has super heavy tails.</p>
+<p>This is further supported by <a href="#fig-shtail">Figure&nbsp;8</a> below, which shows the value of the quantity from <a href="#def-sup">Definition&nbsp;3</a> for increasing values of <span class="math inline">\(n\)</span> and values of <span class="math inline">\(\gamma\)</span> in the range <span class="math inline">\((1,2)\)</span>. The plot shows the quantity approaching <span class="math inline">\(1\)</span> for all values of <span class="math inline">\(\gamma\)</span> as <span class="math inline">\(n\)</span> increases, suggesting that the limiting degree distribution of the GPA model with <span class="math inline">\(g(k) = k^\gamma,\gamma&gt;1\)</span> has super heavy tails.</p>
 </section>
 </section>
 <section id="a-conjecture" class="level2" data-number="4.4">
@@ -1040,7 +523,7 @@ g(k) = k^\gamma, \qquad \gamma&gt;0.
 <div id="fig-shtail" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="doc_files/figure-html/fig-shtail-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;5: Plot testing slow variation for <span class="math inline">\(\gamma \in (1,2)\)</span></figcaption>
+<figcaption class="figure-caption">Figure&nbsp;8: Plot testing slow variation for <span class="math inline">\(\gamma \in (1,2)\)</span></figcaption>
 </figure>
 </div>
 </div>
