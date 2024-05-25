@@ -187,17 +187,17 @@ For a distribution with cdf $F$ and survival function $\bar F$ that has right en
 x_F = \sup\{x \in \mathbb R \cup\{\infty\}:F(x)<1\}
 $$ the distribution belongs to each domain of attraction subject to the conditions below:
 
-**If there exists a positive function a** 
+**If there exists a positive function a**
 
-- Type I/Gumbel/$\mathcal D(\Lambda)$: 
+-   Type I/Gumbel/$\mathcal D(\Lambda)$:
 
 $$
 \lim_{x\uparrow x_F} \displaystyle\frac{\bar F(x+ta(x))}{\bar F(x)} = e^{-t},\quad \forall t\in\mathbb R
 $$
 
-**If** $x_F=\infty$: 
+**If** $x_F=\infty$:
 
-- Type II/Fréchet/$\mathcal D (\Phi_\alpha)$: 
+-   Type II/Fréchet/$\mathcal D (\Phi_\alpha)$:
 
 $$
 \lim_{x\rightarrow\infty} \displaystyle\frac{\bar F(tx)}{\bar F(x)} = x^{-\alpha}, \quad \forall t>0 \quad \text{ for some } \alpha>0
@@ -205,7 +205,7 @@ $$
 
 **If** $x_F<\infty$:
 
--   Type III/Negative-Weibull/$\mathcal D(\Psi_\alpha)$: 
+-   Type III/Negative-Weibull/$\mathcal D(\Psi_\alpha)$:
 
 $$
 \lim_{h\downarrow 0}\displaystyle\frac{\bar F(x_F-xh)}{\bar F(x_F-h)} = x^\alpha, \quad\alpha>0
@@ -310,8 +310,7 @@ $$
 $$
 :::
 
-This quantity plays an important role in @sec-meth when determining the domain of attraction to which the degree distribution of a network generative model belongs. In particular a discrete distribution is recoverable to the Fréchet domain of attraction $\mathcal D(\Phi_\alpha)$ if:
-$$
+This quantity plays an important role in @sec-meth when determining the domain of attraction to which the degree distribution of a network generative model belongs. In particular a discrete distribution is recoverable to the Fréchet domain of attraction $\mathcal D(\Phi_\alpha)$ if: $$
 \lim_{n\rightarrow\infty}\Omega(F,n) = \alpha^{-1}
 $$
 
@@ -384,8 +383,7 @@ This section begins by detailing a fairly simple generative model and its limiti
 
 ### General Preferential Attachment (GPA)
 
-Under this model, at each time step one vertex is added to the network and brings an edge with it that connects the existing vertices with a probability proportional to some function of the vertices degrees. 
-
+Under this model, at each time step one vertex is added to the network and brings an edge with it that connects the existing vertices with a probability proportional to some function of the vertices degrees.
 
 ::: {#def-gpa}
 #### General Preferential Attachment Model
@@ -397,8 +395,7 @@ Starting with a graph $G_1 = (V_1, E_1) = (\{1\}, \emptyset)$, at each following
     $$
 2.  **Preferential Attachment:** Add one edge connecting the new vertex to one already in the graph $\{1,\ldots,t-1\}$ selected at random with weights proportional to a function of their degree i.e.: $$
     E_t  = E_{t-1} \cup \{\tilde e\}
-    $$ where $\tilde e_i = \{t,\tilde v\}$ and $\tilde v = i$ with probability 
-    $$
+    $$ where $\tilde e_i = \{t,\tilde v\}$ and $\tilde v = i$ with probability $$
     \displaystyle\frac{g(d(i))}{\sum_{w\in V_{t-1}} g(d(i))}, \qquad i\in V_{t-1}
     $$
 
@@ -431,27 +428,20 @@ Starting with a graph $G_1 = (V_1, E_1)$ where $V_1 = \{1,\ldots,m_0\}$ and $E_1
 1.  **Growth:** Add a new vertex to the vertex set i.e. $$
     V_t = V_{t-1} \cup \{t\}
     $$
-2.  **Preferential Attachment:** Add $m\le m_0$ edges between the new vertex and those already in the graph with probability proportional to each vertices degree i.e. 
-$$
-E_t  = E_{t-1} \cup \{\tilde e_1, \ldots, \tilde e_m\}
-$$
-where each new edge $\tilde e_i = \{t, \tilde v_i\}$($i=1,\ldots, m$) has $\tilde v_i$ sampled independently without replacement from $V_{t-1}$ with probability:
-$$
-\frac{d(\tilde v_i)}{\sum_{u\in V_{t-1}}d(u)}
-$$
-
-
+2.  **Preferential Attachment:** Add $m\le m_0$ edges between the new vertex and those already in the graph with probability proportional to each vertices degree i.e. $$
+    E_t  = E_{t-1} \cup \{\tilde e_1, \ldots, \tilde e_m\}
+    $$ where each new edge $\tilde e_i = \{t, \tilde v_i\}$($i=1,\ldots, m$) has $\tilde v_i$ sampled independently without replacement from $V_{t-1}$ with probability: $$
+    \frac{d(\tilde v_i)}{\sum_{u\in V_{t-1}}d(u)}
+    $$
 :::
 
 #### Limiting Degree Distriubtion
 
-In [NETWORK SCI book], it was shown that for large values of $t$, the limiting degree distribution of a network produces by this model is:
+In \[NETWORK SCI book\], it was shown that for large values of $t$, the limiting degree distribution of a network produces by this model is:
 
 $$
 f(k) = \frac{2m(m+1)}{k(k+1)(k+2)}, \qquad k\geq m
-$$
-According to [REF] this pmf is regularly varying with exponent 2, meaning that it is in the Fréchet domain of attraction $\mathcal D(\Phi_2)$.
-
+$$ According to \[REF\] this pmf is regularly varying with exponent 2, meaning that it is in the Fréchet domain of attraction $\mathcal D(\Phi_2)$.
 
 ### Uniform Attachment (UA)
 
@@ -465,30 +455,22 @@ Start with a graph $G_1 = (V_1, E_1) = (\{1,\ldots,m_0\}, \emptyset)$, at each t
 1.  **Growth:** Add a new vertex to the vertex set i.e. $$
     V_t=V_{t-1}\cup\{t\}
     $$
-2.  **Uniform Attachment:** Add $m\le m_0$ edges between the new vertex and those already in the graph with probability proportional to each vertices degree i.e. 
-$$
-E_t  = E_{t-1} \cup \{\tilde e_1, \ldots, \tilde e_m\}
-$$
-where each new edge $\tilde e_i = \{t, \tilde v_i\}$($i=1,\ldots, m$) has $\tilde v_i$ sampled independently without replacement from $V_{t-1}$ with probability:
-$$
-\frac{1}{\sum_{u\in V_{t-1}}1} = \frac{1}{|V_{t-1}|}
-$$
-
-    
+2.  **Uniform Attachment:** Add $m\le m_0$ edges between the new vertex and those already in the graph with probability proportional to each vertices degree i.e. $$
+    E_t  = E_{t-1} \cup \{\tilde e_1, \ldots, \tilde e_m\}
+    $$ where each new edge $\tilde e_i = \{t, \tilde v_i\}$($i=1,\ldots, m$) has $\tilde v_i$ sampled independently without replacement from $V_{t-1}$ with probability: $$
+    \frac{1}{\sum_{u\in V_{t-1}}1} = \frac{1}{|V_{t-1}|}
+    $$
 :::
 
 #### Limiting Degree Distribution
 
 As showing in \[REF\] the expected degree distribution of this model for large values of $t$ is approximately: $$
 f(k) = \displaystyle\frac{e}{m}\exp\left(-\displaystyle\frac{k}{m}\right),\qquad k \ge m
-$$ 
-Although this was not shown rigourously and treats the degree of a vertex as a continuous random variable, this is an shifted exponential distribution with left endpoint $m$ and rate parameter $1/m$ and as such is in the Gumbel domain of attraction.
+$$ Although this was not shown rigourously and treats the degree of a vertex as a continuous random variable, this is an shifted exponential distribution with left endpoint $m$ and rate parameter $1/m$ and as such is in the Gumbel domain of attraction.
 
-If $m=1$, it is possible to get a more precise result from the result  regarding the limiting degree distribution of the GPA. By setting the preferential attachment function $g(k) = \lambda^*$, the can be shown that the limiting degree distribution is:
-$$
+If $m=1$, it is possible to get a more precise result from the result regarding the limiting degree distribution of the GPA. By setting the preferential attachment function $g(k) = \lambda^*$, the can be shown that the limiting degree distribution is: $$
 f(k) = \left(\frac{1}{2} \right)^{k}, \qquad k=1,2,\ldots 
-$$
-This distribution also occupies the Gumbel domain of attraction. 
+$$ This distribution also occupies the Gumbel domain of attraction.
 
 # Methods {#sec-meth}
 
@@ -505,7 +487,8 @@ The aim of this section is to investigate the degree distribution of real networ
 source('../scripts/plot_dir.R')
 nms = plot_dir('../data/data_for_mcmc')
 ```
-@fig-survs shows the survival function of the degrees of various real networks as well as "BAsim"  and "UAsim" which were generated using the corresponding schemes in @sec-gen. Additionally, the theoretical limiting degree distribution of both the UA model and the BA model (for m=1) are included on the plots. Visually it seems that neither of these models are adequate for modelling the growth of the real networks shown here. 
+
+@fig-survs shows the survival function of the degrees of various real networks as well as "BAsim" and "UAsim" which were generated using the corresponding schemes in @sec-gen. Additionally, the theoretical limiting degree distribution of both the UA model and the BA model (for m=1) are included on the plots. Visually it seems that neither of these models are adequate for modelling the growth of the real networks shown here.
 
 To further investigate this, @sec-realmodel considers fitting a model to these data that will provide insight into what would be needed from a network generative model such that it flexible enough to capture the variation of shapes of degree distribution in real networks.
 
@@ -540,9 +523,9 @@ $$
 
 ## Fitting model to the data
 
-The values of the parameters in the model for each data set were estimated under the Bayesian framework using a Metropolis within Gibbs sampler. Below are plots showing the same data as in @fig-survs but with the mean and 95% confidence intervals of the survival function of the model for each data-set. 
+The values of the parameters in the model for each data set were estimated under the Bayesian framework using a Metropolis within Gibbs sampler. Below are plots showing the same data as in @fig-survs but with the mean and 95% confidence intervals of the survival function of the model for each data-set.
 
-```{r,echo=FALSE, warning=FALSE, message=FALSE, cache=TRUE}
+```{r,echo=FALSE, warning=FALSE, message=FALSE, cache=FALSE}
 #| fig-width: 6
 #| fig-asp: 1
 #| out-width: 66%
@@ -550,6 +533,7 @@ The values of the parameters in the model for each data set were estimated under
 #| fig-cap-location: top
 #| label: fig-fits1
 res=readRDS('../data/mcmc.outputs/dir_out.rds')
+source('../scripts/igp_functions.R')
 n = ncol(res)
 auto.mfrow(n)
 x = par()$mfrow[1]
@@ -582,66 +566,82 @@ for(i in 1:n){
 }
 ```
 
-Unfortunately, this model does not seem sufficient for these data. Perhaps, it may be better to add an additional component to the spliced mixture that is used to model the left tail. Since the focus is on the more extreme values in the distributions, instead of fitting the model to the full set of data, some of the lower values in the data sets will be removed in order to improve model fit for the remaining data. Again, in future this will likely be replaced by a third component in the spliced mixture. The fits to the truncated data sets are shown below in @fig-fits2.
+As show by @fig-fits1 the model seems to fit the data quite well, below are some plot summarising each of the paramters for each of the models:
 
-```{r,echo=FALSE, warning=FALSE, message=FALSE, cache=TRUE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 #| fig-width: 6
-#| fig-asp: 1
-#| out-width: 66%
-#| fig-cap: "Plots of truncated survial functions of real networks degrees"
-#| fig-cap-location: top
-#| label: fig-fits2
-res=readRDS('../data/mcmc.outputs/dir_trunc.out.rds')
-n = ncol(res)
-auto.mfrow(n)
-x = par()$mfrow[1]
-y = par()$mfrow[2]
-mx_dat=0
-min_prob=1
-for(i in 1:n){
-  d = res[,i]$dat
-  mx_dat = max(mx_dat, max(d[,1]))
-  min_prob = min(min_prob, d[nrow(d),2]/sum(d[,2]))
+#| fig-asp: 0.4
+#| out-width: 75%
+#| fig-cap: Posterior of power law index ($\alpha$)
+#| label: fig-alpha
+dat_list_names = konect_to_df_dir('../data/data_for_mcmc', return_names=T)$names
+nms = gsub('[[:digit:]]+', '', unlist(strsplit(dat_list_names,'out.')))
+nms=nms[nms!='']
+df = res[,1]$res_thinned
+df$from = nms[1]
+for(i in 2:ncol(res)){
+  temp = res[,i]$res_thinned
+  temp$from = nms[i]
+  df = rbind(df, temp)
 }
+p = ggplot(df,aes(x=log(a))) +stat_density() +
+  theme( 
+      axis.text.y=element_blank(), 
+      axis.ticks.y=element_blank()) 
+p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.left = element_text(angle = 0))
 
-for(i in 1:n){
-    x_ax = 'n'
-    y_ax='n'
-    marge = c(0,0,0,0)
-    if(i %% x ==1){
-      marge[2] = 0
-      y_ax = NULL
-    }
-    if(i>n-x){
-      x_ax=NULL
-    }
-    if(i>(y-1)*x){
-      marge[1] = 2
-    }
-  mcmc_plot(res[,i]$dat, as.data.frame(res[,i]$res_thinned),
-            xlim=c(1,mx_dat),ylim=c(min_prob,1),mar=marge,xaxt=x_ax, yaxt=y_ax)
-  legend('bottomleft', legend=strsplit(nms[i], 'out.')[[1]][2], pch=20)
-}
-```
-As show by @fig-fits2 left truncating the data works well to improve the model fit for the vast majority of the data sets. The main exception being the data simulated via the UA model. It is unclear why the model fit for this is so poor but it may be because of the low number of unique values of degrees. That said, below is a summary of the model parameters for each data set:
 
-```{r,echo=FALSE,cache=TRUE}
-#| output: asis
-library(kableExtra)
-library(knitr)
-summary_list = list()
-for(i in 1:n){
-  summary_list[[i]] = summary(res[,i]$res_thinned)
-  cat(sep = "\n", knitr::knit_child(quiet = TRUE, text = c(
-    "```{r}",
-    "#| echo: false",
-    sprintf("#| tbl-cap: %s", strsplit(nms[i], 'out.')[[1]][2]),
-    sprintf("#| label: tbl-%s", strsplit(nms[i], 'out.')[[1]][2]),
-    "kable(summary_list[[i]])",
-    "```")))
-}
 ```
 
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+#| fig-width: 6
+#| fig-asp: 0.4
+#| out-width: 75%
+#| fig-cap: Posterior of shape ($\xi)
+#| label: fig-shape
+p = ggplot(df,aes(x=xi)) +stat_density()+
+  theme( 
+      axis.text.y=element_blank(), 
+      axis.ticks.y=element_blank()) 
+p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.left = element_text(angle = 0))
+
+ 
+
+```
+
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+#| fig-width: 6
+#| fig-asp: 0.4
+#| out-width: 75%
+#| fig-cap: Posterior of scale ($\sigma$) 
+#| label: fig-scale
+
+p = ggplot(df,aes(x=sig)) +stat_density() +
+  theme( 
+      axis.text.y=element_blank(), 
+      axis.ticks.y=element_blank()) 
+p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.left = element_text(angle = 0))
+
+ 
+
+```
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+#| fig-width: 6
+#| fig-asp: 0.4
+#| out-width: 75%
+#| fig-cap: Posterior of threshold ($v$)
+#| label: fig-thresh
+
+p = ggplot(df,aes(x=v)) +geom_histogram(binwidth = 1,aes(y = ..density..))+
+  theme( 
+      axis.text.y=element_blank(), 
+      axis.ticks.y=element_blank()) 
+p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.left = element_text(angle = 0))
+ 
+
+```
 
 ## GPA analyses
 
@@ -649,14 +649,13 @@ So far it has been shown that neither the BA model nor the UA model can adequate
 
 ### The Preferential Attachment Function
 
-From here on the preferential functions that will be used for the GPA model will be of the form:
-$$
+From here on the preferential functions that will be used for the GPA model will be of the form: $$
 g(k) = k^\gamma, \qquad \gamma>0.
 $$
 
 This allows for investigating the cases where the preferential attachment function is sub-linear and when it is super-linear.
 
-###
+### 
 
 As discussed in @sec-disc, the limiting value of $\Omega(F,n)$ can give a lot of information about the behaviour of a discrete distribution at extreme values. Below is a plot showing the value of this quantity as $n$ increases for various different values of $\gamma$.
 
@@ -698,30 +697,29 @@ pal = fish(2*n-1,option = "Bodianus_rufus")
 ggplot(df, aes(k,value))+geom_line(aes(colour = a),linewidth=1) + scale_x_log10() + scale_y_log10() + 
   scale_color_manual(values=pal)
 ```
-@fig-omega shows that for $\gamma<1$ $\Omega(F,n)$ seems to approach 0 as $n$ increases, whereas for $\gamma=1$ $\Omega(F,n)$ seems to converge to finite non-zero limit which is to be expected as this corresponds to the BA model which has limiting degree distribution in the Fréchet domain of attraction. However, for $\gamma>1$ the value of $\Omega(F,n)$ appears to diverge and does not approach a finite limit. 
+
+@fig-omega shows that for $\gamma<1$ $\Omega(F,n)$ seems to approach 0 as $n$ increases, whereas for $\gamma=1$ $\Omega(F,n)$ seems to converge to finite non-zero limit which is to be expected as this corresponds to the BA model which has limiting degree distribution in the Fréchet domain of attraction. However, for $\gamma>1$ the value of $\Omega(F,n)$ appears to diverge and does not approach a finite limit.
 
 @shimura12 does not provide any results in particular for the case of $\Omega(F,n)$ diverging but if the definition of slow variation and thus super-heavy tails is viewed as regular variation in the limit as $\alpha$ goes to infinity then the following can be obtained.
 
-:::{#cor-omg}
-For a distribution $F$ with survival function $\overline F$ and some $n\in\mathbb Z^+$, if:
-$$
+::: {#cor-omg}
+For a distribution $F$ with survival function $\overline F$ and some $n\in\mathbb Z^+$, if: $$
 \lim_{n\rightarrow\infty} \Omega(F,n) = \lim_{\alpha\downarrow0} \alpha^{-1} = \infty
-$$
-then $F$ has super heavy tails
+$$ then $F$ has super heavy tails
 :::
 
 This is further supported by @fig-shtail below, which shows the value of the quantity from @def-sup for increasing values of $n$ and values of $\gamma$ in the range $(1,2)$. The plot shows the quantity approaching $1$ for all values of $\gamma$ as $n$ increases, suggesting that the limiting degree distribution of the GPA model with $g(k) = k^\gamma,\gamma>1$ has super heavy tails.
 
 ## A Conjecture
 
-The results from this subsection suggest that for super-linear preferential attachment functions the GPA model has limiting degree distribution with super heavy tails. This, along with results for the linear case in @sec-gen and sub-linear cases in [NETSCI BOOK] lead to the following conjecture.
+The results from this subsection suggest that for super-linear preferential attachment functions the GPA model has limiting degree distribution with super heavy tails. This, along with results for the linear case in @sec-gen and sub-linear cases in \[NETSCI BOOK\] lead to the following conjecture.
 
-:::{#cnj-gpa}
+::: {#cnj-gpa}
 The GPA model is only capable of producing three different types of degree distribution:
 
-1. Gumbel: sub-linear preferential attachment function
-2. Fréchet $\mathcal D(\Phi_2)$: linear preferential attachment function
-3. Super heavy tails: super-linear preferential attachment function
+1.  Gumbel: sub-linear preferential attachment function
+2.  Fréchet $\mathcal D(\Phi_2)$: linear preferential attachment function
+3.  Super heavy tails: super-linear preferential attachment function
 :::
 
 This means that under the framework presented here, even the GPA model is no where near close to being able to capture the range of types of degree distribution found in real networks.
@@ -761,11 +759,10 @@ ggplot(df, aes(k,value))+geom_line(aes(colour = a),linewidth=1) + scale_x_log10(
   scale_color_manual(values=pal)+ theme(legend.position="none")
 
 ```
+
 # Next Steps
 
-```{=tex}
 \appendix
-```
 
 # Updated Project Plan {.appendix}
 

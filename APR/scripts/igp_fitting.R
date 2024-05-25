@@ -102,11 +102,14 @@ res=readRDS('../data/mcmc.outputs/dir_trunc.out.rds')
 n =ncol(res)
 mx_dat = 0
 min_prob = 1
+dev.new()
 for(i in 1:n){
   d = res[,i]$dat
   mx_dat = max(mx_dat, max(d[,1]))
   min_prob = min(min_prob, d[nrow(d),2]/sum(d[,2]))
 }
+dev.new()
+par(mfrow=c(1,1))
 for(i in 1:n){
   message(i)
   mcmc_plot(res[,i]$dat, as.data.frame(res[,i]$res_thinned,
