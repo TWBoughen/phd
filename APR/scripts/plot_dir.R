@@ -42,6 +42,7 @@ plot_dir = function(dir, lower=1){
   k = 1:mx_dat
   m=1
   pk_ba = 2*m*(m+1) / (k*(k+1)*(k+2))
+  pk_ua = (1/2)^k
   auto.mfrow(n)
   x = par()$mfrow[1]
   y = par()$mfrow[2]
@@ -67,6 +68,7 @@ plot_dir = function(dir, lower=1){
          xlim = c(1,mx_dat), ylim=c(min_prob, 1),cex = 0.5,
          xaxt = x_ax, yaxt=y_ax,las=1, ylab='')
     lines(k,1-c(0,cumsum(pk_ba)[-length(pk_ba)]),lty=2, col='darkgreen')
+    lines(k,1-c(0,cumsum(pk_ua)[-length(pk_ua)]),lty=2, col='red')
     if(i==1){
       legend('bottomleft',
              legend=c(strsplit(dat_list_names$names[i], 'out.')[[1]][2],

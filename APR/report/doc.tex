@@ -151,12 +151,12 @@
 \usepackage{amsthm}
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
+\theoremstyle{plain}
+\newtheorem{conjecture}{Conjecture}[section]
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
 \theoremstyle{plain}
 \newtheorem{corollary}{Corollary}[section]
-\theoremstyle{plain}
-\newtheorem{conjecture}{Conjecture}[section]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -224,7 +224,7 @@
 %}
 \footnote{An html version of this report can be found at \url{www.twboughen.github.io/phd/APR/report}}
 \justifying
-\noindent\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, frame hidden, interior hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced, boxrule=0pt, breakable]}{\end{tcolorbox}}\fi
+\noindent\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, interior hidden, enhanced, boxrule=0pt, frame hidden, sharp corners, borderline west={3pt}{0pt}{shadecolor}]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -544,23 +544,68 @@ obtaining GP values from a probability integral transform (PIT) of
 distribution on \((0,1)\) such as a beta distribution. This distribution
 is then discretised into their discrete extended GP distribution.
 
+The approach that will be used in Section~\ref{sec-meth} follows
+{[}ROHRBECK{]}, and first requires defining a discretisation of the GP
+distribution.
+
+\begin{definition}[Intergral Generalised Pareto Distribution
+(IGP)]\protect\hypertarget{def-igp}{}\label{def-igp}
+
+Consider a random variable \(X\) with cdf \(F\), and consider the random
+variable \(Y=\lfloor X \rfloor\). From Definition~\ref{def-gp},
+\(X|X>u \sim GP(\sigma, \xi)\) for some sufficiently large
+\(u\in \mathbb R^+\) and it can be obtained that the distribution of
+\(Y|Y>u\) has distribution defined below:
+
+\[
+\Pr(Y=y>Y>u) = \left(1+\displaystyle\frac{\xi(y+1-\lceil u\rceil)}{\sigma_0+\xi\lceil u\rceil}\right)_+^{-1/\xi}-\left(1+\displaystyle\frac{\xi(y-\lceil u\rceil)}{\sigma_0+\xi\lceil u\rceil}\right)_+^{-1/\xi}
+\]
+
+For \(y=\lceil u\rceil,\lceil u\rceil+1, \ldots\) and
+\(\xi \in \mathbb R\) and \(u, \sigma_0 \in \mathbb R^+.\)
+
+\end{definition}
+
 \hypertarget{sec-mod}{%
 \section{Modelling}\label{sec-mod}}
 
 The results from Section~\ref{sec-ce} allow the GEV and GP to be fitted
-to the block maxima and exceedances respectively. Typically, when
-fitting the GP, a sufficiently high threshold needs to be specified
-beforehand. {[}COLES{]} provides some empirical methods for specifying
-the threshold, one approach is to use a threshold stability plot that
-uses maximum likelihood to estimate the parameters of the GP for a large
-range of thresholds. The threshold can be chosen as the point across all
-of the plots after which the values of the parameters seems stable.
+to the block maxima and exceedances respectively. An example of where
+modelling the GEV may be useful are when modelling monthly high
+temperatures, fitting the GEV to historic data of peak monthly
+temperatures may allow for future prediction of these temperatures.
+Fitting the GP may be useful in other scenarios such as modelling the
+strength of solar flares.
+
+Typically, when fitting the GP, a sufficiently high threshold needs to
+be specified beforehand. {[}COLES{]} provides some empirical methods for
+specifying the threshold, one approach is to use a threshold stability
+plot that uses maximum likelihood to estimate the parameters of the GP
+for a large range of thresholds. The threshold can be chosen as the
+point across all of the plots after which the values of the parameters
+seems stable. One particular issue when fitting the GP to data, is that
+the likelihoods cannot be compared for different thresholds as changing
+the threshold changes the amount of data being used.
 
 Another more recent approach shown in {[}MACDONALD 2012{]}, uses a
 spliced threshold mixture to model the threshold exceedances where one
 distribution is assumed for the bulk of the data and the GP is used for
 those values above the threshold. This approach can also be applied in
-the discrete setting, and is what is used in Section~\ref{sec-meth}.
+the discrete setting, and is what is used in Section~\ref{sec-meth}. A
+general cases of the model is given below
+
+\begin{definition}[IGP Spliced
+Mixture]\protect\hypertarget{def-mixigp}{}\label{def-mixigp}
+
+\[
+f(y) = \begin{cases}
+(1-\phi)g(x), & y=1,2,\ldots, v\\
+\phi\left[\left(1+\displaystyle\frac{\xi(y+1-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}-\left(1+\displaystyle\frac{\xi(y-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}\right],&y=v+1, v+2,\ldots
+\end{cases}
+\] where \(g\) is the pmf of some discrete distribution with support
+equal to \(\{1,2,\ldots,v\}\).
+
+\end{definition}
 
 \hypertarget{sec-net}{%
 \chapter{Networks}\label{sec-net}}
@@ -849,30 +894,6 @@ Specifically, it will be a spliced threshold mixture of a power law and
 a discretisation of the generalised pareto distribution similar to what
 is defined in {[}ROHRBECK{]}.
 
-\begin{definition}[Intergral Generalised Pareto Distribution
-(IGP)]\protect\hypertarget{def-igp}{}\label{def-igp}
-
-Consider a random variable \(X\) with cdf \(F\), and consider the random
-variable \(Y=\lfloor X \rfloor\). From Definition~\ref{def-gp},
-\(X|X>u \sim GP(\sigma, \xi)\) for some sufficiently large
-\(u\in \mathbb R^+\) and it can be obtained that the distribution of
-\(Y|Y>u\) has distribution defined below:
-
-\[
-\Pr(Y=y>Y>u) = \left(1+\displaystyle\frac{\xi(y+1-\lceil u\rceil)}{\sigma_0+\xi\lceil u\rceil}\right)_+^{-1/\xi}-\left(1+\displaystyle\frac{\xi(y-\lceil u\rceil)}{\sigma_0+\xi\lceil u\rceil}\right)_+^{-1/\xi}
-\]
-
-For \(y=\lceil u\rceil,\lceil u\rceil+1, \ldots\) and
-\(\xi \in \mathbb R\) and \(u, \sigma_0 \in \mathbb R^+.\)
-
-\end{definition}
-
-Since the some degree distributions of real networks seen in
-Figure~\ref{fig-survs} seem to be approximately linear for the bulk of
-the data and then begin to change, the spliced threshold mixture that
-will be used consists of a truncated discrete power law for the bulk of
-the data and a GP above a threshold.
-
 \begin{definition}[Power-Law IGP
 Distribution]\protect\hypertarget{def-pligp}{}\label{def-pligp}
 
@@ -925,7 +946,7 @@ the models:
 
 }
 
-\caption{\label{fig-shape}Posterior of shape (\$\xi)}
+\caption{\label{fig-shape}Posterior of shape (\(\xi\))}
 
 \end{figure}
 
