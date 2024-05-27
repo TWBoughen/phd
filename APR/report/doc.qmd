@@ -399,7 +399,7 @@ There are many reasons to analyse network like data, one of which is to gain an 
 
 ## Network Generative Models {#sec-gen}
 
-It is useful to be able to model the way a network may have grown using simple rules as the subsequent model can then be used to simulate how the network may grow in future and provide insights into the underlying mechanics of the system the network represents. These models are also sometimes called mechanistic models in the literature. Also, although they are referred to as network generative models, graphs are still being used in the rules that govern how the generative model works.
+It is useful to be able to model the way a network may have grown using simple rules as the subsequent model can then be used to simulate how the network may grow in future and provide insights into the underlying mechanics of the system the network represents. These models are also sometimes called mechanistic models in the literature. Also, although they are referred to as network generative models, graphs are still being used in the rules that govern how the generative model works. The focus here is on preferential attachment models, but it should be noted that network generative models are not limited to this class of models. Some other well known models include the Erdős-Réyni model[REF] and the small-world model[REF].
 
 This section begins by detailing a fairly simple generative model and its limiting results for the degree distribution, followed by two special cases of the first model and their results.
 
@@ -416,8 +416,8 @@ Starting with a graph $G_1 = (V_1, E_1) = (\{1\}, \emptyset)$, at each following
     V_t = V_{t-1} \cup \{t\}
     $$
 2.  **Preferential Attachment:** Add one edge connecting the new vertex to one already in the graph $\{1,\ldots,t-1\}$ selected at random with weights proportional to a function of their degree i.e.: $$
-    E_t  = E_{t-1} \cup \{\tilde e\}
-    $$ where $\tilde e_i = \{t,\tilde v\}$ and $\tilde v = i$ with probability $$
+    E_t  = E_{t-1} \cup \{\tilde e_j\}
+    $$ where $\tilde e_j = \{t,\tilde v\}$ and $\tilde v = i$ with weights $$
     \displaystyle\frac{g(d(i))}{\sum_{w\in V_{t-1}} g(d(i))}, \qquad i\in V_{t-1}
     $$
 
