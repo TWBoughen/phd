@@ -576,6 +576,8 @@ for(i in 1:n){
 
 As show by @fig-fits1 the model seems to fit the data quite well, below are some plot summarising each of the paramters for each of the models:
 
+
+
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 #| fig-width: 6
 #| fig-asp: 0.4
