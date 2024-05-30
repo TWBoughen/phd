@@ -11,6 +11,7 @@ date: 05/31/2024
 date-format: long
 format:
   pdf:
+    link-citations: true
     fig-pos: H
     documentclass: scrreprt
     papersize: a4
@@ -43,6 +44,7 @@ format:
     output-file: 'doc'
 editor: visual
 bibliography: references.bib
+csl: diabetologia.csl
 keep-tex: true
 ---
 
@@ -320,7 +322,7 @@ Applying ideas from @sec-ce to modelling discrete random variables has been appr
 
 @agn22 first introduce an extended GP distribution, a continuous distribution that extends the idea of obtaining GP values from a probability integral transform (PIT) of $U(0,1)$ draws and instead considers a PIT of draws from any distribution on $(0,1)$ such as a beta distribution. This distribution is then discretised into their discrete extended GP distribution.
 
-The approach that will be used in @sec-meth follows [ROHRBECK], and first requires defining a discretisation of the GP distribution.
+The approach that will be used in @sec-meth follows @Rohrbeck_2018, and first requires defining a discretisation of the GP distribution.
 
 ::: {#def-igp}
 ## Intergral Generalised Pareto Distribution (IGP)
@@ -338,9 +340,9 @@ For $y=\lceil u\rceil,\lceil u\rceil+1, \ldots$ and $\xi \in \mathbb R$ and $u, 
 
 The results from @sec-ce allow the GEV and GP to be fitted to the block maxima and exceedances respectively. An example of where modelling the GEV may be useful are when modelling monthly high temperatures, fitting the GEV to historic data  of peak monthly temperatures may allow for future prediction of these temperatures. Fitting the GP may be useful in other scenarios such as modelling the strength of solar flares.
 
-Typically, when fitting the GP, a sufficiently high threshold needs to be specified beforehand. \[COLES\] provides some empirical methods for specifying the threshold, one approach is to use a threshold stability plot that uses maximum likelihood to estimate the parameters of the GP for a large range of thresholds. The threshold can be chosen as the point across all of the plots after which the values of the parameters seems stable. One particular issue when fitting the GP to data, is that the likelihoods cannot be compared for different thresholds as changing the threshold changes the amount of data being used.
+Typically, when fitting the GP, a sufficiently high threshold needs to be specified beforehand. @coles2001 provides some empirical methods for specifying the threshold, one approach is to use a threshold stability plot that uses maximum likelihood to estimate the parameters of the GP for a large range of thresholds. The threshold can be chosen as the point across all of the plots after which the values of the parameters seems stable. One particular issue when fitting the GP to data, is that the likelihoods cannot be compared for different thresholds as changing the threshold changes the amount of data being used.
 
-Another more recent approach shown in \[MACDONALD 2012\], uses a spliced threshold mixture to model the threshold exceedances where one distribution is assumed for the bulk of the data and the GP is used for those values above the threshold. This approach can also be applied in the discrete setting, and is what is used in @sec-meth. A general cases of the model is given below
+Another more recent approach shown by @mac2012, uses a spliced threshold mixture to model the threshold exceedances where one distribution is assumed for the bulk of the data and the GP is used for those values above the threshold. This approach can also be applied in the discrete setting, and is what is used in @sec-meth. A general cases of the model is given below
 
 ::: {#def-mixigp}
 ## IGP Spliced Mixture
@@ -431,7 +433,7 @@ There are some asymptotic results that have been derived for the case when $m=1$
 #### Limiting Degree Distribution
 
 
-In \[GPA REF\] the limiting degree distribution was calculated in terms of the preferential attachment function and does not have a general explicit form. It is defined as follows, let $\lambda^*$ be the solution, if it exists, to:
+In @rudas07 the limiting degree distribution was calculated in terms of the preferential attachment function and does not have a general explicit form. It is defined as follows, let $\lambda^*$ be the solution, if it exists, to:
 
 $$
 1=\sum_{n=1}^\infty \prod_{i=1}^{n-1}\displaystyle\frac{g(i)}{g(i)+\lambda}
@@ -462,11 +464,13 @@ Starting with a graph $G_1 = (V_1, E_1)$ where $V_1 = \{1,\ldots,m_0\}$ and $E_1
 
 #### Limiting Degree Distriubtion
 
-In \[NETWORK SCI book\], it was shown that for large values of $t$, the limiting degree distribution of a network produces by this model is:
+In @barabasibook it was shown that for large values of $t$, the limiting degree distribution of a network produces by this model is:
 
 $$
 f(k) = \frac{2m(m+1)}{k(k+1)(k+2)}, \qquad k\geq m
-$$ According to \[REF\] this pmf is regularly varying with exponent 2, meaning that it is in the Fréchet domain of attraction $\mathcal D(\Phi_2)$.
+$$ 
+
+\[KARAMATA\] states that since this pmf is regularly varying with exponent 2, then so is its cmf and it is in the Fréchet domain of attraction $\mathcal D(\Phi_2)$.
 
 ### Uniform Attachment (UA)
 
@@ -489,7 +493,7 @@ Start with a graph $G_1 = (V_1, E_1) = (\{1,\ldots,m_0\}, \emptyset)$, at each t
 
 #### Limiting Degree Distribution
 
-As showing in \[REF\] the expected degree distribution of this model for large values of $t$ is approximately: $$
+As showing in @Barabasi99 the expected degree distribution of this model for large values of $t$ is approximately: $$
 f(k) = \displaystyle\frac{e}{m}\exp\left(-\displaystyle\frac{k}{m}\right),\qquad k \ge m
 $$ Although this was not shown rigourously and treats the degree of a vertex as a continuous random variable, this is an shifted exponential distribution with left endpoint $m$ and rate parameter $1/m$ and as such is in the Gumbel domain of attraction.
 
@@ -519,7 +523,7 @@ To further investigate this, @sec-realmodel considers fitting a model to these d
 
 ## Modelling degree distributions {#sec-realmodel}
 
-As mentioned in @sec-mod, the method used here to model the extreme values of the data will be a spliced threshold mixture. Specifically, it will be a spliced threshold mixture of a power law and a discretisation of the generalised pareto distribution similar to what is defined in \[ROHRBECK\].
+As mentioned in @sec-mod, the method used here to model the extreme values of the data will be a spliced threshold mixture. Specifically, it will be a spliced threshold mixture of a power law and a discretisation of the generalised pareto distribution similar to what is defined in @Rohrbeck_2018.
 
 ::: {#def-pligp}
 ## Power-Law IGP Distribution
@@ -677,6 +681,8 @@ p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.l
 
 @fig-thresh shows that for 'arenas-meta' and 'UAsim' the posterior of the threshold is extremely concentrated, so much so that only one threshold is used. In the case of 'arenas-meta', this value is 1 meaning that the power law index $\alpha$ (@fig-alpha) is free to be any value that is permitted by the prior, which is anything on the positive real line, explaining the very diffuse posterior. The threshold for 'UAsim' is so low due to the magnitude of the values in the data and is much more concentrated because of the sample size.
 
+The variety of values that $\alpha$ and $\xi$ take across all of the data sets shown in @fig-alpha and @fig-shape, makes it clear that none of these models could have been the result of either the BA model or the UA model when $m=1$. Changing $m$ may indeed change the degree distribution, but it would also change the left endpoint of the degree distributions as each vertex would join the graph with $m$ edges leaving no vertices with degree less that $m$.
+
 ## GPA analyses
 
 So far it has been shown that neither the BA model nor the UA model can adequately capture the range of type of degree distributions of real networks. So, a natural place to start when attempting to expand the range of possible degree distributions is the more general model, the GPA. This section, will use results from @shimura12 and @sec-ext to investigate the possible types of degree distribution that may arise from different preferential attachment functions in the GPA model.
@@ -746,7 +752,7 @@ This is further supported by @fig-shtail below, which shows the value of the qua
 
 ## A Conjecture
 
-The results from this subsection suggest that for super-linear preferential attachment functions the GPA model has limiting degree distribution with super heavy tails. This, along with results for the linear case in @sec-gen and sub-linear cases in \[NETSCI BOOK\] lead to the following conjecture.
+The results from this subsection suggest that for super-linear preferential attachment functions the GPA model has limiting degree distribution with super heavy tails. This, along with results for the linear case in @sec-gen and sub-linear cases in @barabasibook lead to the following conjecture.
 
 ::: {#cnj-gpa}
 The GPA model is only capable of producing three different types of degree distribution:

@@ -149,14 +149,14 @@
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[section]
 \theoremstyle{plain}
 \newtheorem{corollary}{Corollary}[section]
 \theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[section]
-\theoremstyle{plain}
 \newtheorem{conjecture}{Conjecture}[section]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -224,7 +224,7 @@
 %}
 \footnote{An html version of this report can be found at \url{www.twboughen.github.io/phd/APR/report}}
 \justifying
-\noindent\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, frame hidden, sharp corners, enhanced, borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, interior hidden]}{\end{tcolorbox}}\fi
+\noindent\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, frame hidden, breakable, interior hidden, enhanced, borderline west={3pt}{0pt}{shadecolor}, sharp corners]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -379,8 +379,9 @@ domain of attraction is equivalent to saying that the survival function
 In addition to heavy tailed distributions it is also useful to define
 what will be referred to as super heavy tailed distributions. This term
 is often just refers to specific distributions such as the log-Cauchy
-,log-Gamma,and log-Weibull distributions but Fraga Alves, Haan, and
-Neves (2009) provides a more precise definition below:
+,log-Gamma,and log-Weibull distributions but
+{[}\protect\hyperlink{ref-fmh09}{1}{]} provides a more precise
+definition below:
 
 \begin{definition}[Super Heavy
 Tails]\protect\hypertarget{def-sup}{}\label{def-sup}
@@ -469,9 +470,10 @@ The discretisation of a distribution with cdf \(F\) is given by
 
 \end{definition}
 
-Shimura (2012) provides conditions for a discretisation of a continuous
-distribution to belong to the same domain of attraction. In particular
-the following theorem which corresponds to Theorem 1 in Shimura (2012).
+{[}\protect\hyperlink{ref-shimura12}{2}{]} provides conditions for a
+discretisation of a continuous distribution to belong to the same domain
+of attraction. In particular the following theorem which corresponds to
+Theorem 1 in {[}\protect\hyperlink{ref-shimura12}{2}{]}.
 
 \begin{theorem}[Domain of attraction
 consistency]\protect\hypertarget{thm-shimura1}{}\label{thm-shimura1}
@@ -497,8 +499,9 @@ the property: \[
 
 \end{theorem}
 
-In addition Shimura (2012) introduces a quantity useful for determining
-the domain of a attraction that a discrete distribution belongs to.
+In addition {[}\protect\hyperlink{ref-shimura12}{2}{]} introduces a
+quantity useful for determining the domain of a attraction that a
+discrete distribution belongs to.
 
 \begin{definition}[Omega
 Function]\protect\hypertarget{def-omega}{}\label{def-omega}
@@ -525,7 +528,7 @@ variables has been approached from many different directions. What
 follows is a overview of some of the approaches that have been taken but
 will see use in this report.
 
-Hitz, Davis, and Samorodnitsky (2024) note that using the GP
+{[}\protect\hyperlink{ref-hds24}{3}{]} note that using the GP
 distribution as an approximation in a discrete setting leads to bias in
 the likelihood function and can lead to it being inadequate for
 modelling. They propose two other peaks over threshold methods that rely
@@ -537,7 +540,7 @@ function. Both methods are motivated theoretically for modelling of a
 large class of discrete distributions and are shown in the paper to
 either match or outperform using the GP to model discrete data directly.
 
-Ahmad, Gaetan, and Naveau (2022) first introduce an extended GP
+{[}\protect\hyperlink{ref-agn22}{4}{]} first introduce an extended GP
 distribution, a continuous distribution that extends the idea of
 obtaining GP values from a probability integral transform (PIT) of
 \(U(0,1)\) draws and instead considers a PIT of draws from any
@@ -545,8 +548,8 @@ distribution on \((0,1)\) such as a beta distribution. This distribution
 is then discretised into their discrete extended GP distribution.
 
 The approach that will be used in Section~\ref{sec-meth} follows
-{[}ROHRBECK{]}, and first requires defining a discretisation of the GP
-distribution.
+{[}\protect\hyperlink{ref-Rohrbeck_2018}{5}{]}, and first requires
+defining a discretisation of the GP distribution.
 
 \begin{definition}[Intergral Generalised Pareto Distribution
 (IGP)]\protect\hypertarget{def-igp}{}\label{def-igp}
@@ -578,21 +581,23 @@ Fitting the GP may be useful in other scenarios such as modelling the
 strength of solar flares.
 
 Typically, when fitting the GP, a sufficiently high threshold needs to
-be specified beforehand. {[}COLES{]} provides some empirical methods for
-specifying the threshold, one approach is to use a threshold stability
-plot that uses maximum likelihood to estimate the parameters of the GP
-for a large range of thresholds. The threshold can be chosen as the
-point across all of the plots after which the values of the parameters
-seems stable. One particular issue when fitting the GP to data, is that
-the likelihoods cannot be compared for different thresholds as changing
-the threshold changes the amount of data being used.
+be specified beforehand. {[}\protect\hyperlink{ref-coles2001}{6}{]}
+provides some empirical methods for specifying the threshold, one
+approach is to use a threshold stability plot that uses maximum
+likelihood to estimate the parameters of the GP for a large range of
+thresholds. The threshold can be chosen as the point across all of the
+plots after which the values of the parameters seems stable. One
+particular issue when fitting the GP to data, is that the likelihoods
+cannot be compared for different thresholds as changing the threshold
+changes the amount of data being used.
 
-Another more recent approach shown in {[}MACDONALD 2012{]}, uses a
-spliced threshold mixture to model the threshold exceedances where one
-distribution is assumed for the bulk of the data and the GP is used for
-those values above the threshold. This approach can also be applied in
-the discrete setting, and is what is used in Section~\ref{sec-meth}. A
-general cases of the model is given below
+Another more recent approach shown by
+{[}\protect\hyperlink{ref-mac2012}{7}{]}, uses a spliced threshold
+mixture to model the threshold exceedances where one distribution is
+assumed for the bulk of the data and the GP is used for those values
+above the threshold. This approach can also be applied in the discrete
+setting, and is what is used in Section~\ref{sec-meth}. A general cases
+of the model is given below
 
 \begin{definition}[IGP Spliced
 Mixture]\protect\hypertarget{def-mixigp}{}\label{def-mixigp}
@@ -742,10 +747,10 @@ when \(m=1\), making the process generate a random tree.
 \subsubsection{Limiting Degree
 Distribution}\label{limiting-degree-distribution}}
 
-In {[}GPA REF{]} the limiting degree distribution was calculated in
-terms of the preferential attachment function and does not have a
-general explicit form. It is defined as follows, let \(\lambda^*\) be
-the solution, if it exists, to:
+In {[}\protect\hyperlink{ref-rudas07}{8}{]} the limiting degree
+distribution was calculated in terms of the preferential attachment
+function and does not have a general explicit form. It is defined as
+follows, let \(\lambda^*\) be the solution, if it exists, to:
 
 \[
 1=\sum_{n=1}^\infty \prod_{i=1}^{n-1}\displaystyle\frac{g(i)}{g(i)+\lambda}
@@ -760,8 +765,8 @@ f(k) = \displaystyle\frac{\lambda^*}{g(k) + \lambda^*}\prod_{i=0}^{k-1}\displays
 \subsection{Barabási-Albert (BA)}\label{barabuxe1si-albert-ba}}
 
 The GPA model has several special cases, when \(g\) is the identity
-function i.e \(g(k)=k\), it becomes the BA model (Barabási and Albert
-1999).
+function i.e \(g(k)=k\), it becomes the BA model
+{[}\protect\hyperlink{ref-Barabasi99}{9}{]}.
 
 \begin{definition}[Barabási-Albert
 Model]\protect\hypertarget{def-ba}{}\label{def-ba}
@@ -797,14 +802,17 @@ the graph \(G_t = (V_1, E_1)\) is generated by the following rules:
 \subsubsection{Limiting Degree
 Distriubtion}\label{limiting-degree-distriubtion}}
 
-In {[}NETWORK SCI book{]}, it was shown that for large values of \(t\),
-the limiting degree distribution of a network produces by this model is:
+In {[}\protect\hyperlink{ref-barabasibook}{10}{]} it was shown that for
+large values of \(t\), the limiting degree distribution of a network
+produces by this model is:
 
 \[
 f(k) = \frac{2m(m+1)}{k(k+1)(k+2)}, \qquad k\geq m
-\] According to {[}REF{]} this pmf is regularly varying with exponent 2,
-meaning that it is in the Fréchet domain of attraction
-\(\mathcal D(\Phi_2)\).
+\]
+
+{[}KARAMATA{]} states that since this pmf is regularly varying with
+exponent 2, then so is its cmf and it is in the Fréchet domain of
+attraction \(\mathcal D(\Phi_2)\).
 
 \hypertarget{uniform-attachment-ua}{%
 \subsection{Uniform Attachment (UA)}\label{uniform-attachment-ua}}
@@ -845,8 +853,9 @@ generated by repeating the following two steps:
 \subsubsection{Limiting Degree
 Distribution}\label{limiting-degree-distribution-1}}
 
-As showing in {[}REF{]} the expected degree distribution of this model
-for large values of \(t\) is approximately: \[
+As showing in {[}\protect\hyperlink{ref-Barabasi99}{9}{]} the expected
+degree distribution of this model for large values of \(t\) is
+approximately: \[
 f(k) = \displaystyle\frac{e}{m}\exp\left(-\displaystyle\frac{k}{m}\right),\qquad k \ge m
 \] Although this was not shown rigourously and treats the degree of a
 vertex as a continuous random variable, this is an shifted exponential
@@ -900,7 +909,7 @@ As mentioned in Section~\ref{sec-mod}, the method used here to model the
 extreme values of the data will be a spliced threshold mixture.
 Specifically, it will be a spliced threshold mixture of a power law and
 a discretisation of the generalised pareto distribution similar to what
-is defined in {[}ROHRBECK{]}.
+is defined in {[}\protect\hyperlink{ref-Rohrbeck_2018}{5}{]}.
 
 \begin{definition}[Power-Law IGP
 Distribution]\protect\hypertarget{def-pligp}{}\label{def-pligp}
@@ -1035,6 +1044,14 @@ posterior. The threshold for `UAsim' is so low due to the magnitude of
 the values in the data and is much more concentrated because of the
 sample size.
 
+The variety of values that \(\alpha\) and \(\xi\) take across all of the
+data sets shown in Figure~\ref{fig-alpha} and Figure~\ref{fig-shape},
+makes it clear that none of these models could have been the result of
+either the BA model or the UA model when \(m=1\). Changing \(m\) may
+indeed change the degree distribution, but it would also change the left
+endpoint of the degree distributions as each vertex would join the graph
+with \(m\) edges leaving no vertices with degree less that \(m\).
+
 \hypertarget{gpa-analyses}{%
 \section{GPA analyses}\label{gpa-analyses}}
 
@@ -1042,10 +1059,10 @@ So far it has been shown that neither the BA model nor the UA model can
 adequately capture the range of type of degree distributions of real
 networks. So, a natural place to start when attempting to expand the
 range of possible degree distributions is the more general model, the
-GPA. This section, will use results from Shimura (2012) and
-Section~\ref{sec-ext} to investigate the possible types of degree
-distribution that may arise from different preferential attachment
-functions in the GPA model.
+GPA. This section, will use results from
+{[}\protect\hyperlink{ref-shimura12}{2}{]} and Section~\ref{sec-ext} to
+investigate the possible types of degree distribution that may arise
+from different preferential attachment functions in the GPA model.
 
 \hypertarget{the-preferential-attachment-function}{%
 \subsection{The Preferential Attachment
@@ -1087,10 +1104,11 @@ degree distribution in the Fréchet domain of attraction. However, for
 \(\gamma>1\) the value of \(\Omega(F,n)\) appears to diverge and does
 not approach a finite limit.
 
-Shimura (2012) does not provide any results in particular for the case
-of \(\Omega(F,n)\) diverging but if the definition of slow variation and
-thus super-heavy tails is viewed as regular variation in the limit as
-\(\alpha\) goes to infinity then the following can be obtained.
+{[}\protect\hyperlink{ref-shimura12}{2}{]} does not provide any results
+in particular for the case of \(\Omega(F,n)\) diverging but if the
+definition of slow variation and thus super-heavy tails is viewed as
+regular variation in the limit as \(\alpha\) goes to infinity then the
+following can be obtained.
 
 \begin{corollary}[]\protect\hypertarget{cor-omg}{}\label{cor-omg}
 
@@ -1114,8 +1132,9 @@ the GPA model with \(g(k) = k^\gamma,\gamma>1\) has super heavy tails.
 The results from this subsection suggest that for super-linear
 preferential attachment functions the GPA model has limiting degree
 distribution with super heavy tails. This, along with results for the
-linear case in Section~\ref{sec-gen} and sub-linear cases in {[}NETSCI
-BOOK{]} lead to the following conjecture.
+linear case in Section~\ref{sec-gen} and sub-linear cases in
+{[}\protect\hyperlink{ref-barabasibook}{10}{]} lead to the following
+conjecture.
 
 \begin{conjecture}[]\protect\hypertarget{cnj-gpa}{}\label{cnj-gpa}
 
@@ -1173,33 +1192,68 @@ The funding for this project expires on \textbf{17th March 2027}.
 \addcontentsline{toc}{chapter}{References}
 
 \hypertarget{refs}{}
-\begin{CSLReferences}{1}{0}
-\leavevmode\vadjust pre{\hypertarget{ref-agn22}{}}%
-Ahmad, Touqeer, Carlo Gaetan, and Philippe Naveau. 2022. {``Modelling of
-Discrete Extremes Through Extended Versions of Discrete Generalized
-Pareto Distribution.''} \emph{ArXiv e-Prints}.
-\url{https://arxiv.org/abs/2210.15253}.
-
-\leavevmode\vadjust pre{\hypertarget{ref-Barabasi99}{}}%
-Barabási, Albert-László, and Réka Albert. 1999. {``Emergence of Scaling
-in Random Networks.''} \emph{Science} 286 (5439): 509--12.
-\url{https://doi.org/10.1126/science.286.5439.509}.
-
+\begin{CSLReferences}{0}{0}
 \leavevmode\vadjust pre{\hypertarget{ref-fmh09}{}}%
-Fraga Alves, Maria, Laurens Haan, and Cláudia Neves. 2009. {``A Test
-Procedure for Detecting Super-Heavy Tails.''} \emph{Journal of
-Statistical Planning and Inference} 139 (February).
-\url{https://doi.org/10.1016/j.jspi.2008.04.026}.
-
-\leavevmode\vadjust pre{\hypertarget{ref-hds24}{}}%
-Hitz, Adrien S., Richard A. Davis, and Gennady Samorodnitsky. 2024.
-{``Discrete Extremes.''} \emph{Journal of Data Science}, 1--13.
-\url{https://doi.org/10.6339/24-JDS1120}.
+\CSLLeftMargin{1. }%
+\CSLRightInline{Fraga Alves M, Haan L, Neves C (2009) A test procedure
+for detecting super-heavy tails. Journal of Statistical Planning and
+Inference 139. \url{https://doi.org/10.1016/j.jspi.2008.04.026}}
 
 \leavevmode\vadjust pre{\hypertarget{ref-shimura12}{}}%
-Shimura, Takaaki. 2012. {``Discretization of Distributions in the
-Maximum Domain of Attraction.''} \emph{Extremes} 15: 299--317.
-\url{https://doi.org/10.1007/s10687-011-0137-7}.
+\CSLLeftMargin{2. }%
+\CSLRightInline{Shimura T (2012) Discretization of distributions in the
+maximum domain of attraction. Extremes 15:299--317.
+\url{https://doi.org/10.1007/s10687-011-0137-7}}
+
+\leavevmode\vadjust pre{\hypertarget{ref-hds24}{}}%
+\CSLLeftMargin{3. }%
+\CSLRightInline{Hitz AS, Davis RA, Samorodnitsky G (2024) Discrete
+extremes. Journal of Data Science 1--13.
+\url{https://doi.org/10.6339/24-JDS1120}}
+
+\leavevmode\vadjust pre{\hypertarget{ref-agn22}{}}%
+\CSLLeftMargin{4. }%
+\CSLRightInline{Ahmad T, Gaetan C, Naveau P (2022)
+\href{https://arxiv.org/abs/2210.15253}{Modelling of discrete extremes
+through extended versions of discrete generalized pareto distribution}.
+ArXiv e-prints}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Rohrbeck_2018}{}}%
+\CSLLeftMargin{5. }%
+\CSLRightInline{Rohrbeck C, Eastoe EF, Frigessi A, Tawn JA (2018)
+{Extreme value modelling of water-related insurance claims}. The Annals
+of Applied Statistics 12(1):246--282.
+\url{https://doi.org/10.1214/17-AOAS1081}}
+
+\leavevmode\vadjust pre{\hypertarget{ref-coles2001}{}}%
+\CSLLeftMargin{6. }%
+\CSLRightInline{Coles S (2001)
+\href{https://books.google.co.uk/books?id=2nugUEaKqFEC}{An introduction
+to statistical modeling of extreme values}. Springer}
+
+\leavevmode\vadjust pre{\hypertarget{ref-mac2012}{}}%
+\CSLLeftMargin{7. }%
+\CSLRightInline{Scarrott C, MacDonald A (2012) A review of extreme value
+threshold estimation and uncertainty quantification. Revstat Statistical
+Journal 10:33--60. \url{https://doi.org/10.57805/revstat.v10i1.110}}
+
+\leavevmode\vadjust pre{\hypertarget{ref-rudas07}{}}%
+\CSLLeftMargin{8. }%
+\CSLRightInline{Rudas A, Tóth B, Valkó B (2007) Random trees and general
+branching processes. Random Structures \& Algorithms 31(2):186--202.
+https://doi.org/\url{https://doi.org/10.1002/rsa.20137}}
+
+\leavevmode\vadjust pre{\hypertarget{ref-Barabasi99}{}}%
+\CSLLeftMargin{9. }%
+\CSLRightInline{Barabási A-L, Albert R (1999) Emergence of scaling in
+random networks. Science 286(5439):509--512.
+\url{https://doi.org/10.1126/science.286.5439.509}}
+
+\leavevmode\vadjust pre{\hypertarget{ref-barabasibook}{}}%
+\CSLLeftMargin{10. }%
+\CSLRightInline{Barabási AL, PÃ3sfai MÃ (2016)
+\href{https://books.google.co.uk/books?id=iLtGDQAAQBAJ}{Network
+science}. Cambridge University Press}
 
 \end{CSLReferences}
 
