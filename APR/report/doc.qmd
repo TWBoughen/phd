@@ -43,6 +43,8 @@ format:
   odt:
     output-file: 'doc'
 editor: visual
+crossref: 
+  appendix-title: 'Appendix'
 bibliography: references.bib
 csl: diabetologia.csl
 keep-tex: true
@@ -800,11 +802,25 @@ ggplot(df, aes(k,value))+geom_line(aes(colour = a),linewidth=1) + scale_x_log10(
 
 ```
 
-# Next Steps
+# Discussion and Next Steps
+
+The generative models considered so far are very simple, which is good since the goal is to find as simple a model as possible. However, it is clear now and perhaps unsurprising that the models shown here are not capable of modelling realistic network growth. This section is dedicated to discussing next steps for this project and address some questions left open. This is **not** a detailed plan for what is to come, for that see @sec-plan.
+
+The models from @sec-gen are very limited when it comes to the actual growth of the network. Whenever a new vertex joins the network it brings a fixed number of edges with it that remain permanently, this is the only way that edges are added and thus the degrees changed. Below are some modifications that could be made to address this issue:
+
+- Allow removal of edges throughout the networks growth.
+- Allow edges to be made between already existing vertices in the network.
+- Bring a random number of edges when a vertex is added.
+
+It is possible to include all of these into a model with the modification that at each time step you do one of three different steps (Growth, Connection, Removal) with certain probabilities where the number of edges added at each growth step is a discrete random variable. Something similar could be done for the connection and removal steps.
+
+Additionally, all of the models assume a constant preferential attachment function both over time and across vertices. To address this the preferential attachment function could be allowed to change over time and perhaps differ between vertices. This would allow a vertex to 'age' in a sense, and could also allow for 'categories' of vertices that share the same preferential attachment function which differs from those in other 'categories'. 
+
+
 
 \appendix
 
-# Updated Project Plan {.appendix}
+# Updated Project Plan {.appendix #sec-plan}
 
 # Training {.appendix}
 
