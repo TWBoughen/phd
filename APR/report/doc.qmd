@@ -218,9 +218,9 @@ $$
 
 The parameter $\alpha$ in @def-doa and @thm-evt is called the extreme value index.
 
-Here, distributions in the Gumbel domain are referred to as light tailed, distributions in the Negative-Weibull domain are referred to as short tailed, and those in the Fréchet are referred to as heavy tailed.This terminology for heavy tailed distributions in different ot some of the literature that defined a heavy tailed distribution as one that decays slower than exponential. However the terminology used here is also widely used.
+Here, distributions in the Gumbel domain are referred to as light tailed, distributions in the Negative-Weibull domain are referred to as short tailed, and those in the Fréchet are referred to as heavy tailed. This terminology for heavy tailed distributions is different to some of the literature that defined a heavy tailed distribution as one that decays slower than exponential. However the terminology used here is also widely used.
 
-Throughout this report functions will be referred to as regularly varying or slowly varying, what is meant by this is formally deined below:
+Throughout this report functions will be referred to as regularly varying or slowly varying, what is meant by this is formally defined below:
 
 ::: {#def-rv}
 ## Regular Variation
@@ -344,7 +344,7 @@ The results from @sec-ce allow the GEV and GP to be fitted to the block maxima a
 
 Typically, when fitting the GP, a sufficiently high threshold needs to be specified beforehand. @coles2001 provides some empirical methods for specifying the threshold, one approach is to use a threshold stability plot that uses maximum likelihood to estimate the parameters of the GP for a large range of thresholds. The threshold can be chosen as the point across all of the plots after which the values of the parameters seems stable. One particular issue when fitting the GP to data, is that the likelihoods cannot be compared for different thresholds as changing the threshold changes the amount of data being used.
 
-Another more recent approach shown by @mac2012, uses a spliced threshold mixture to model the threshold exceedances where one distribution is assumed for the bulk of the data and the GP is used for those values above the threshold. This approach can also be applied in the discrete setting, and is what is used in @sec-meth. A general cases of the model is given below
+Another more recent approach shown by @mac2012, uses a spliced threshold mixture to model the threshold exceedances where one distribution is assumed for the bulk of the data and the GP is used for those values above the threshold. This approach can also be applied in the discrete setting, and is what is used in @sec-meth. A general case of the model is given below
 
 ::: {#def-mixigp}
 ## IGP Spliced Mixture
