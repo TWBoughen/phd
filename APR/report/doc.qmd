@@ -153,7 +153,7 @@ cond.b = Vectorize(function(lambda, g){
 
 # Introduction {#sec-int}
 
-Networks appear across appear in a range of fields of study including but not limited to micro-biology, computer science, sociology, and music. This makes them a valuable source of data to study, this report will be focused on the processes by which these networks form. Often, networks are assumed to have come from the Barabási-Albert model so that a power law can be used to model their degree distribution however a power law, while suitable for the bulk of the data, seems to become less suitable for the most extreme values in the network.
+Networks appear in a range of fields of study including but not limited to micro-biology, computer science, sociology, and music. This makes them a valuable source of data to study, this report will be focused on the processes by which these networks form. Often, networks are assumed to have come from the Barabási-Albert model so that a power law can be used to model their degree distribution however a power law, while suitable for the bulk of the data, seems to become less suitable for the most extreme values in the network.
 
 Shown below in @fig-survs1 are some examples of the degree distribution of real networks along with some simulated from two network generative processes given in @sec-gen. The networks in @fig-survs1 are:
 
@@ -505,7 +505,7 @@ $$
 f(k) = \frac{2m(m+1)}{k(k+1)(k+2)}, \qquad k\geq m
 $$ 
 
-\[KARAMATA\] states that since this probability mass function is regularly varying with exponent 2, then so is its cumulative mass function and it is in the Fréchet domain of attraction $\mathcal D(\Phi_2)$.
+@bing89 states that since this probability mass function is regularly varying with exponent 2, then so is its cumulative mass function and it is in the Fréchet domain of attraction $\mathcal D(\Phi_2)$.
 
 ### Uniform Attachment (UA)
 
