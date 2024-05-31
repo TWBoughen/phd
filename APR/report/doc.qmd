@@ -192,9 +192,10 @@ This section is a concise introduction to the two main methods for modelling ext
 
 The first method considers the distribution of block maxima. That is, for a set of independent and identically distributed (iid) random variables $X_1,\ldots,X_n$ with common cumulative density function (cdf) $F$, the block maxima approach studies the limiting distribution of $M_n = \max\{X_1,\ldots,X_n\}$.
 
-Clearly, as $n\rightarrow \infty$, the block maxima $M_n$ converges almost surely to the right endpoint of $F$. However, standardising the block maxima allows for some characterisation of the limiting distribution. The following theorem is a key result in extreme value theory as it derives the general form of all possible limit laws for the standardised block maxima $M_n*$.
-::: {#thm-evt}
+Clearly, as $n\rightarrow \infty$, the block maxima $M_n$ converges almost surely to the right endpoint of $F$. However, standardising the block maxima allows for some characterisation of the limiting distribution. The following theorem is a key result in extreme value theory as it derives the general form of all possible limit laws for the standardised block maxima $M_n^*$.
 
+
+::: {#thm-evt}
 ### Fisher--Tippett--Gnedenko Theorem
 
 With $X_1, \ldots,X_n \overset{\mathrm{iid}}{\sim} F$ and $\{ a_n\}_{n\ge0}, \{ b_n\}_{n\ge0}$ such that:
