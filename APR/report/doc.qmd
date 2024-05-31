@@ -58,6 +58,7 @@ keep-tex: true
 #for word count
 # library(networkdata)
 library(igraph)
+library(latex2exp)
 source('../scripts/functions.R')
 source('../scripts/new_functions.R')
 # library(mvtnorm)
@@ -154,30 +155,32 @@ cond.b = Vectorize(function(lambda, g){
 
 Since the aim is to gain understanding about the behaviour of the degree distribution of networks at the right tail, it seems natural to look to using methods from extreme value theory.
 
-# Extreme Value Theory {#sec-ext}
+# Univariate Extreme Value Theory {#sec-ext}
 
 This section begins with a review of the theory and methodology for modelling the extreme values of continuous random variables, before moving to considerations for modelling the extreme values of discrete random variables.
 
 ## Continuous Extremes {#sec-ce}
 
-Studying the properties of the extreme values of a random variable first requires determining what exactly is considered to be an extreme value. In this section extreme values of two kinds are considered, both of which can be characterised.
+This section is a concise introduction to the two main methods for modelling extreme values: block maxima and peaks over threshold
 
-The first kind of extreme value considers the distribution of block maxima. That is, for a set of independent and identically distributed (iid) random variables $X_1,\ldots,X_n$ with common cumulative density function (cdf) $F$ what is the limiting distribution of $M_n = \max\{X_1,\ldots,X_n\}$?
+The first method considers the distribution of block maxima. That is, for a set of independent and identically distributed (iid) random variables $X_1,\ldots,X_n$ with common cumulative density function (cdf) $F$, the block maxima approach studies the limiting distribution of $M_n = \max\{X_1,\ldots,X_n\}$.
 
-Clearly, as $n\rightarrow \infty$, the block maxima $M_n$ converges almost surely to the right endpoint of $F$. However, standardising the block maxima allows for some characterisation of the limiting distribution.
-
+Clearly, as $n\rightarrow \infty$, the block maxima $M_n$ converges almost surely to the right endpoint of $F$. However, standardising the block maxima allows for some characterisation of the limiting distribution. The following theorem is a key result in extreme value theory as it derives the general form of all possible limit laws for the standardised block maxima $M_n*$.
 ::: {#thm-evt}
+
 ### Fisher--Tippett--Gnedenko Theorem
 
 With $X_1, \ldots,X_n \overset{\mathrm{iid}}{\sim} F$ and $\{ a_n\}_{n\ge0}, \{ b_n\}_{n\ge0}$ such that:
 
-$$\lim_{n\rightarrow\infty}\Pr\left(\displaystyle\frac{1}{a_n}[M_n-b_n]\le x\right) = G(x),$$ for some non-degenerate $G$.
+$$\lim_{n\rightarrow\infty}\Pr\left[\displaystyle\frac{1}{a_n}\{M_n-b_n\}\le x\right] = G(x),$$ for some non-degenerate $G$.
 
 Then $F$ is said to be in the (maximum) domain of attraction of $G$, denoted $F\in\mathcal D(G)$ ,and $G$ is of one of three types:
 
 -   Gumbel: $\Lambda(x) = \exp\{-\exp(-x)\},\quad x \in \mathbb R$
 -   Fréchet: $\Phi_\alpha(x) = \exp\{-x^{-\alpha}\},\quad x\ge 0,\alpha>0$
 -   Negative-Weibull: $\Psi_\alpha(x) = \exp\{-x^{-a}\},\quad x<0,\alpha>0$
+
+See @haan06 for the proof.
 :::
 
 Each of these three types defines a domain of attraction.
@@ -191,12 +194,12 @@ For a distribution with cdf $F$ and survival function $\bar F$ that has right en
 x_F = \sup\{x \in \mathbb R \cup\{\infty\}:F(x)<1\}
 $$ the distribution belongs to each domain of attraction subject to the conditions below:
 
-**If there exists a positive function a**
+**If there exists a positive function b**
 
 -   Type I/Gumbel/$\mathcal D(\Lambda)$:
 
 $$
-\lim_{x\uparrow x_F} \displaystyle\frac{\bar F(x+ta(x))}{\bar F(x)} = e^{-t},\quad \forall t\in\mathbb R
+\lim_{x\uparrow x_F} \displaystyle\frac{\bar F(x+tb(x))}{\bar F(x)} = e^{-t},\quad \forall t\in\mathbb R
 $$
 
 **If** $x_F=\infty$:
@@ -252,15 +255,15 @@ The three main types of extremal distribution (Gumbel, Fréchet and Negative-Wei
 Denoted by $\text{GEV}(\mu,\sigma,\xi)$ the distribution is characterised by three parameters $\mu \in \mathbb R$ the location, $\sigma\in \mathbb R^+$ the scale, and the shape $\xi\in \mathbb R$. It has support on $\{x\in \mathbb R:1+\xi(x-\mu)/\sigma > 0\}$ and has cdf given by:
 
 $$
-G(x) = \begin{cases}\exp\left\{-\left(1+\displaystyle\frac{\xi(x-\mu)}{\sigma}\right)_+^{-1/\xi}\right\},&\xi\ne0\\
-\exp\left\{-\exp\left(-\displaystyle\frac{x-\mu}{\sigma}\right)\right\},&\xi=0.
+G(x) = \begin{cases}\exp\left[-\left\{1+\displaystyle\frac{\xi(x-\mu)}{\sigma}\right\}_+^{-1/\xi}\right],&\xi\ne0\\
+\exp\left[-\exp\left\{-\displaystyle\frac{x-\mu}{\sigma}\right\}\right],&\xi=0.
 \end{cases}
 $$
 :::
 
 The three types of extremal distribution are obtained from changing the shape parameter $\xi$, which corresponds to $1/\alpha$ in @thm-evt. This change is generally made so that the largest $\xi$ corresponds to heavier tails of the distribution. Specifically, $\xi<0$, $\xi=0$, $\xi>0$, correspond to the negative Weibull, Gumbel and the Fréchet domains of attraction respectively.
 
-Another kind of extreme values are the observations above a large threshold, like the limiting distribution of block maxima, the limiting distribution of these extreme values can be characterised by the generalised pareto (GP) distribution.
+The second method for modelling, is to consider observations above a large threshold, like the limiting distribution of block maxima, the limiting distribution of these extreme values can be characterised by the generalised Pareto (GP) distribution.
 
 ::: {#def-gp}
 ### Generalised Pareto Distribution
@@ -324,7 +327,15 @@ Applying ideas from @sec-ce to modelling discrete random variables has been appr
 
 @agn22 first introduce an extended GP distribution, a continuous distribution that extends the idea of obtaining GP values from a probability integral transform (PIT) of $U(0,1)$ draws and instead considers a PIT of draws from any distribution on $(0,1)$ such as a beta distribution. This distribution is then discretised into their discrete extended GP distribution.
 
-The approach that will be used in @sec-meth follows @Rohrbeck_2018, and first requires defining a discretisation of the GP distribution.
+
+
+## Modelling {#sec-mod}
+
+The results from @sec-ce allow the GEV and GP to be fitted to the block maxima and peaks over threshold respectively. An example of where modelling the GEV may be useful are when modelling monthly high temperatures, fitting the GEV to historic data  of peak monthly temperatures may allow for future prediction of these temperatures. Fitting the GP may be useful in other scenarios such as modelling the strength of solar flares.
+
+Typically, when fitting the GP, a sufficiently high threshold needs to be specified beforehand. @coles2001 provides some empirical methods for specifying the threshold, one approach is to use a threshold stability plot that uses maximum likelihood to estimate the parameters of the GP for a large range of thresholds. The threshold can be chosen as the point across all of the plots after which the values of the parameters seems stable. One particular issue when fitting the GP to data, is that the likelihoods cannot be compared for different thresholds as changing the threshold changes the amount of data being used.
+
+Another more recent approach shown by @mac2012, uses a spliced threshold mixture to model the threshold exceedances where one distribution is assumed for the bulk of the data and the GP is used for those values above the threshold. To model discrete extremes, the approaches proposed in the literature are use a discretisation of the GP such as the one given below:
 
 ::: {#def-igp}
 ## Intergral Generalised Pareto Distribution (IGP)
@@ -338,13 +349,7 @@ $$
 For $y=\lceil u\rceil,\lceil u\rceil+1, \ldots$ and $\xi \in \mathbb R$ and $u, \sigma_0 \in \mathbb R^+.$
 :::
 
-## Modelling {#sec-mod}
-
-The results from @sec-ce allow the GEV and GP to be fitted to the block maxima and exceedances respectively. An example of where modelling the GEV may be useful are when modelling monthly high temperatures, fitting the GEV to historic data  of peak monthly temperatures may allow for future prediction of these temperatures. Fitting the GP may be useful in other scenarios such as modelling the strength of solar flares.
-
-Typically, when fitting the GP, a sufficiently high threshold needs to be specified beforehand. @coles2001 provides some empirical methods for specifying the threshold, one approach is to use a threshold stability plot that uses maximum likelihood to estimate the parameters of the GP for a large range of thresholds. The threshold can be chosen as the point across all of the plots after which the values of the parameters seems stable. One particular issue when fitting the GP to data, is that the likelihoods cannot be compared for different thresholds as changing the threshold changes the amount of data being used.
-
-Another more recent approach shown by @mac2012, uses a spliced threshold mixture to model the threshold exceedances where one distribution is assumed for the bulk of the data and the GP is used for those values above the threshold. This approach can also be applied in the discrete setting, and is what is used in @sec-meth. A general case of the model is given below
+A spliced mixture model is given below that uses a general discrete distribution for the bulk of the data and the IGP above some threshold $v$.
 
 ::: {#def-mixigp}
 ## IGP Spliced Mixture
@@ -355,7 +360,7 @@ f(y) = \begin{cases}
 \phi\left[\left(1+\displaystyle\frac{\xi(y+1-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}-\left(1+\displaystyle\frac{\xi(y-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}\right],&y=v+1, v+2,\ldots
 \end{cases}
 $$
-where $g$ is the pmf of some discrete distribution with support equal to $\{1,2,\ldots,v\}$.
+where $g$ is the probability mass function of some discrete distribution with support equal to $\{1,2,\ldots,v\}$ and  $\xi \in \mathbb R$ , $\sigma_0 \in \mathbb R^+$ and $v\in\mathbb Z^+.$
 :::
 
 
@@ -464,7 +469,7 @@ Starting with a graph $G_1 = (V_1, E_1)$ where $V_1 = \{1,\ldots,m_0\}$ and $E_1
     $$
 :::
 
-#### Limiting Degree Distriubtion
+#### Limiting Degree Distribution
 
 In @barabasibook it was shown that for large values of $t$, the limiting degree distribution of a network produces by this model is:
 
@@ -472,7 +477,7 @@ $$
 f(k) = \frac{2m(m+1)}{k(k+1)(k+2)}, \qquad k\geq m
 $$ 
 
-\[KARAMATA\] states that since this pmf is regularly varying with exponent 2, then so is its cmf and it is in the Fréchet domain of attraction $\mathcal D(\Phi_2)$.
+\[KARAMATA\] states that since this probability mass function is regularly varying with exponent 2, then so is its cumulative mass function and it is in the Fréchet domain of attraction $\mathcal D(\Phi_2)$.
 
 ### Uniform Attachment (UA)
 
@@ -495,13 +500,18 @@ Start with a graph $G_1 = (V_1, E_1) = (\{1,\ldots,m_0\}, \emptyset)$, at each t
 
 #### Limiting Degree Distribution
 
-As showing in @Barabasi99 the expected degree distribution of this model for large values of $t$ is approximately: $$
+As showing in @Barabasi99 the expected degree distribution of this model for large values of $t$ is approximately: 
+$$
 f(k) = \displaystyle\frac{e}{m}\exp\left(-\displaystyle\frac{k}{m}\right),\qquad k \ge m
-$$ Although this was not shown rigourously and treats the degree of a vertex as a continuous random variable, this is an shifted exponential distribution with left endpoint $m$ and rate parameter $1/m$ and as such is in the Gumbel domain of attraction.
+$$ 
+Although this was not shown rigorously and treats the degree of a vertex as a continuous random variable, this is an shifted exponential distribution with left endpoint $m$ and rate parameter $1/m$ and as such it belongs to the Gumbel domain of attraction.
 
-If $m=1$, it is possible to get a more precise result from the result regarding the limiting degree distribution of the GPA. By setting the preferential attachment function $g(k) = \lambda^*$, the can be shown that the limiting degree distribution is: $$
+If $m=1$, it is possible to get a more precise result from the result regarding the limiting degree distribution of the GPA. By setting the preferential attachment function $g(k) = \lambda^*$, the can be shown that the limiting degree distribution is: 
+$$
 f(k) = \left(\frac{1}{2} \right)^{k}, \qquad k=1,2,\ldots 
-$$ This distribution also occupies the Gumbel domain of attraction.
+$$ 
+
+This is a geometric distribution and is recoverable to the Gumbel domain of attraction as stated in @shimura12.
 
 # Methods {#sec-meth}
 
@@ -512,20 +522,20 @@ The aim of this section is to investigate the degree distribution of real networ
 #| fig-asp: 1
 #| out-width: 66%
 #| panel: fill
-#| fig-cap: "Plots of survial functions of real networks degrees"
+#| fig-cap: "Plots of survival functions of real networks degrees, along with the degree distribution for the UA and the BA models"
 #| fig-cap-location: top
 #| label: fig-survs
 source('../scripts/plot_dir.R')
 nms = plot_dir('../data/data_for_mcmc')
 ```
 
-@fig-survs shows the survival function of the degrees of various real networks as well as "BAsim" and "UAsim" which were generated using the corresponding schemes in @sec-gen. Additionally, the theoretical limiting degree distribution of both the UA model and the BA model (for m=1) are included on the plots. Visually it seems that neither of these models are adequate for modelling the growth of the real networks shown here.
+@fig-survs shows the survival function of the degrees of various real networks as well as "BA Simulated" and "UA Simulated" which were generated using the corresponding schemes in @sec-gen. Additionally, the theoretical limiting degree distribution of both the UA model and the BA model (for m=1) are included on the plots. Visually it seems that neither of these models are adequate for modelling the growth of the real networks shown here.
 
 To further investigate this, @sec-realmodel considers fitting a model to these data that will provide insight into what would be needed from a network generative model such that it flexible enough to capture the variation of shapes of degree distribution in real networks.
 
 ## Modelling degree distributions {#sec-realmodel}
 
-As mentioned in @sec-mod, the method used here to model the extreme values of the data will be a spliced threshold mixture. Specifically, it will be a spliced threshold mixture of a power law and a discretisation of the generalised pareto distribution similar to what is defined in @Rohrbeck_2018.
+As mentioned in @sec-mod, the method used here to model the extreme values of the data will be a spliced threshold mixture. Specifically, it will be a spliced threshold mixture of a power law and a discretisation of the generalised Pareto distribution similar to what is defined in @Rohrbeck_2018.
 
 ::: {#def-pligp}
 ## Power-Law IGP Distribution
@@ -536,17 +546,18 @@ f(y) = \begin{cases}
 \phi\left[\left(1+\displaystyle\frac{\xi(y+1-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}-\left(1+\displaystyle\frac{\xi(y-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}\right],&y=v+1, v+2,\ldots
 \end{cases}
 $$
+where $\alpha\in\mathbb R^+$ is the power law index and $\xi \in \mathbb R$ , $\sigma_0 \in \mathbb R^+$ and $v\in\mathbb Z^+.$
 :::
 
 ## Fitting model to the data
 
-The values of the parameters in the model for each data set were estimated under the Bayesian framework using a Metropolis within Gibbs sampler. Below are plots showing the same data as in @fig-survs but with the mean and 95% confidence intervals of the survival function of the model for each data-set.
+The values of the parameters in the model for each data set were estimated under the Bayesian framework using a Metropolis within Gibbs sampler. Below are plots showing the same data as in @fig-survs but with the mean and 95% credible intervals of the survival function of the model for each data-set.
 
 ```{r,echo=FALSE, warning=FALSE, message=FALSE, cache=FALSE}
 #| fig-width: 6
 #| fig-asp: 1
 #| out-width: 66%
-#| fig-cap: "Plots of truncated survial functions of real networks degrees"
+#| fig-cap: "Survival functions from @fig-survs, with mean and 95% CI for the fitted model"
 #| fig-cap-location: top
 #| label: fig-fits1
 res=readRDS('../data/mcmc.outputs/dir_out.rds')
@@ -585,15 +596,12 @@ for(i in 1:n){
 
 As show by @fig-fits1 the model seems to fit the data quite well, below are some plot summarising each of the parameters for each of the models:
 
-
-
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 #| fig-width: 6
 #| fig-asp: 0.4
 #| out-width: 66%
-#| fig-cap: Posterior of threshold ($v$)
-#| label: fig-thresh
-
+#| fig-cap: Posterior of scale ($\sigma$) 
+#| label: fig-scale
 dat_list_names = konect_to_df_dir('../data/data_for_mcmc', return_names=T)$names
 nms = gsub('[[:digit:]]+', '', unlist(strsplit(dat_list_names,'out.')))
 nms=nms[nms!='']
@@ -605,6 +613,24 @@ for(i in 2:ncol(res)){
   df = rbind(df, temp)
 }
 
+ 
+p = ggplot(df,aes(x=sig)) +stat_density() +
+  theme( 
+      axis.text.y=element_blank(), 
+      axis.ticks.y=element_blank()) +labs(x=TeX('$\\sigma_0$'))
+p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.left = element_text(angle = 0))
+```
+
+
+:::{layout="[[33,33],[33,33]]"}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+#| fig-cap: Posterior of threshold ($v$)
+#| label: fig-thresh
+#| fig-width: 4
+#| fig-asp: 1
+#| out-width: 100%
+
+
 p = ggplot(df,aes(x=v)) +geom_histogram(binwidth = 1,aes(y = ..density..))+
   theme( 
       axis.text.y=element_blank(), 
@@ -612,7 +638,6 @@ p = ggplot(df,aes(x=v)) +geom_histogram(binwidth = 1,aes(y = ..density..))+
 p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.left = element_text(angle = 0))
 
 ```
-:::{layout="[[33,33],[33,33]]"}
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 #| fig-width: 4
 #| fig-asp: 1
@@ -625,25 +650,11 @@ p = ggplot(df,aes(x=a)) +stat_density() +
   theme( 
       axis.text.y=element_blank(), 
       axis.ticks.y=element_blank())+xlim(0,5) 
-p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.left = element_text(angle = 0))
+p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.left = element_text(angle = 0))+labs(x=expression(alpha))
 
 ```
 
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
-#| fig-width: 4
-#| fig-asp: 1
-#| out-width: 100%
-#| fig-cap: Posterior of scale ($\sigma$) 
-#| label: fig-scale
 
-
- 
-p = ggplot(df,aes(x=sig)) +stat_density() +
-  theme( 
-      axis.text.y=element_blank(), 
-      axis.ticks.y=element_blank()) 
-p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.left = element_text(angle = 0))
-```
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 #| fig-width: 4
@@ -653,12 +664,12 @@ p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.l
 #| label: fig-shape
 
 
-
+library(latex2exp)
  
 p = ggplot(df,aes(x=xi)) +stat_density()+
   theme( 
       axis.text.y=element_blank(), 
-      axis.ticks.y=element_blank()) 
+      axis.ticks.y=element_blank()) +labs(x=TeX('$\\xi'))
 p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.left = element_text(angle = 0))
 ```
 
@@ -673,7 +684,7 @@ p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.l
 p = ggplot(df,aes(x=1/a)) +stat_density() +
   theme( 
       axis.text.y=element_blank(), 
-      axis.ticks.y=element_blank())+xlim(0,5) 
+      axis.ticks.y=element_blank())+xlim(0,5)+labs(x=TeX('$1 / \\alpha$'))
 p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.left = element_text(angle = 0))
 
 ```
@@ -685,23 +696,24 @@ p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.l
 
 The variety of values that $\alpha$ and $\xi$ take across all of the data sets shown in @fig-alpha and @fig-shape, makes it clear that none of these models could have been the result of either the BA model or the UA model when $m=1$. Changing $m$ may indeed change the degree distribution, but it would also change the left endpoint of the degree distributions as each vertex would join the graph with $m$ edges leaving no vertices with degree less that $m$.
 
-## GPA analyses
+## General Preferential Attachment Analyses
 
 So far it has been shown that neither the BA model nor the UA model can adequately capture the range of type of degree distributions of real networks. So, a natural place to start when attempting to expand the range of possible degree distributions is the more general model, the GPA. This section, will use results from @shimura12 and @sec-ext to investigate the possible types of degree distribution that may arise from different preferential attachment functions in the GPA model.
 
 ### The Preferential Attachment Function
 
-From here on the preferential functions that will be used for the GPA model will be of the form: $$
+From here on the preferential functions that will be used for the GPA model will be of the form: 
+$$
 g(k) = k^\gamma, \qquad \gamma>0.
 $$
 
-This allows for investigating the cases where the preferential attachment function is sub-linear and when it is super-linear.
+This allows for investigating the cases where the preferential attachment function is sub-linear ($\gamma<1$) and when it is super-linear ($\gamma>1$).
 
 ### 
 
 As discussed in @sec-disc, the limiting value of $\Omega(F,n)$ can give a lot of information about the behaviour of a discrete distribution at extreme values. Below is a plot showing the value of this quantity as $n$ increases for various different values of $\gamma$.
 
-```{r, echo=FALSE, message=FALSE,warning=FALSE,cache=TRUE}
+```{r, echo=FALSE, message=FALSE,warning=FALSE,cache=FALSE}
 #| fig-cap: Plot of $\Omega(F,n)$ for various $\gamma \in (0.7,1.3)$
 #| label: fig-omega
 source('../scripts/omega.R')
@@ -737,7 +749,7 @@ df = melt(df, id.vars = 'k', variable.name = 'a')
 
 pal = fish(2*n-1,option = "Bodianus_rufus")
 ggplot(df, aes(k,value))+geom_line(aes(colour = a),linewidth=1) + scale_x_log10() + scale_y_log10() + 
-  scale_color_manual(values=pal)
+  scale_color_manual(TeX('$\\gamma$'),values=pal)+labs(x=TeX('$k$'),y=TeX('$\\Omega(F,k)$'))
 ```
 
 @fig-omega shows that for $\gamma<1$ $\Omega(F,n)$ seems to approach 0 as $n$ increases, whereas for $\gamma=1$ $\Omega(F,n)$ seems to converge to finite non-zero limit which is to be expected as this corresponds to the BA model which has limiting degree distribution in the Fréchet domain of attraction. However, for $\gamma>1$ the value of $\Omega(F,n)$ appears to diverge and does not approach a finite limit.
@@ -747,26 +759,12 @@ ggplot(df, aes(k,value))+geom_line(aes(colour = a),linewidth=1) + scale_x_log10(
 ::: {#cor-omg}
 For a distribution $F$ with survival function $\overline F$ and some $n\in\mathbb Z^+$, if: $$
 \lim_{n\rightarrow\infty} \Omega(F,n) = \lim_{\alpha\downarrow0} \alpha^{-1} = \infty
-$$ then $F$ has super heavy tails
+$$ then $F$ has super heavy tails.
 :::
 
 This is further supported by @fig-shtail below, which shows the value of the quantity from @def-sup for increasing values of $n$ and values of $\gamma$ in the range $(1,2)$. The plot shows the quantity approaching $1$ for all values of $\gamma$ as $n$ increases, suggesting that the limiting degree distribution of the GPA model with $g(k) = k^\gamma,\gamma>1$ has super heavy tails.
 
-## A Conjecture
-
-The results from this subsection suggest that for super-linear preferential attachment functions the GPA model has limiting degree distribution with super heavy tails. This, along with results for the linear case in @sec-gen and sub-linear cases in @barabasibook lead to the following conjecture.
-
-::: {#cnj-gpa}
-The GPA model is only capable of producing three different types of degree distribution:
-
-1.  Gumbel: sub-linear preferential attachment function
-2.  Fréchet $\mathcal D(\Phi_2)$: linear preferential attachment function
-3.  Super heavy tails: super-linear preferential attachment function
-:::
-
-This means that under the framework presented here, even the GPA model is no where near close to being able to capture the range of types of degree distribution found in real networks.
-
-```{r,echo=FALSE,message=FALSE,warning=FALSE,cache=TRUE}
+```{r,echo=FALSE,message=FALSE,warning=FALSE,cache=FALSE}
 #| label: fig-shtail
 #| fig-cap: Plot testing slow variation for $\gamma \in (1,2)$
 source('../scripts/omega.R')
@@ -775,7 +773,7 @@ g = function(s,a=1){
 }
 t=5
 k = round(10^seq(1,3,length.out=20))
-n=25
+n=10
 a.list = rev(seq(1,2,length.out=2*n-1))
 a.list = unique(a.list)
 pal = fish(2*n-1,option = "Thalassoma_hardwicke")
@@ -797,10 +795,25 @@ df = melt(df, id.vars = 'k', variable.name = 'a')
 
 
 pal = fish(2*n-1,option = "Bodianus_rufus")
-ggplot(df, aes(k,value))+geom_line(aes(colour = a),linewidth=1) + scale_x_log10()+ 
-  scale_color_manual(values=pal)+ theme(legend.position="none")
-
+p=ggplot(df, aes(k,value))+geom_line(aes(colour = a),linewidth=1)+scale_x_log10()+scale_color_manual(values=pal)+theme(legend.position="none",axis.title.y = element_text(angle=0))
+p + labs(x=TeX('$k$'),y=TeX('$\\frac{1-F(tk)}{1-F (k)}$') )
 ```
+
+## Potential Novelty
+
+The results from this subsection suggest that for super-linear preferential attachment functions the GPA model has limiting degree distribution with super heavy tails. This, along with results for the linear case in @sec-gen and sub-linear cases in @barabasibook lead to the following conjecture.
+
+::: {#cnj-gpa}
+The GPA model is only capable of producing three different types of degree distribution:
+
+1.  Gumbel: sub-linear preferential attachment function
+2.  Fréchet $\mathcal D(\Phi_2)$: linear preferential attachment function
+3.  Super heavy tails: super-linear preferential attachment function
+:::
+
+This means that under the framework presented here, even the GPA model is no where near close to being able to capture the range of types of degree distribution found in real networks.
+
+
 
 # Discussion and Next Steps
 

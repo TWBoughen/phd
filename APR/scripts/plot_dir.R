@@ -68,19 +68,19 @@ plot_dir = function(dir, lower=1){
          xlim = c(1,mx_dat), ylim=c(min_prob, 1),cex = 0.5,
          xaxt = x_ax, yaxt=y_ax,las=1, ylab='')
     lines(k,1-c(0,cumsum(pk_ba)[-length(pk_ba)]),lty=2, col='darkgreen')
-    lines(k,1-c(0,cumsum(pk_ua)[-length(pk_ua)]),lty=2, col='red')
-    if(i==1){
-      legend('bottomleft',
-             legend=c(strsplit(dat_list_names$names[i], 'out.')[[1]][2],
-                      'BA','UA'),
-             pch=c(20,NA,NA),
-             lty=c(NA, 2,3),
-             col=c(1,'darkgreen','red'))
+    lines(k,1-c(0,cumsum(pk_ua)[-length(pk_ua)]),lty=3, col='red')
+    legend('bottomleft',
+           legend=c(paste0('n=',sum(dat[,2])),strsplit(dat_list_names$names[i], 'out.')[[1]][2]),
+           pch=c(NA,20),
+           col=c(NA,1))
+    legend('topright', legend = c('BA','UA'), lty=c(2,3), col=c('darkgreen','red'))
+    if(i>0){
+      
     }else{
       legend('bottomleft',
-             legend=strsplit(dat_list_names$names[i], 'out.')[[1]][2],
-             pch=20,
-             col=1)
+             legend=c(paste0('n=',sum(dat[,2])),strsplit(dat_list_names$names[i], 'out.')[[1]][2]),
+             pch=c(NA,20),
+             col=c(NA,1))
     }
     
     i=i+1
