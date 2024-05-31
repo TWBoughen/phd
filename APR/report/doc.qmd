@@ -153,7 +153,34 @@ cond.b = Vectorize(function(lambda, g){
 
 # Introduction {#sec-int}
 
-Since the aim is to gain understanding about the behaviour of the degree distribution of networks at the right tail, it seems natural to look to using methods from extreme value theory.
+Networks appear across appear in a range of fields of study including but not limited to micro-biology, computer science, sociology, and music. This makes them a valuable source of data to study, this report will be focused on the processes by which these networks form. Often, networks are assumed to have come from the Barabási-Albert model so that a power law can be used to model their degree distribution however a power law, while suitable for the bulk of the data, seems to become less suitable for the most extreme values in the network.
+
+Shown below in @fig-survs1 are some examples of the degree distribution of real networks along with some simulated from two network generative processes given in @sec-gen. The networks in @fig-survs1 are:
+
+- **as-caida**: the undirected network of autonomous systems of the Internet connected with each other from the CAIDA project, collected in 2007. @caida
+- **BA simulated**: a network simulated using the Barabási-Albert model with $m=1$ from @sec-gen
+- **Jazz**: the collaboration network between Jazz musicians collected in 2003 @jazz
+- **Meta**: this is the metabolic network of the roundworm *Caenorhabditis elegans* @meta
+- **Pajek-erdos**: This network contains people who have, directly and indirectly, written papers with Paul Erdős as of 2003. @pajek
+- **Reactome**:  This is a network of protein–protein interactions in humans. @reactome
+- **UA simulated**: a network simulated using the uniform attachment model with $m=1$ from @sec-gen.
+
+```{r,echo=FALSE, warning=FALSE, message=FALSE,cache=FALSE}
+#| fig-width: 6
+#| fig-asp: 1
+#| out-width: 66%
+#| panel: fill
+#| fig-cap: "Plots of survival functions of real networks degrees, along with the degree distribution for the UA and the BA models"
+#| fig-cap-location: top
+#| label: fig-survs1
+source('../scripts/plot_dir.R')
+nms = plot_dir('../data/data_for_mcmc', lines=F)
+```
+
+This report beings with a brief introduction to univariate extreme value theory first for continuous values before moving to considerations for discrete data. Following this, an introduction to networks, network generative processes and some theoretical results for the networks that arise from them.
+
+
+Since the aim is to gain understanding about the behaviour of the degree distribution of networks at the most extreme values, it seems natural to look to using methods from extreme value theory.
 
 # Univariate Extreme Value Theory {#sec-ext}
 
@@ -756,7 +783,7 @@ ggplot(df, aes(k,value))+geom_line(aes(colour = a),linewidth=1) + scale_x_log10(
 
 @shimura12 does not provide any results in particular for the case of $\Omega(F,n)$ diverging but if the definition of slow variation and thus super-heavy tails is viewed as regular variation in the limit as $\alpha$ goes to infinity then the following can be obtained.
 
-::: {#cor-omg}
+::: {#cnj-omg}
 For a distribution $F$ with survival function $\overline F$ and some $n\in\mathbb Z^+$, if: $$
 \lim_{n\rightarrow\infty} \Omega(F,n) = \lim_{\alpha\downarrow0} \alpha^{-1} = \infty
 $$ then $F$ has super heavy tails.
@@ -798,6 +825,7 @@ pal = fish(2*n-1,option = "Bodianus_rufus")
 p=ggplot(df, aes(k,value))+geom_line(aes(colour = a),linewidth=1)+scale_x_log10()+scale_color_manual(values=pal)+theme(legend.position="none",axis.title.y = element_text(angle=0))
 p + labs(x=TeX('$k$'),y=TeX('$\\frac{1-F(tk)}{1-F (k)}$') )
 ```
+@fig-shtail is for $t=5$, and the condition for super heavy tails the quantity to approach one for all $t>0$, other plots were created for other values of $t$ and changing $t$ just changes the rate of convergence to one.
 
 ## Potential Novelty
 
@@ -806,9 +834,9 @@ The results from this subsection suggest that for super-linear preferential atta
 ::: {#cnj-gpa}
 The GPA model is only capable of producing three different types of degree distribution:
 
-1.  Gumbel: sub-linear preferential attachment function
-2.  Fréchet $\mathcal D(\Phi_2)$: linear preferential attachment function
-3.  Super heavy tails: super-linear preferential attachment function
+1.  Gumbel: sub-linear preferential attachment function i.e. $g(k)=k^\gamma, \gamma\in(0,1)$
+2.  Fréchet $\mathcal D(\Phi_2)$: linear preferential attachment function i.e. $g(k)=k$
+3.  Super heavy tails: super-linear preferential attachment function i.e.$g(k)=k^\gamma, \gamma>1$
 :::
 
 This means that under the framework presented here, even the GPA model is no where near close to being able to capture the range of types of degree distribution found in real networks.
@@ -817,7 +845,7 @@ This means that under the framework presented here, even the GPA model is no whe
 
 # Discussion and Next Steps
 
-The generative models considered so far are very simple, which is good since the goal is to find as simple a model as possible. However, it is clear now and perhaps unsurprising that the models shown here are not capable of modelling realistic network growth. This section is dedicated to discussing next steps for this project and address some questions left open. This is **not** a detailed plan for what is to come, for that see @sec-plan.
+The generative models considered so far are very simple, which is good since the goal is to find as simple a model as possible. However, it is clear now and perhaps unsurprising that the models shown here are not capable of modelling realistic network growth. This section is dedicated to discussing next steps for this project and address some questions left open.
 
 The models from @sec-gen are very limited when it comes to the actual growth of the network. Whenever a new vertex joins the network it brings a fixed number of edges with it that remain permanently, this is the only way that edges are added and thus the degrees changed. Below are some modifications that could be made to address this issue:
 
@@ -829,13 +857,63 @@ It is possible to include all of these into a model with the modification that a
 
 Additionally, all of the models assume a constant preferential attachment function both over time and across vertices. To address this the preferential attachment function could be allowed to change over time and perhaps differ between vertices. This would allow a vertex to 'age' in a sense, and could also allow for 'categories' of vertices that share the same preferential attachment function which differs from those in other 'categories'. 
 
-
-
 \appendix
 
 # Updated Project Plan {.appendix #sec-plan}
 
+Progress so far is in line with the original project plan, so a lot of this plan remains the same.
+
+## Objectives and more specific goals
+
+### Continue investigating possible modifications to Barabási-Albert model (months 9-24) {.unnumbered}
+
+So far, it has become clear that modifying the preferential attachment function alone is not enough to make the BA model more suitable for real networks. The next step is to investigate other possible modifications, for example adding the ability to remove edge along with the possibility of adding edges throughout the networks growth but not necessarily when a new vertex is added, @lu04 and @moore06 are possible starting points.
+
+In addition to adding the possibility of edge removal, modifying the preferential attachment function over time could also be possible.
+
+#### Monitor changes in model parameters of various real networks (months 18-24) {.unnumbered}
+
+Fitting the model for degree distributions to real networks and monitoring the changes in parameters over time will be an invaluable resource when it comes time to develop modifications to the generative model. This will be an ongoing process during some other steps but will require a set of functions and/or an R package to be developed that can efficiently estimate the parameters.
+
+#### Use these changes to inform the possbile modifications (months 24-30){.unnumbered}
+
+As modifications are made to the generative model, the changes in model parameters over time can also be recorded for the modified generative models to make sure that they align with real networks.
+
+#### Investigate properties of the new model (months 30-36) {.unnumbered}
+
+Once a set of modifications has been developed, the theoretical properties of networks that grow under the new model will be important to study.
+
+## Outcomes
+
+#### Validate current model for degree distribution is suitable (~month 12) {.unnumbered}
+
+The current model seems to perform fairly well when fitting to real networks, but a more robust method for testing how well the model fits could be used to make sure that it is suitable. There are perhaps some indications that a third component should be added to the spliced mixture model.
+
+#### Create set of functions to fit the model (~month 18) {.unnumbered}
+
+Once a suitable model for the degree distribution has been decided on, an efficient and fairly uninvolved way to fit the model needs to be developed. This is to aid with monitoring changes in parameters over time, as it will need to be fitted to many sets of data over many time frames. 
+
+#### Develop modifiations of the Barabási-Albert model (~month 30) {.unnumbered}
+
+A new model will be developed based on modifications of the Barabási-Albert model that can more accurately describe how real networks have grown. 
+
 # Training {.appendix}
+
+## School Training
+
+I attended two weeks of APTS courses, one in Warwick which included two modules on Statistical Computing and Statistical Inference, and another in Nottingham which included modules on Applied Stochastic Processes and Statistical Modelling.
+
+## Conferences
+
+I attended one conference this year, the SAgE PGR conference where I presented a poster summarising the work I had done up until that point.
+
+## Training still required
+
+There is still some training I still need to do:
+
+- c++ training.
+- Training on Rocket HPC.
+
 
 ## Funding and Stipend {.appendix .unnumbered}
 

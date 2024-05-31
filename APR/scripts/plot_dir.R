@@ -28,7 +28,7 @@ auto.mfrow <- function(nplots, setup=TRUE) {
         plot_blank()
   }
 }
-plot_dir = function(dir, lower=1){
+plot_dir = function(dir, lower=1, lines=T){
   dat_list_names = konect_to_df_dir(dir,lower=lower, return_names=T)
   n = length(dat_list_names$dat)
   mx_dat = 0
@@ -67,13 +67,21 @@ plot_dir = function(dir, lower=1){
     plot(dat$x,1-c(0,Fk[-length(Fk)]), log='xy',pch=20,
          xlim = c(1,mx_dat), ylim=c(min_prob, 1),cex = 0.5,
          xaxt = x_ax, yaxt=y_ax,las=1, ylab='')
-    lines(k,1-c(0,cumsum(pk_ba)[-length(pk_ba)]),lty=2, col='darkgreen')
-    lines(k,1-c(0,cumsum(pk_ua)[-length(pk_ua)]),lty=3, col='red')
-    legend('bottomleft',
-           legend=c(paste0('n=',sum(dat[,2])),strsplit(dat_list_names$names[i], 'out.')[[1]][2]),
-           pch=c(NA,20),
-           col=c(NA,1))
-    legend('topright', legend = c('BA','UA'), lty=c(2,3), col=c('darkgreen','red'))
+    if(lines){
+      lines(k,1-c(0,cumsum(pk_ba)[-length(pk_ba)]),lty=2, col='darkgreen')
+      lines(k,1-c(0,cumsum(pk_ua)[-length(pk_ua)]),lty=3, col='red')
+      legend('bottomleft',
+             legend=c(paste0('n=',sum(dat[,2])),strsplit(dat_list_names$names[i], 'out.')[[1]][2]),
+             pch=c(NA,20),
+             col=c(NA,1))
+      legend('topright', legend = c('BA','UA'), lty=c(2,3), col=c('darkgreen','red'))
+    }else{
+      legend('bottomleft',
+             legend=c(paste0('n=',sum(dat[,2])),strsplit(dat_list_names$names[i], 'out.')[[1]][2]),
+             pch=c(NA,20),
+             col=c(NA,1))
+    }
+    
     if(i>0){
       
     }else{
