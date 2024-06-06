@@ -157,13 +157,13 @@ Networks appear in a range of fields of study including but not limited to micro
 
 Shown below in @fig-survs1 are some examples of the degree distribution of real networks along with some simulated from two network generative processes given in @sec-gen. The networks in @fig-survs1 are:
 
-- **as-caida**: the undirected network of autonomous systems of the Internet connected with each other from the CAIDA project, collected in 2007. @caida
-- **BA simulated**: a network simulated using the Barabási-Albert model with $m=1$ from @sec-gen
-- **Jazz**: the collaboration network between Jazz musicians collected in 2003 @jazz
-- **Meta**: this is the metabolic network of the roundworm *Caenorhabditis elegans* @meta
-- **Pajek-erdos**: This network contains people who have, directly and indirectly, written papers with Paul Erdős as of 2003. @pajek
-- **Reactome**:  This is a network of protein–protein interactions in humans. @reactome
-- **UA simulated**: a network simulated using the uniform attachment model with $m=1$ from @sec-gen.
+-   **as-caida**: the undirected network of autonomous systems of the Internet connected with each other from the CAIDA project, collected in 2007. @caida
+-   **BA simulated**: a network simulated using the Barabási-Albert model with $m=1$ from @sec-gen
+-   **Jazz**: the collaboration network between Jazz musicians collected in 2003 @jazz
+-   **Meta**: this is the metabolic network of the roundworm *Caenorhabditis elegans* @meta
+-   **Pajek-erdos**: This network contains people who have, directly and indirectly, written papers with Paul Erdős as of 2003. @pajek
+-   **Reactome**: This is a network of protein–protein interactions in humans. @reactome
+-   **UA simulated**: a network simulated using the uniform attachment model with $m=1$ from @sec-gen.
 
 ```{r,echo=FALSE, warning=FALSE, message=FALSE,cache=FALSE}
 #| fig-width: 6
@@ -179,7 +179,6 @@ nms = plot_dir('../data/data_for_mcmc', lines=F)
 
 This report beings with a brief introduction to univariate extreme value theory first for continuous values before moving to considerations for discrete data. Following this, an introduction to networks, network generative processes and some theoretical results for the networks that arise from them.
 
-
 Since the aim is to gain understanding about the behaviour of the degree distribution of networks at the most extreme values, it seems natural to look to using methods from extreme value theory.
 
 # Univariate Extreme Value Theory {#sec-ext}
@@ -193,7 +192,6 @@ This section is a concise introduction to the two main methods for modelling ext
 The first method considers the distribution of block maxima. That is, for a set of independent and identically distributed (iid) random variables $X_1,\ldots,X_n$ with common cumulative density function (cdf) $F$, the block maxima approach studies the limiting distribution of $M_n = \max\{X_1,\ldots,X_n\}$.
 
 Clearly, as $n\rightarrow \infty$, the block maxima $M_n$ converges almost surely to the right endpoint of $F$. However, standardising the block maxima allows for some characterisation of the limiting distribution. The following theorem is a key result in extreme value theory as it derives the general form of all possible limit laws for the standardised block maxima $M_n^*$.
-
 
 ::: {#thm-evt}
 ### Fisher--Tippett--Gnedenko Theorem
@@ -270,11 +268,9 @@ In addition to heavy tailed distributions it is also useful to define what will 
 ::: {#def-sup}
 ## Super Heavy Tails
 
-A distribution is with survival function $\bar F$ is said to have super heavy tails if: 
-$$
+A distribution is with survival function $\bar F$ is said to have super heavy tails if: $$
 \lim_{x\rightarrow\infty}\displaystyle\frac{\bar F(tx)}{\bar F (x)} = 1,\qquad \forall t>0
-$$ 
-That is, a distribution is called super heavy if its survival function is slowly varying.
+$$ That is, a distribution is called super heavy if its survival function is slowly varying.
 :::
 
 The three main types of extremal distribution (Gumbel, Fréchet and Negative-Weibull) can be united into one distribution, called the Generalised Extreme Value (GEV) distribution.
@@ -298,8 +294,7 @@ The second method for modelling, is to consider observations above a large thres
 ::: {#def-gp}
 ### Generalised Pareto Distribution
 
-Consider a random variable $X$ with the same cdf $F$ as in @thm-evt, the Generalised Pareto (GP) distribution can be obtained by using the GEV distribution and conditional probability such that for large enough threshold the GP distribution approximately describes the conditional distribution of threshold exceedances. More precisely, for sufficiently large threshold $u$ and the change of variable to $Y=X-u$: 
-$$
+Consider a random variable $X$ with the same cdf $F$ as in @thm-evt, the Generalised Pareto (GP) distribution can be obtained by using the GEV distribution and conditional probability such that for large enough threshold the GP distribution approximately describes the conditional distribution of threshold exceedances. More precisely, for sufficiently large threshold $u$ and the change of variable to $Y=X-u$: $$
 \Pr(Y\le y | Y>0) = H(y) = \begin{cases}
 1-\left(1+\displaystyle\frac{\xi y}{\sigma}\right)^{-1/\xi},&y>0,\xi\ne 0 \\
 1-\exp\left(-\displaystyle\frac{y}{\sigma}\right),&y>0,\xi = 0
@@ -358,11 +353,9 @@ Applying ideas from @sec-ce to modelling discrete random variables has been appr
 
 @agn22 first introduce an extended GP distribution, a continuous distribution that extends the idea of obtaining GP values from a probability integral transform (PIT) of $U(0,1)$ draws and instead considers a PIT of draws from any distribution on $(0,1)$ such as a beta distribution. This distribution is then discretised into their discrete extended GP distribution.
 
-
-
 ## Modelling {#sec-mod}
 
-The results from @sec-ce allow the GEV and GP to be fitted to the block maxima and peaks over threshold respectively. An example of where modelling the GEV may be useful are when modelling monthly high temperatures, fitting the GEV to historic data  of peak monthly temperatures may allow for future prediction of these temperatures. Fitting the GP may be useful in other scenarios such as modelling the strength of solar flares.
+The results from @sec-ce allow the GEV and GP to be fitted to the block maxima and peaks over threshold respectively. An example of where modelling the GEV may be useful are when modelling monthly high temperatures, fitting the GEV to historic data of peak monthly temperatures may allow for future prediction of these temperatures. Fitting the GP may be useful in other scenarios such as modelling the strength of solar flares.
 
 Typically, when fitting the GP, a sufficiently high threshold needs to be specified beforehand. @coles2001 provides some empirical methods for specifying the threshold, one approach is to use a threshold stability plot that uses maximum likelihood to estimate the parameters of the GP for a large range of thresholds. The threshold can be chosen as the point across all of the plots after which the values of the parameters seems stable. One particular issue when fitting the GP to data, is that the likelihoods cannot be compared for different thresholds as changing the threshold changes the amount of data being used.
 
@@ -384,15 +377,14 @@ A spliced mixture model is given below that uses a general discrete distribution
 
 ::: {#def-mixigp}
 ## IGP Spliced Mixture
+
 $$
 f(y) = \begin{cases}
 (1-\phi)g(x), & y=1,2,\ldots, v\\
 \phi\left[\left(1+\displaystyle\frac{\xi(y+1-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}-\left(1+\displaystyle\frac{\xi(y-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}\right],&y=v+1, v+2,\ldots
 \end{cases}
-$$
-where $g$ is the probability mass function of some discrete distribution with support equal to $\{1,2,\ldots,v\}$ and  $\xi \in \mathbb R$ , $\sigma_0 \in \mathbb R^+$ and $v\in\mathbb Z^+.$
+$$ where $g$ is the probability mass function of some discrete distribution with support equal to $\{1,2,\ldots,v\}$ and $\xi \in \mathbb R$ , $\sigma_0 \in \mathbb R^+$ and $v\in\mathbb Z^+.$
 :::
-
 
 # Networks {#sec-net}
 
@@ -438,7 +430,7 @@ There are many reasons to analyse network like data, one of which is to gain an 
 
 ## Network Generative Models {#sec-gen}
 
-It is useful to be able to model the way a network may have grown using simple rules as the subsequent model can then be used to simulate how the network may grow in future and provide insights into the underlying mechanics of the system the network represents. These models are also sometimes called mechanistic models in the literature. Also, although they are referred to as network generative models, graphs are still being used in the rules that govern how the generative model works. The focus here is on preferential attachment models, but it should be noted that network generative models are not limited to this class of models. Some other well known models include the Erdős-Réyni model[REF] and the small-world model[REF].
+It is useful to be able to model the way a network may have grown using simple rules as the subsequent model can then be used to simulate how the network may grow in future and provide insights into the underlying mechanics of the system the network represents. These models are also sometimes called mechanistic models in the literature. Also, although they are referred to as network generative models, graphs are still being used in the rules that govern how the generative model works. The focus here is on preferential attachment models, but it should be noted that network generative models are not limited to this class of models. Some other well known models include the Erdős-Réyni model\[REF\] and the small-world model\[REF\].
 
 This section begins by detailing a fairly simple generative model and its limiting results for the degree distribution, followed by two special cases of the first model and their results.
 
@@ -468,7 +460,6 @@ for some function $g: \mathbb Z \mapsto \mathbb R^+\setminus\{0\}$, which will b
 There are some asymptotic results that have been derived for the case when $m=1$, making the process generate a random tree.
 
 #### Limiting Degree Distribution
-
 
 In @rudas07 the limiting degree distribution was calculated in terms of the preferential attachment function and does not have a general explicit form. It is defined as follows, let $\lambda^*$ be the solution, if it exists, to:
 
@@ -505,7 +496,7 @@ In @barabasibook it was shown that for large values of $t$, the limiting degree 
 
 $$
 f(k) = \frac{2m(m+1)}{k(k+1)(k+2)}, \qquad k\geq m
-$$ 
+$$
 
 @bing89 states that since this probability mass function is regularly varying with exponent 2, then so is its cumulative mass function and it is in the Fréchet domain of attraction $\mathcal D(\Phi_2)$.
 
@@ -530,16 +521,13 @@ Start with a graph $G_1 = (V_1, E_1) = (\{1,\ldots,m_0\}, \emptyset)$, at each t
 
 #### Limiting Degree Distribution
 
-As showing in @Barabasi99 the expected degree distribution of this model for large values of $t$ is approximately: 
-$$
+As showing in @Barabasi99 the expected degree distribution of this model for large values of $t$ is approximately: $$
 f(k) = \displaystyle\frac{e}{m}\exp\left(-\displaystyle\frac{k}{m}\right),\qquad k \ge m
-$$ 
-Although this was not shown rigorously and treats the degree of a vertex as a continuous random variable, this is an shifted exponential distribution with left endpoint $m$ and rate parameter $1/m$ and as such it belongs to the Gumbel domain of attraction.
+$$ Although this was not shown rigorously and treats the degree of a vertex as a continuous random variable, this is an shifted exponential distribution with left endpoint $m$ and rate parameter $1/m$ and as such it belongs to the Gumbel domain of attraction.
 
-If $m=1$, it is possible to get a more precise result from the result regarding the limiting degree distribution of the GPA. By setting the preferential attachment function $g(k) = \lambda^*$, the can be shown that the limiting degree distribution is: 
-$$
+If $m=1$, it is possible to get a more precise result from the result regarding the limiting degree distribution of the GPA. By setting the preferential attachment function $g(k) = \lambda^*$, the can be shown that the limiting degree distribution is: $$
 f(k) = \left(\frac{1}{2} \right)^{k}, \qquad k=1,2,\ldots 
-$$ 
+$$
 
 This is a geometric distribution and is recoverable to the Gumbel domain of attraction as stated in @shimura12.
 
@@ -575,8 +563,7 @@ f(y) = \begin{cases}
 (1-\phi)\displaystyle\frac{y^{-(\alpha+1})}{\sum_{k=1}^v k^{\alpha+1}}, & y=1,2,\ldots, v\\
 \phi\left[\left(1+\displaystyle\frac{\xi(y+1-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}-\left(1+\displaystyle\frac{\xi(y-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}\right],&y=v+1, v+2,\ldots
 \end{cases}
-$$
-where $\alpha\in\mathbb R^+$ is the power law index and $\xi \in \mathbb R$ , $\sigma_0 \in \mathbb R^+$ and $v\in\mathbb Z^+.$
+$$ where $\alpha\in\mathbb R^+$ is the power law index and $\xi \in \mathbb R$ , $\sigma_0 \in \mathbb R^+$ and $v\in\mathbb Z^+.$
 :::
 
 ## Fitting model to the data
@@ -651,8 +638,7 @@ p = ggplot(df,aes(x=sig)) +stat_density() +
 p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.left = element_text(angle = 0))
 ```
 
-
-:::{layout="[[33,33],[33,33]]"}
+::: {layout="[[33,33],[33,33]]"}
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 #| fig-cap: Posterior of threshold ($v$)
 #| label: fig-thresh
@@ -668,6 +654,7 @@ p = ggplot(df,aes(x=v)) +geom_histogram(binwidth = 1,aes(y = ..density..))+
 p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.left = element_text(angle = 0))
 
 ```
+
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 #| fig-width: 4
 #| fig-asp: 1
@@ -683,8 +670,6 @@ p = ggplot(df,aes(x=a)) +stat_density() +
 p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.left = element_text(angle = 0))+labs(x=expression(alpha))
 
 ```
-
-
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 #| fig-width: 4
@@ -718,8 +703,6 @@ p = ggplot(df,aes(x=1/a)) +stat_density() +
 p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.left = element_text(angle = 0))
 
 ```
-
-
 :::
 
 @fig-thresh shows that for 'arenas-meta' and 'UAsim' the posterior of the threshold is extremely concentrated, so much so that only one threshold is used. In the case of 'arenas-meta', this value is 1 meaning that the power law index $\alpha$ (@fig-alpha) is free to be any value that is permitted by the prior, which is anything on the positive real line, explaining the very diffuse posterior. The threshold for 'UAsim' is so low due to the magnitude of the values in the data and is much more concentrated because of the sample size.
@@ -732,8 +715,7 @@ So far it has been shown that neither the BA model nor the UA model can adequate
 
 ### The Preferential Attachment Function
 
-From here on the preferential functions that will be used for the GPA model will be of the form: 
-$$
+From here on the preferential functions that will be used for the GPA model will be of the form: $$
 g(k) = k^\gamma, \qquad \gamma>0.
 $$
 
@@ -828,6 +810,7 @@ pal = fish(2*n-1,option = "Bodianus_rufus")
 p=ggplot(df, aes(k,value))+geom_line(aes(colour = a),linewidth=1)+scale_x_log10()+scale_color_manual(values=pal)+theme(legend.position="none",axis.title.y = element_text(angle=0))
 p + labs(x=TeX('$k$'),y=TeX('$\\frac{1-F(tk)}{1-F (k)}$') )
 ```
+
 @fig-shtail is for $t=5$, and the condition for super heavy tails the quantity to approach one for all $t>0$, other plots were created for other values of $t$ and changing $t$ just changes the rate of convergence to one.
 
 ## Potential Novelty
@@ -844,25 +827,23 @@ The GPA model is only capable of producing three different types of degree distr
 
 This means that under the framework presented here, even the GPA model is no where near close to being able to capture the range of types of degree distribution found in real networks.
 
-
-
 # Discussion and Next Steps
 
 The generative models considered so far are very simple, which is good since the goal is to find as simple a model as possible. However, it is clear now and perhaps unsurprising that the models shown here are not capable of modelling realistic network growth. This section is dedicated to discussing next steps for this project and address some questions left open.
 
 The models from @sec-gen are very limited when it comes to the actual growth of the network. Whenever a new vertex joins the network it brings a fixed number of edges with it that remain permanently, this is the only way that edges are added and thus the degrees changed. Below are some modifications that could be made to address this issue:
 
-- Allow removal of edges throughout the networks growth.
-- Allow edges to be made between already existing vertices in the network.
-- Bring a random number of edges when a vertex is added.
+-   Allow removal of edges throughout the networks growth.
+-   Allow edges to be made between already existing vertices in the network.
+-   Bring a random number of edges when a vertex is added.
 
 It is possible to include all of these into a model with the modification that at each time step you do one of three different steps (Growth, Connection, Removal) with certain probabilities where the number of edges added at each growth step is a discrete random variable. Something similar could be done for the connection and removal steps.
 
-Additionally, all of the models assume a constant preferential attachment function both over time and across vertices. To address this the preferential attachment function could be allowed to change over time and perhaps differ between vertices. This would allow a vertex to 'age' in a sense, and could also allow for 'categories' of vertices that share the same preferential attachment function which differs from those in other 'categories'. 
+Additionally, all of the models assume a constant preferential attachment function both over time and across vertices. To address this the preferential attachment function could be allowed to change over time and perhaps differ between vertices. This would allow a vertex to 'age' in a sense, and could also allow for 'categories' of vertices that share the same preferential attachment function which differs from those in other 'categories'.
 
 \appendix
 
-# Updated Project Plan {.appendix #sec-plan}
+# Updated Project Plan {#sec-plan .appendix}
 
 Progress so far is in line with the original project plan, so a lot of this plan remains the same.
 
@@ -878,7 +859,7 @@ In addition to adding the possibility of edge removal, modifying the preferentia
 
 Fitting the model for degree distributions to real networks and monitoring the changes in parameters over time will be an invaluable resource when it comes time to develop modifications to the generative model. This will be an ongoing process during some other steps but will require a set of functions and/or an R package to be developed that can efficiently estimate the parameters.
 
-#### Use these changes to inform the possbile modifications (months 24-30){.unnumbered}
+#### Use these changes to inform the possbile modifications (months 24-30) {.unnumbered}
 
 As modifications are made to the generative model, the changes in model parameters over time can also be recorded for the modified generative models to make sure that they align with real networks.
 
@@ -888,17 +869,17 @@ Once a set of modifications has been developed, the theoretical properties of ne
 
 ## Outcomes
 
-#### Validate current model for degree distribution is suitable (~month 12) {.unnumbered}
+#### Validate current model for degree distribution is suitable (\~month 12) {.unnumbered}
 
 The current model seems to perform fairly well when fitting to real networks, but a more robust method for testing how well the model fits could be used to make sure that it is suitable. There are perhaps some indications that a third component should be added to the spliced mixture model.
 
-#### Create set of functions to fit the model (~month 18) {.unnumbered}
+#### Create set of functions to fit the model (\~month 18) {.unnumbered}
 
-Once a suitable model for the degree distribution has been decided on, an efficient and fairly uninvolved way to fit the model needs to be developed. This is to aid with monitoring changes in parameters over time, as it will need to be fitted to many sets of data over many time frames. 
+Once a suitable model for the degree distribution has been decided on, an efficient and fairly uninvolved way to fit the model needs to be developed. This is to aid with monitoring changes in parameters over time, as it will need to be fitted to many sets of data over many time frames.
 
-#### Develop modifiations of the Barabási-Albert model (~month 30) {.unnumbered}
+#### Develop modifiations of the Barabási-Albert model (\~month 30) {.unnumbered}
 
-A new model will be developed based on modifications of the Barabási-Albert model that can more accurately describe how real networks have grown. 
+A new model will be developed based on modifications of the Barabási-Albert model that can more accurately describe how real networks have grown.
 
 # Training {.appendix}
 
@@ -914,9 +895,8 @@ I attended one conference this year, the SAgE PGR conference where I presented a
 
 There is still some training I still need to do:
 
-- c++ training.
-- Training on Rocket HPC.
-
+-   c++ training.
+-   Training on Rocket HPC.
 
 ## Funding and Stipend {.appendix .unnumbered}
 

@@ -85,7 +85,7 @@ Could use GP to model the peaks over threshold
 
 . . . 
 
-- Have to choose a threshold and partition the data
+- Have to choose a threshold and split the data
 
 . . . 
 
@@ -200,7 +200,12 @@ where $\tilde e_j = \{t,\tilde v\}$ and $\tilde v = i$ with weights
 $$
 \displaystyle\frac{g(d(i))}{\sum_{w\in V_{t-1}} g(d(i))}, \qquad i\in V_{t-1}
 $$
+#### Degree distribution
 
+$$
+f(k) = \displaystyle\frac{\lambda^*}{g(k) + \lambda^*}\prod_{i=0}^{k-1}\displaystyle\frac{g(i)}{g(i)+\lambda^*}\quad\text{ where} \quad \sum_{n=1}^\infty \prod_{i=1}^{n-1}\displaystyle\frac{g(i)}{g(i)+\lambda^*}=1
+
+$$
 
 ## Special Cases {.smaller .center}
 :::: {.columns}
