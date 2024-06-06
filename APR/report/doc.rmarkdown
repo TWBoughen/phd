@@ -151,6 +151,7 @@ cond.b = Vectorize(function(lambda, g){
 
 ```
 
+
 # Introduction {#sec-int}
 
 Networks appear in a range of fields of study including but not limited to micro-biology, computer science, sociology, and music. This makes them a valuable source of data to study, this report will be focused on the processes by which these networks form. Often, networks are assumed to have come from the Barabási-Albert model so that a power law can be used to model their degree distribution however a power law, while suitable for the bulk of the data, seems to become less suitable for the most extreme values in the network.
@@ -165,6 +166,7 @@ Shown below in @fig-survs1 are some examples of the degree distribution of real 
 - **Reactome**:  This is a network of protein–protein interactions in humans. @reactome
 - **UA simulated**: a network simulated using the uniform attachment model with $m=1$ from @sec-gen.
 
+
 ```{r,echo=FALSE, warning=FALSE, message=FALSE,cache=FALSE}
 #| fig-width: 6
 #| fig-asp: 1
@@ -176,6 +178,7 @@ Shown below in @fig-survs1 are some examples of the degree distribution of real 
 source('../scripts/plot_dir.R')
 nms = plot_dir('../data/data_for_mcmc', lines=F)
 ```
+
 
 This report beings with a brief introduction to univariate extreme value theory first for continuous values before moving to considerations for discrete data. Following this, an introduction to networks, network generative processes and some theoretical results for the networks that arise from them.
 
@@ -270,11 +273,9 @@ In addition to heavy tailed distributions it is also useful to define what will 
 ::: {#def-sup}
 ## Super Heavy Tails
 
-A distribution is with survival function $\bar F$ is said to have super heavy tails if: 
-$$
+A distribution is with survival function $\bar F$ is said to have super heavy tails if: $$
 \lim_{x\rightarrow\infty}\displaystyle\frac{\bar F(tx)}{\bar F (x)} = 1,\qquad \forall t>0
-$$ 
-That is, a distribution is called super heavy if its survival function is slowly varying.
+$$ That is, a distribution is called super heavy if its survival function is slowly varying.
 :::
 
 The three main types of extremal distribution (Gumbel, Fréchet and Negative-Weibull) can be united into one distribution, called the Generalised Extreme Value (GEV) distribution.
@@ -384,6 +385,7 @@ A spliced mixture model is given below that uses a general discrete distribution
 
 ::: {#def-mixigp}
 ## IGP Spliced Mixture
+
 $$
 f(y) = \begin{cases}
 (1-\phi)g(x), & y=1,2,\ldots, v\\
@@ -425,6 +427,7 @@ $$
 
 Directed graphs have something analogous, called the in-degree $d_{in}$, out-degree $d_{out}$ and total degree $d_{tot}$. The in-degree of a vertex $v$ is the number edges with endpoint at $v$, whereas the out-degree is the number of edges with start point at $v$ and the total degree is the sum of these i.e.:
 
+
 ```{=tex}
 \begin{align*}
 d_{in}(v)&= |\{(w_1,w_2)\in E: w_2=v \}|\\
@@ -432,6 +435,7 @@ d_{out}(v) &= |\{(w_1,w_2)\in E: w_1=v \}|\\
 d_{tot}(v) &= d_{in}(v) + d_{out}(v)
 \end{align*}
 ```
+
 :::
 
 There are many reasons to analyse network like data, one of which is to gain an insight into the mechanics that governed the growth of the network. The next sub-section is focused on presenting several network generative models, that may be able to describe how real networks grow. For now, the focus will be on the degree distributions of these network generative models.
@@ -547,6 +551,7 @@ This is a geometric distribution and is recoverable to the Gumbel domain of attr
 
 The aim of this section is to investigate the degree distribution of real networks and compare them to the results obtained for the generative models in @sec-gen. First, a look at what the degree distributions of real networks look like.
 
+
 ```{r,echo=FALSE, warning=FALSE, message=FALSE,cache=FALSE}
 #| fig-width: 6
 #| fig-asp: 1
@@ -558,6 +563,7 @@ The aim of this section is to investigate the degree distribution of real networ
 source('../scripts/plot_dir.R')
 nms = plot_dir('../data/data_for_mcmc')
 ```
+
 
 @fig-survs shows the survival function of the degrees of various real networks as well as "BA Simulated" and "UA Simulated" which were generated using the corresponding schemes in @sec-gen. Additionally, the theoretical limiting degree distribution of both the UA model and the BA model (for m=1) are included on the plots. Visually it seems that neither of these models are adequate for modelling the growth of the real networks shown here.
 
@@ -572,7 +578,7 @@ As mentioned in @sec-mod, the method used here to model the extreme values of th
 
 $$
 f(y) = \begin{cases}
-(1-\phi)\displaystyle\frac{y^{-(\alpha+1})}{\sum_{k=1}^v k^{\alpha+1}}, & y=1,2,\ldots, v\\
+(1-\phi)\displaystyle\frac{y^{-(\alpha+1})}{\sum_{k=1}^v}k^{\alpha+1}, & y=1,2,\ldots, v\\
 \phi\left[\left(1+\displaystyle\frac{\xi(y+1-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}-\left(1+\displaystyle\frac{\xi(y-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}\right],&y=v+1, v+2,\ldots
 \end{cases}
 $$
@@ -582,6 +588,7 @@ where $\alpha\in\mathbb R^+$ is the power law index and $\xi \in \mathbb R$ , $\
 ## Fitting model to the data
 
 The values of the parameters in the model for each data set were estimated under the Bayesian framework using a Metropolis within Gibbs sampler. Below are plots showing the same data as in @fig-survs but with the mean and 95% credible intervals of the survival function of the model for each data-set.
+
 
 ```{r,echo=FALSE, warning=FALSE, message=FALSE, cache=FALSE}
 #| fig-width: 6
@@ -624,7 +631,9 @@ for(i in 1:n){
 }
 ```
 
+
 As show by @fig-fits1 the model seems to fit the data quite well, below are some plot summarising each of the parameters for each of the models:
+
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 #| fig-width: 6
@@ -652,7 +661,9 @@ p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.l
 ```
 
 
+
 :::{layout="[[33,33],[33,33]]"}
+
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 #| fig-cap: Posterior of threshold ($v$)
 #| label: fig-thresh
@@ -668,6 +679,7 @@ p = ggplot(df,aes(x=v)) +geom_histogram(binwidth = 1,aes(y = ..density..))+
 p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.left = element_text(angle = 0))
 
 ```
+
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 #| fig-width: 4
 #| fig-asp: 1
@@ -683,8 +695,6 @@ p = ggplot(df,aes(x=a)) +stat_density() +
 p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.left = element_text(angle = 0))+labs(x=expression(alpha))
 
 ```
-
-
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 #| fig-width: 4
@@ -720,6 +730,7 @@ p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.l
 ```
 
 
+
 :::
 
 @fig-thresh shows that for 'arenas-meta' and 'UAsim' the posterior of the threshold is extremely concentrated, so much so that only one threshold is used. In the case of 'arenas-meta', this value is 1 meaning that the power law index $\alpha$ (@fig-alpha) is free to be any value that is permitted by the prior, which is anything on the positive real line, explaining the very diffuse posterior. The threshold for 'UAsim' is so low due to the magnitude of the values in the data and is much more concentrated because of the sample size.
@@ -742,6 +753,7 @@ This allows for investigating the cases where the preferential attachment functi
 ### 
 
 As discussed in @sec-disc, the limiting value of $\Omega(F,n)$ can give a lot of information about the behaviour of a discrete distribution at extreme values. Below is a plot showing the value of this quantity as $n$ increases for various different values of $\gamma$.
+
 
 ```{r, echo=FALSE, message=FALSE,warning=FALSE,cache=FALSE}
 #| fig-cap: Plot of $\Omega(F,n)$ for various $\gamma \in (0.7,1.3)$
@@ -782,6 +794,7 @@ ggplot(df, aes(k,value))+geom_line(aes(colour = a),linewidth=1) + scale_x_log10(
   scale_color_manual(TeX('$\\gamma$'),values=pal)+labs(x=TeX('$k$'),y=TeX('$\\Omega(F,k)$'))
 ```
 
+
 @fig-omega shows that for $\gamma<1$ $\Omega(F,n)$ seems to approach 0 as $n$ increases, whereas for $\gamma=1$ $\Omega(F,n)$ seems to converge to finite non-zero limit which is to be expected as this corresponds to the BA model which has limiting degree distribution in the Fréchet domain of attraction. However, for $\gamma>1$ the value of $\Omega(F,n)$ appears to diverge and does not approach a finite limit.
 
 @shimura12 does not provide any results in particular for the case of $\Omega(F,n)$ diverging but if the definition of slow variation and thus super-heavy tails is viewed as regular variation in the limit as $\alpha$ goes to infinity then the following can be obtained.
@@ -793,6 +806,7 @@ $$ then $F$ has super heavy tails.
 :::
 
 This is further supported by @fig-shtail below, which shows the value of the quantity from @def-sup for increasing values of $n$ and values of $\gamma$ in the range $(1,2)$. The plot shows the quantity approaching $1$ for all values of $\gamma$ as $n$ increases, suggesting that the limiting degree distribution of the GPA model with $g(k) = k^\gamma,\gamma>1$ has super heavy tails.
+
 
 ```{r,echo=FALSE,message=FALSE,warning=FALSE,cache=FALSE}
 #| label: fig-shtail
@@ -828,6 +842,7 @@ pal = fish(2*n-1,option = "Bodianus_rufus")
 p=ggplot(df, aes(k,value))+geom_line(aes(colour = a),linewidth=1)+scale_x_log10()+scale_color_manual(values=pal)+theme(legend.position="none",axis.title.y = element_text(angle=0))
 p + labs(x=TeX('$k$'),y=TeX('$\\frac{1-F(tk)}{1-F (k)}$') )
 ```
+
 @fig-shtail is for $t=5$, and the condition for super heavy tails the quantity to approach one for all $t>0$, other plots were created for other values of $t$ and changing $t$ just changes the rate of convergence to one.
 
 ## Potential Novelty
@@ -923,3 +938,4 @@ There is still some training I still need to do:
 The funding for this project expires on **17th March 2027**.
 
 # References {.unnumbered}
+

@@ -8,9 +8,10 @@
 <link href="pres_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="pres_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="pres_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.3.450">
+  <meta name="generator" content="quarto-1.3.433">
 
   <meta name="author" content="Thomas Boughen">
+  <meta name="dcterms.date" content="2024-06-17">
   <title>Annual Progress Review</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -29,7 +30,26 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
-  </style>
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
   <link rel="stylesheet" href="pres_files/libs/revealjs/dist/theme/quarto.css">
   <link href="pres_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="pres_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
@@ -332,26 +352,109 @@
 <div class="quarto-title-author-name">
 Thomas Boughen 
 </div>
-</div>
+        <p class="quarto-title-affiliation">
+            Newcastle University
+          </p>
+    </div>
 </div>
 
+  <p class="date">2024-06-17</p>
+</section>
+<section id="motivation" class="slide level2 smaller">
+<h2>Motivation</h2>
+<ul>
+<li>Want a simple generative model that can model many real networks adequately.</li>
+</ul>
+<h4 id="example-degree-distributions-of-real-networks">Example degree distributions of real networks</h4>
+
+<img data-src="pres_files/figure-revealjs/unnamed-chunk-1-1.png" style="width:100.0%" class="r-stretch"><div class="fragment">
+<ul>
+<li>Power law like behaviour (for the bulk of the data)</li>
+</ul>
+</div>
+<div class="fragment">
+<ul>
+<li>This behaviour tapers off in the extreme values</li>
+</ul>
+</div>
 </section>
 <section>
-<section id="extreme-value-theory" class="title-slide slide level1 center">
-<h1>Extreme Value Theory</h1>
+<section id="modelling-degree-distributions" class="title-slide slide level1 center">
+<h1>Modelling degree distributions</h1>
 
 </section>
-<section id="continuous-extremes" class="slide level2">
-<h2>Continuous Extremes</h2>
+<section id="continuous-extremes-approach" class="slide level2 incremental">
+<h2>Continuous Extremes Approach</h2>
+<p>Could use GP to model the peaks over threshold</p>
+<div class="fragment">
+<ul>
+<li>Have to choose a threshold and partition the data</li>
+</ul>
+</div>
+<div class="fragment">
+<ul>
+<li>Makes comparing likelihoods of models difficult</li>
+</ul>
+</div>
+<div class="fragment">
+<ul>
+<li>Would like a less empirical way of fitting model</li>
+</ul>
+</div>
+<div class="fragment">
+<p>Could use a mixture that can model all of the data.</p>
+<div class="fragment" style="color:red;">
+<p>But degree of a vertex is not continuous.</p>
+</div>
+</div>
 </section>
-<section id="discrete-extremes" class="slide level2">
-<h2>Discrete Extremes</h2>
+<section id="discrete-extreme-value-theory" class="slide level2">
+<h2>Discrete Extreme Value Theory</h2>
+<ol type="1">
+<li>Discretisation of Generalised Pareto Distribution</li>
+<li>Spliced Mixture Model</li>
+<li>A useful quantity</li>
+</ol>
 </section>
-<section id="integral-generalised-pareto-distribution" class="slide level2">
+<section id="integral-generalised-pareto-distribution" class="slide level2 smaller">
 <h2>Integral Generalised Pareto Distribution</h2>
+<p>Similar to that defined by <span class="citation" data-cites="Rohrbeck_2018">Rohrbeck et al. (<a href="#/references" role="doc-biblioref" onclick="">2018</a>)</span></p>
+<p><span class="math display">\[
+\Pr(Y=y|Y&gt;u) = \left(1+\displaystyle\frac{\xi(y+1-\lceil u\rceil)}{\sigma_0+\xi\lceil u\rceil}\right)_+^{-1/\xi}-\left(1+\displaystyle\frac{\xi(y-\lceil u\rceil)}{\sigma_0+\xi\lceil u\rceil}\right)_+^{-1/\xi}
+\]</span></p>
+<p>For <span class="math inline">\(y=\lceil u\rceil,\lceil u\rceil+1, \ldots\)</span> and <span class="math inline">\(\xi \in \mathbb R\)</span> and <span class="math inline">\(u, \sigma_0 \in \mathbb R^+.\)</span></p>
+<p>Where <span class="math inline">\(\xi\)</span>, <span class="math inline">\(\sigma_0\)</span>,<span class="math inline">\(u\)</span> are the shape, scale, and threshold parameters respectively.</p>
+<ul>
+<li><span class="math inline">\(\xi&lt;0 \rightarrow\)</span> Negative Weibull <span class="math inline">\(\qquad \mathcal D(\Psi_\alpha)\)</span></li>
+<li><span class="math inline">\(\xi=0 \rightarrow\)</span> Gumbel <span class="math inline">\(\qquad\mathcal D(\Lambda)\)</span></li>
+<li><span class="math inline">\(\xi&gt;0 \rightarrow\)</span> Fréchet <span class="math inline">\(\qquad\mathcal D(\Phi_\alpha)\)</span></li>
+</ul>
 </section>
-<section id="spliced-mixture" class="slide level2">
-<h2>Spliced Mixture</h2>
+<section id="igp-spliced-mixture" class="slide level2 smaller">
+<h2>IGP Spliced Mixture</h2>
+<p>In general the IGP spliced mixture takes the form:</p>
+<p><span class="math display">\[
+f(y) = \begin{cases}
+(1-\phi)g(x), &amp; y=1,2,\ldots, v\\
+\phi\left[\left(1+\displaystyle\frac{\xi(y+1-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}-\left(1+\displaystyle\frac{\xi(y-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}\right],&amp;y=v+1, v+2,\ldots
+\end{cases}
+\]</span> where <span class="math inline">\(g\)</span> is some discrete distribution with support <span class="math inline">\(\{1,2,\ldots,v\}\)</span>.</p>
+<div class="fragment">
+<p>Want power law behaviour for bulk, so take: <span class="math display">\[
+g(y) = \displaystyle\frac{y^{-(\alpha+1})}{\sum_{k=1}^v k^{\alpha+1}}, \quad y=1,2,\ldots,v
+\]</span> for some <span class="math inline">\(\alpha&gt;0\)</span>.</p>
+</div>
+</section>
+<section id="a-useful-quantity" class="slide level2 smaller">
+<h2>A Useful Quantity</h2>
+<p>For a distribution <span class="math inline">\(F\)</span> with survival function <span class="math inline">\(\overline F\)</span> and <span class="math inline">\(n\in\mathbb Z^+\)</span> let:</p>
+<p><span class="math display">\[
+\Omega(F,n) = \left(\log\displaystyle\frac{\overline F (n+1)}{\overline F (n+2)}\right)^{-1} - \left(\log\displaystyle\frac{\overline F (n)}{\overline F (n+1)}\right)^{-1}
+\]</span> Useful for determining the domain of a attraction that a discrete distribution belongs to.</p>
+<ul>
+<li><span class="math inline">\(\lim_{n\rightarrow \infty} \Omega(F,n) = 0\)</span>, then is F recoverable to the Gumbel domain</li>
+<li><span class="math inline">\(\lim_{n\rightarrow \infty} \Omega(F,n) = \alpha^{-1}\)</span>, then is F is in the Fréchet domain, <span class="math inline">\(\mathcal D(\Phi_\alpha)\)</span></li>
+</ul>
 </section></section>
 <section>
 <section id="network-generative-models" class="title-slide slide level1 center">
@@ -380,7 +483,8 @@ E_t  = E_{t-1} \cup \{\tilde e_1,\ldots,\tilde e_m\}
 <section id="special-cases" class="slide level2 smaller center">
 <h2>Special Cases</h2>
 <div class="columns">
-<div class="column" style="width:50%;">
+<div class="column fragment" style="width:50%;">
+<!-- -->
 <h3 id="barabási-albert">Barabási-Albert</h3>
 <p><span class="math display">\[
 g(k) = k
@@ -394,7 +498,8 @@ f(k) = \frac{4}{k(k+1)(k+2)}
 <p><span class="math display">\[
 \mathcal D (\Phi_2)
 \]</span></p>
-</div><div class="column" style="width:50%;">
+</div><div class="column fragment" style="width:50%;">
+<!-- -->
 <h3 id="uniform-attachment">Uniform Attachment</h3>
 <p><span class="math display">\[
 g(k) = c
@@ -418,23 +523,105 @@ f(k) = \left(1\over2\right)^k
 <h1>Analysis</h1>
 
 </section>
-<section id="degree-distributions" class="slide level2">
-<h2>Degree distributions</h2>
-</section>
-<section id="igp-model-fit" class="slide level2">
+<section id="igp-model-fit" class="slide level2 smaller">
 <h2>IGP model fit</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="r-stack">
+<div class="fragment fade-out" data-fragment-index="1">
+<div class="cell" data-fig.asp="1">
+<div class="cell-output-display">
+<p><img data-src="pres_files/figure-revealjs/unnamed-chunk-2-1.png" style="width:100.0%"></p>
+</div>
+</div>
+</div>
+<div class="fragment fade-in" data-fragment-index="1">
+<ul>
+<li>Large variety in posterior variance due to sample sizes</li>
+<li>Clear that <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\xi\)</span> not the same as BA and UA models.</li>
+</ul>
+<p>Perhaps GPA model can provide more flexibility.</p>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" data-fig.asp="1" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output-display">
+<p><img data-src="pres_files/figure-revealjs/unnamed-chunk-3-1.png" style="width:100.0%"></p>
+</div>
+</div>
+<div class="cell quarto-layout-cell" data-fig.asp="1" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output-display">
+<p><img data-src="pres_files/figure-revealjs/unnamed-chunk-4-1.png" style="width:100.0%"></p>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell quarto-layout-cell" data-fig.asp="1" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output-display">
+<p><img data-src="pres_files/figure-revealjs/unnamed-chunk-5-1.png" style="width:100.0%"></p>
+</div>
+</div>
+<div class="cell quarto-layout-cell" data-fig.asp="1" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell-output-display">
+<p><img data-src="pres_files/figure-revealjs/unnamed-chunk-6-1.png" style="width:100.0%"></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </section>
 <section id="gpa-analyses" class="slide level2">
 <h2>GPA analyses</h2>
+<p>We consider GPA models with preferential attachment function of the form:</p>
+<p><span class="math display">\[
+g(k) = k^{\gamma},\qquad \gamma&gt;0
+\]</span></p>
+<div class="fragment">
+<p><span class="math inline">\(\gamma=1\)</span> corresponds to the BA model.</p>
+</div>
 </section>
-<section id="section" class="slide level2">
-<h2></h2>
+<section id="gpa-domain-of-attraction" class="slide level2">
+<h2>GPA domain of attraction</h2>
+
+<img data-src="pres_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"></section>
+<section id="super-heavy-tails" class="slide level2">
+<h2>Super Heavy tails</h2>
+<p>Say a distribution <span class="math inline">\(F\)</span> has super heavy tails if its survival function is slowly varying i.e:</p>
+<p><span class="math display">\[
+\lim_{x\rightarrow\infty}\displaystyle\frac{\bar F(tx)}{\bar F (x)} = 1,\qquad \forall t&gt;0
+\]</span></p>
+<div class="fragment">
+<p>Could gain insight into if a distribution has super heavy tails by plotting: <span class="math display">\[
+\displaystyle\frac{\bar F(tx)}{\bar F (x)}
+\]</span></p>
+</div>
 </section>
-<section id="section-1" class="slide level2">
-<h2></h2>
+<section id="testing-for-super-heavy-tails" class="slide level2 smaller">
+<h2>Testing for super heavy tails</h2>
+<p>This time restricting <span class="math inline">\(\gamma\)</span> to <span class="math inline">\((1,2)\)</span>:</p>
+
+<img data-src="pres_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"></section></section>
+<section>
+<section id="section" class="title-slide slide level1 center">
+<h1></h1>
+
+</section>
+<section id="next-steps" class="slide level2">
+<h2>Next Steps</h2>
+</section>
+<section id="references" class="slide level2 smaller scrollable">
+<h2>References</h2>
 
 <img src="imgs/University_of_Newcastle_Coat_of_Arms.png" class="slide-logo r-stretch"><div class="footer footer-default">
-
+<p>twboughen.github.io</p>
+</div>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-Rohrbeck_2018" class="csl-entry" role="listitem">
+Rohrbeck, Christian, Emma F. Eastoe, Arnoldo Frigessi, and Jonathan A. Tawn. 2018. <span>“<span class="nocase">Extreme value modelling of water-related insurance claims</span>.”</span> <em>The Annals of Applied Statistics</em> 12 (1): 246–82. <a href="https://doi.org/10.1214/17-AOAS1081">https://doi.org/10.1214/17-AOAS1081</a>.
+</div>
 </div>
 </section></section>
     </div>
