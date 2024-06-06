@@ -12,11 +12,13 @@ format:
 engine: knitr
 bibliography: ../report/references.bib
 ---
+
 ## Motivation {.smaller}
 
 - Want a simple generative model that can model many real networks adequately.
 
 #### Example degree distributions of real networks
+
 ```{r,echo=FALSE, warning=FALSE, message=FALSE,cache=FALSE, dev = "png", dev.args=list(bg="transparent")}
 #| fig-width: 10
 #| fig-asp: 0.25
@@ -52,6 +54,7 @@ p+facet_grid(cols=vars(from),scales="free", switch = 'y') + theme(strip.text.y.l
          legend.box.background = element_rect(fill='transparent')
        )
 ```
+
 :::{.fragment}
 - Power law like behaviour (for the bulk of the data)
 :::
@@ -267,6 +270,7 @@ $$
 :::{.r-stack}
 
 ::: {.fragment .fade-out fragment-index=1}
+
 ```{r,echo=FALSE, warning=FALSE, message=FALSE, cache=FALSE}
 #| fig-width: 6
 #| fig-asp: 1
@@ -308,6 +312,7 @@ for(i in 1:n){
   legend('bottomleft', legend=nms[i], pch=20)
 }
 ```
+
 :::
 
 :::{.fragment .fade-in fragment-index=1}
@@ -325,6 +330,7 @@ Perhaps GPA model can provide more flexibility.
 
 
 :::{layout="[[33,33],[33,33]]"}
+
 ```{r, warning=FALSE, message=FALSE, echo=FALSE,cache=FALSE}
 #| fig-width: 4
 #| fig-asp: 1
@@ -347,6 +353,7 @@ p = ggplot(df,aes(x=v)) +geom_histogram(binwidth = 1,aes(y = ..density..))+
 p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.left = element_text(angle = 0))
 
 ```
+
 ```{r, warning=FALSE, message=FALSE, echo=FALSE,cache=FALSE}
 #| fig-width: 4
 #| fig-asp: 1
@@ -393,6 +400,7 @@ p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.l
 
 ```
 
+
 :::
 :::
 ::::
@@ -411,6 +419,7 @@ $\gamma=1$ corresponds to the BA model.
 :::
 
 ## GPA domain of attraction
+
 
 ```{r, echo=FALSE, message=FALSE,warning=FALSE,cache=FALSE}
 source('../scripts/omega.R')
@@ -449,6 +458,7 @@ ggplot(df, aes(k,value))+geom_line(aes(colour = a),linewidth=1) + scale_x_log10(
   scale_color_manual(TeX('$\\gamma$'),values=pal)+labs(x=TeX('$k$'),y=TeX('$\\Omega(F,k)$'))
 ```
 
+
 ## Super Heavy tails
 
 Say a distribution $F$ has super heavy tails if its survival function is slowly varying i.e:
@@ -467,6 +477,7 @@ $$
 ## Testing for super heavy tails {.smaller}
 
 This time restricting $\gamma$ to $(1,2)$:
+
 
 ```{r,echo=FALSE,message=FALSE,warning=FALSE,cache=FALSE}
 source('../scripts/omega.R')
@@ -502,6 +513,7 @@ p + labs(x=TeX('$k$'),y=TeX('$\\frac{1-F(tk)}{1-F (k)}$') )
 ```
 
 
+
 # Next Steps
 
 ##
@@ -513,6 +525,7 @@ p + labs(x=TeX('$k$'),y=TeX('$\\frac{1-F(tk)}{1-F (k)}$') )
 
 
 ## References
+
 
 
 
