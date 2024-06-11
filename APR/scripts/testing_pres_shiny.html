@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="pres_files/libs/clipboard/clipboard.min.js"></script>
-<script src="pres_files/libs/quarto-html/tabby.min.js"></script>
-<script src="pres_files/libs/quarto-html/popper.min.js"></script>
-<script src="pres_files/libs/quarto-html/tippy.umd.min.js"></script>
-<link href="pres_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="pres_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="pres_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="pres_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="testing_pres_shiny_files/libs/clipboard/clipboard.min.js"></script>
+<script src="testing_pres_shiny_files/libs/quarto-html/tabby.min.js"></script>
+<script src="testing_pres_shiny_files/libs/quarto-html/popper.min.js"></script>
+<script src="testing_pres_shiny_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="testing_pres_shiny_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="testing_pres_shiny_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="testing_pres_shiny_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="testing_pres_shiny_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.3.450">
 
   <meta name="author" content="Thomas Boughen">
@@ -16,8 +16,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="pres_files/libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="pres_files/libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="testing_pres_shiny_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="testing_pres_shiny_files/libs/revealjs/dist/reveal.css">
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -30,31 +30,12 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
-    /* CSS for citations */
-    div.csl-bib-body { }
-    div.csl-entry {
-      clear: both;
-    }
-    .hanging-indent div.csl-entry {
-      margin-left:2em;
-      text-indent:-2em;
-    }
-    div.csl-left-margin {
-      min-width:2em;
-      float:left;
-    }
-    div.csl-right-inline {
-      margin-left:2em;
-      padding-left:1em;
-    }
-    div.csl-indent {
-      margin-left: 2em;
-    }  </style>
-  <link rel="stylesheet" href="pres_files/libs/revealjs/dist/theme/quarto.css">
-  <link href="pres_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="pres_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="pres_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="pres_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  </style>
+  <link rel="stylesheet" href="testing_pres_shiny_files/libs/revealjs/dist/theme/quarto.css">
+  <link href="testing_pres_shiny_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="testing_pres_shiny_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="testing_pres_shiny_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="testing_pres_shiny_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
 
   .callout {
@@ -360,341 +341,168 @@ Thomas Boughen
 
   <p class="date">2024-06-17</p>
 </section>
-<section id="motivation" class="slide level2 smaller">
-<h2>Motivation</h2>
-<ul>
-<li>Want a simple generative model that can model many real networks adequately.</li>
-</ul>
-<h4 id="example-degree-distributions-of-real-networks">Example degree distributions of real networks</h4>
+<section id="barabási-albert-model" class="slide level2 smaller">
+<h2>Barabási-Albert Model</h2>
+<div class="cell">
+<style type="text/css">
+.cell.panel-sidebar{
+  background-color:white;
+  border-width:0px;
+}
 
-<img data-src="pres_files/figure-revealjs/unnamed-chunk-1-1.png" style="width:100.0%" class="r-stretch"><div class="fragment">
-<ul>
-<li>Power law like behaviour (for the bulk of the data)</li>
-</ul>
+</style>
 </div>
-<div class="fragment">
-<ul>
-<li>This behaviour tapers off in the extreme values</li>
-</ul>
+<div class="layout-sidebar layout-sidebar-left">
+<div class="cell panel-sidebar">
+<div class="cell-output-display">
+<div class="shiny-plot-output html-fill-item" id="netplot2" style="width:100%;height:400px;"></div>
 </div>
-<aside class="notes">
-<ul>
-<li>Want a network generative model that is fairly simple but flexible enough to model a wide range of real networks.</li>
-<li>Some examples of the degree distributions of real networks, shown as a log-log plot of the survival.</li>
-<li>Show some signs of power-law like behaviour for the bulk of the degrees</li>
-<li>This behaviour tapers off at the extremes of the distribution, more significantly at the right tail than the left</li>
-</ul>
-<p>First step towards finding a model that generates realistic networks, is to find a suitable model for the degree distributions of real networks.</p>
-<p>Should give some idea of what kinds of models to use.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section>
-<section id="modelling-degree-distributions" class="title-slide slide level1 center">
-<h1>Modelling degree distributions</h1>
-<aside class="notes">
-<p>Since the degree distributions seem to deviate from a power law at extreme values. Natural to look to extreme value theory.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="continuous-extremes-approach" class="slide level2 incremental">
-<h2>Continuous Extremes Approach</h2>
-<p>Could use GP to model the peaks over threshold</p>
-<div class="fragment">
-<ul>
-<li>Have to choose a threshold and split the data</li>
-</ul>
 </div>
-<div class="fragment">
-<ul>
-<li>Makes comparing likelihoods of models difficult</li>
-</ul>
-</div>
-<div class="fragment">
-<ul>
-<li>Would like a less empirical way of fitting model</li>
-</ul>
-</div>
-<div class="fragment">
-<p>Could use a mixture that can model all of the data.</p>
-<div class="fragment" style="color:red;">
-<p>But degree of a vertex is not continuous.</p>
-</div>
-<aside class="notes">
-<ul>
-<li><p>Choosing threshold often done empirically, using threshold stability plot</p></li>
-<li><p>As threshold splits the data, cant compare likelihoods</p></li>
-<li><p>Since want to investigate degree distribution of many real networks, would like a less involved approach.</p></li>
-<li><p>Since, exhibits power-law behaviour up until a certain point.</p></li>
-</ul>
-<p>Could use a sliced mixture that can model all of the degrees, with a GP modelling the right tail</p>
-<p>However, since degree of a vertex is not continuous it would be more appropriate to use a discrete model.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</div>
-</section>
-<section id="discrete-extreme-value-theory" class="slide level2">
-<h2>Discrete Extreme Value Theory</h2>
+<div class="panel-fill">
+<p><strong>Initial State</strong></p>
+<p>Starting with graph of <span class="math inline">\(m_0&gt;m\)</span> vertices arranged in a ring.</p>
+<p><strong>Steps (for <span class="math inline">\(t\ge 1\)</span>)</strong></p>
 <ol type="1">
-<li>Discretisation of Generalised Pareto Distribution</li>
-<li>Spliced Mixture Model</li>
-<li>A useful quantity</li>
+<li>Add a new vertex.<br>
+</li>
+<li>Randomly add <span class="math inline">\(m\)</span> edges from the new vertex to those already in the network, with weights proportional to their degree, <span class="math inline">\(d(i)\)</span></li>
 </ol>
-</section>
-<section id="integral-generalised-pareto-distribution" class="slide level2 smaller">
-<h2>Integral Generalised Pareto Distribution</h2>
-<p>Similar to that defined by <span class="citation" data-cites="Rohrbeck_2018">Rohrbeck et al. (<a href="#/references" role="doc-biblioref" onclick="">2018</a>)</span></p>
-<p><span class="math display">\[
-\Pr(Y=y|Y&gt;u) = \left(1+\displaystyle\frac{\xi(y+1-\lceil u\rceil)}{\sigma_0+\xi\lceil u\rceil}\right)_+^{-1/\xi}-\left(1+\displaystyle\frac{\xi(y-\lceil u\rceil)}{\sigma_0+\xi\lceil u\rceil}\right)_+^{-1/\xi}
-\]</span></p>
-<p>For <span class="math inline">\(y=\lceil u\rceil,\lceil u\rceil+1, \ldots\)</span> and <span class="math inline">\(\xi \in \mathbb R\)</span> and <span class="math inline">\(u, \sigma_0 \in \mathbb R^+.\)</span></p>
-<p>Where <span class="math inline">\(\xi\)</span>, <span class="math inline">\(\sigma_0\)</span>,<span class="math inline">\(u\)</span> are the shape, scale, and threshold parameters respectively.</p>
+<p><strong>Properties</strong></p>
 <ul>
-<li><span class="math inline">\(\xi&lt;0 \rightarrow\)</span> Negative Weibull <span class="math inline">\(\qquad \mathcal D(\Psi_\alpha)\)</span></li>
-<li><span class="math inline">\(\xi=0 \rightarrow\)</span> Gumbel <span class="math inline">\(\qquad\mathcal D(\Lambda)\)</span></li>
-<li><span class="math inline">\(\xi&gt;0 \rightarrow\)</span> Fréchet <span class="math inline">\(\qquad\mathcal D(\Phi_\alpha)\)</span></li>
+<li>Generates a power law degree distribution.</li>
+<li>Implements a “rich get richer” scheme.</li>
 </ul>
-</section>
-<section id="igp-spliced-mixture" class="slide level2 smaller">
-<h2>IGP Spliced Mixture</h2>
-<p>In general the IGP spliced mixture takes the form:</p>
-<p><span class="math display">\[
-f(y) = \begin{cases}
-(1-\phi)g(x), &amp; y=1,2,\ldots, v\\
-\phi\left[\left(1+\displaystyle\frac{\xi(y+1-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}-\left(1+\displaystyle\frac{\xi(y-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}\right],&amp;y=v+1, v+2,\ldots
-\end{cases}
-\]</span> where <span class="math inline">\(g\)</span> is some discrete distribution with support <span class="math inline">\(\{1,2,\ldots,v\}\)</span>.</p>
-<div class="fragment">
-<p>Want power law behaviour for bulk, so take: <span class="math display">\[
-g(y) = \displaystyle\frac{y^{-(\alpha+1})}{\sum_{k=1}^v k^{\alpha+1}}, \quad y=1,2,\ldots,v
-\]</span> for some <span class="math inline">\(\alpha&gt;0\)</span>.</p>
-</div>
-</section>
-<section id="a-useful-quantity" class="slide level2 smaller">
-<h2>A Useful Quantity</h2>
-<p>For a distribution <span class="math inline">\(F\)</span> with survival function <span class="math inline">\(\overline F\)</span> and <span class="math inline">\(n\in\mathbb Z^+\)</span> let:</p>
-<p><span class="math display">\[
-\Omega(F,n) = \left(\log\displaystyle\frac{\overline F (n+1)}{\overline F (n+2)}\right)^{-1} - \left(\log\displaystyle\frac{\overline F (n)}{\overline F (n+1)}\right)^{-1}
-\]</span> Useful for determining the domain of a attraction that a discrete distribution belongs to.</p>
-<ul>
-<li><span class="math inline">\(\lim_{n\rightarrow \infty} \Omega(F,n) = 0\)</span>, then is F recoverable to the Gumbel domain</li>
-<li><span class="math inline">\(\lim_{n\rightarrow \infty} \Omega(F,n) = \alpha^{-1}\)</span>, then is F is in the Fréchet domain, <span class="math inline">\(\mathcal D(\Phi_\alpha)\)</span></li>
-</ul>
-</section></section>
-<section>
-<section id="network-generative-models" class="title-slide slide level1 center">
-<h1>Network Generative Models</h1>
-
-</section>
-<section id="general-preferential-attachment" class="slide level2 smaller">
-<h2>General Preferential Attachment</h2>
-<p>Starting with <span class="math inline">\(G_0 = (V_0, E_0) = (\{1,\ldots,m_0\}, \emptyset)\)</span>. At each time <span class="math inline">\(t\ge1\)</span>, <span class="math inline">\(G_t = (V_t, E_t)\)</span> is generated by the following rules:</p>
-<div class="fragment">
-<p><strong>Growth</strong>: Add a new vertex to the vertex set i.e.&nbsp; <span class="math display">\[
-V_t = V_{t-1} \cup \{t+m_0\}
-\]</span></p>
-</div>
-<div class="fragment">
-<p><strong>Preferential Attachment</strong>: Add <span class="math inline">\(m\le m_0\)</span> edges connecting the new vertex to the existing vertices selected at random with weights proportional to a function of their degree i.e.:</p>
-<p><span class="math display">\[
-E_t  = E_{t-1} \cup \{\tilde e_1,\ldots,\tilde e_m\}
-\]</span></p>
-<p>where <span class="math inline">\(\tilde e_j = \{t,\tilde v\}\)</span> and <span class="math inline">\(\tilde v = i\)</span> with weights</p>
-<p><span class="math display">\[
-\displaystyle\frac{g(d(i))}{\sum_{w\in V_{t-1}} g(d(i))}, \qquad i\in V_{t-1}
-\]</span></p>
-<h4 id="degree-distribution">Degree distribution</h4>
-<p>$$ f(k) = <em>{i=0}^{k-1} </em>{n=1}^_{i=1}^{n-1}=1</p>
-<p>$$</p>
-</div>
-</section>
-<section id="special-cases" class="slide level2 smaller center">
-<h2>Special Cases</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<h3 id="barabási-albert">Barabási-Albert</h3>
-<p><span class="math display">\[
-g(k) = k
-\]</span></p>
-<h4 id="degree-distribution-1">Degree Distribution</h4>
-<p><span class="math display">\[
-f(k) = \frac{2m(m+1)}{k(k+1)(k+2)}
-\]</span> If <span class="math inline">\(m=1\)</span>: <span class="math display">\[
-f(k) = \frac{4}{k(k+1)(k+2)}
-\]</span> Belongs to Fréchet domain of attraction.</p>
-<p><span class="math display">\[
-\mathcal D (\Phi_2)
-\]</span></p>
-</div><div class="column fragment" style="width:50%;">
-<!-- -->
-<h3 id="uniform-attachment">Uniform Attachment</h3>
-<p><span class="math display">\[
-g(k) = c
-\]</span></p>
-<h4 id="degree-distribution-2">Degree Distribution</h4>
-<p><span class="math display">\[
-f(k) \approx \displaystyle\frac{e}{m}\exp\left(-\displaystyle\frac{k}{m}\right)
-\]</span> If <span class="math inline">\(m=1\)</span>:</p>
-<p><span class="math display">\[
-f(k) = \left(1\over2\right)^k
-\]</span></p>
-<p>Recoverable to Gumbel domain of attraction.</p>
-<p><span class="math display">\[
-\mathcal D(\Lambda)
-\]</span></p>
 </div>
 </div>
-</section></section>
-<section>
-<section id="analysis" class="title-slide slide level1 center">
-<h1>Analysis</h1>
-
-</section>
-<section id="igp-model-fit" class="slide level2 smaller">
-<h2>IGP model fit</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="r-stack">
-<div class="fragment fade-out" data-fragment-index="1">
-<div class="cell" data-fig.asp="1">
-<div class="cell-output-display">
-<p><img data-src="pres_files/figure-revealjs/unnamed-chunk-2-1.png" style="width:100.0%"></p>
-</div>
-</div>
-</div>
-<div class="fragment fade-in" data-fragment-index="1">
-<ul>
-<li>Large variety in posterior variance due to sample sizes</li>
-<li>Clear that <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\xi\)</span> not the same as BA and UA models.</li>
-</ul>
-<p>Perhaps GPA model can provide more flexibility.</p>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="quarto-layout-panel">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" data-fig.asp="1" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img data-src="pres_files/figure-revealjs/unnamed-chunk-3-1.png" style="width:100.0%"></p>
-</div>
-</div>
-<div class="cell quarto-layout-cell" data-fig.asp="1" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img data-src="pres_files/figure-revealjs/unnamed-chunk-4-1.png" style="width:100.0%"></p>
-</div>
-</div>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell quarto-layout-cell" data-fig.asp="1" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img data-src="pres_files/figure-revealjs/unnamed-chunk-5-1.png" style="width:100.0%"></p>
-</div>
-</div>
-<div class="cell quarto-layout-cell" data-fig.asp="1" style="flex-basis: 50.0%;justify-content: center;">
-<div class="cell-output-display">
-<p><img data-src="pres_files/figure-revealjs/unnamed-chunk-6-1.png" style="width:100.0%"></p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section id="gpa-analyses" class="slide level2">
-<h2>GPA analyses</h2>
-<p>Now consider GPA models with preferential attachment function of the form:</p>
-<p><span class="math display">\[
-g(k) = k^{\gamma},\qquad \gamma&gt;0
-\]</span></p>
-<div class="fragment">
-<p><span class="math inline">\(\gamma=1\)</span> corresponds to the BA model.</p>
-</div>
-</section>
-<section id="gpa-domain-of-attraction" class="slide level2">
-<h2>GPA domain of attraction</h2>
-
-<img data-src="pres_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"></section>
-<section id="super-heavy-tails" class="slide level2">
-<h2>Super Heavy tails</h2>
-<p>Say a distribution <span class="math inline">\(F\)</span> has super heavy tails if its survival function is slowly varying i.e:</p>
-<p><span class="math display">\[
-\lim_{x\rightarrow\infty}\displaystyle\frac{\bar F(tx)}{\bar F (x)} = 1,\qquad \forall t&gt;0
-\]</span></p>
-<div class="fragment">
-<p>Could gain insight into if a distribution has super heavy tails by plotting: <span class="math display">\[
-\displaystyle\frac{\bar F(tx)}{\bar F (x)}
-\]</span></p>
-</div>
-</section>
-<section id="testing-for-super-heavy-tails" class="slide level2 smaller">
-<h2>Testing for super heavy tails</h2>
-<p>This time restricting <span class="math inline">\(\gamma\)</span> to <span class="math inline">\((1,2)\)</span>:</p>
-
-<img data-src="pres_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"></section></section>
-<section>
-<section id="next-steps" class="title-slide slide level1 center">
-<h1>Next Steps</h1>
-
 </section>
 <section id="section" class="slide level2">
 <h2></h2>
-</section>
-<section id="references" class="slide level2 smaller scrollable">
-<h2>References</h2>
+<p>
+<script type="application/shiny-prerendered" data-context="server">
 
-<img src="imgs/University_of_Newcastle_Coat_of_Arms.png" class="slide-logo r-stretch"><div class="footer footer-default">
+library(igraph)
+library(visNetwork)
+start_time = isolate(Sys.time())
+
+# df_raw = isolate(data.table::fread('../data/data_for_mcmc/out.jazz'))
+
+
+max_rat=isolate(5e3)
+
+autoInvalidate <- reactiveTimer(max_rat)
+
+m=1
+vals = reactiveValues(i=m)
+g = isolate(sample_pa(2, power=1, m=m, directed = F, zero.appeal = 0.00001))
+
+  observe({
+    # Invalidate and re-execute this reactive expression every time the
+    # timer fires.
+    
+    
+    
+    new_edges = as.data.frame(as_edgelist(g))
+    message(new_edges)
+    names(new_edges) = c('from', 'to')
+    new_edges$id = get.edge.ids(g,as.vector(t(as_edgelist(g))))*1000
+    new_edges$label = get.edge.ids(g,as.vector(t(as_edgelist(g))))*1000
+    visNetworkProxy("netPlot")  %>% visUpdateNodes(nodes = data.frame(id = vals$i)) %>% visUpdateEdges(edges=new_edges) %>% visNodes(size = 1) %>%   visInteraction(dragNodes = FALSE, 
+                 dragView = FALSE, 
+                 zoomView = FALSE)%>% visOptions(autoResize = T) %>% visPhysics(enabled = T, repulsion = list(nodeDistance=0.01), maxVelocity = 1) %>% visFit(animation = list(duration=100)) %>% visEdges(smooth = list(enabled=T))
+    
+    data  = isolate(toVisNetworkData(g))
+    
+    autoInvalidate()
+  })
+  
+output$netPlot <- renderVisNetwork({
+  data  = isolate(toVisNetworkData(g))
+  visNetwork(nodes = data$nodes, edges = data$edges)
+  # visIgraph(g)
+})
+
+output$netplot2 <- renderPlot({
+  isolate(vals$i<-vals$i+1)
+    g = sample_pa(vals$i, 1, m=m, directed=F, start.graph = g, zero.appeal = 0.00001)
+    ws = degree(g)/sum(degree(g))
+    cols = c(rep('black', length(V(g))-1),'black')
+    lys_e = c(rep(1, length(E(g))-m),rep(1,m))
+    plot(g, vertex.size=ws*100, vertex.label=NA, vertex.color=cols, edge.lty=lys_e )
+    x = degree(g)
+    p = table(degree(g))/ length(x)
+    #plot(names(p),as.numeric(p), log='xy',main='Degree Distribution', ylab='f(x)', xlab='Degree (x)')
+    q = c(1,(1-cumsum(as.numeric(p)/sum(as.numeric(p))))[-length(p)])
+    # plot(names(p),q, log='xy', main='Degree Survival', xlab='Degree (x)', ylab='1-F(x)')
+    autoInvalidate()
+    autoInvalidate <- reactiveTimer(max(30,max_rat-vals$i*300))
+  
+})
+
+
+
+
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server-extras">
+ojs_define <- function(..., .session = shiny::getDefaultReactiveDomain()) {
+  quos <- rlang::enquos(...)
+  vars <- rlang::list2(...)
+  nm <- names(vars)
+  if (is.null(nm)) {
+    nm <- rep_len("", length(vars))
+  }
+  mapply(function(q, nm, val) {
+    # Infer name, if possible
+    if (nm == "") {
+      tryCatch({
+        nm <- rlang::as_name(q)
+      }, error = function(e) {
+        code <- paste(collapse = "\n", deparse(rlang::f_rhs(q)))
+        stop("ojs_define() could not create a name for the argument: ", code)
+      })
+    }
+    .session$output[[nm]] <- val
+    outputOptions(.session$output, nm, suspendWhenHidden = FALSE)
+    .session$sendCustomMessage("ojs-export", list(name = nm))
+    NULL
+  }, quos, nm, vars, SIMPLIFY = FALSE, USE.NAMES = FALSE)
+  invisible()
+}
+</script>
+</p>
+<!--html_preserve-->
+<script type="application/shiny-prerendered" data-context="dependencies">
+{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["htmltools-fill"]},{"type":"character","attributes":{},"value":["0.5.8.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["fill"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["fill.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["htmltools"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.5.8.1"]}]}]}
+</script>
+<!--/html_preserve-->
+<!--html_preserve-->
+
+<script type="application/shiny-prerendered" data-context="execution_dependencies">
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]}},"value":[{"type":"character","attributes":{},"value":["base","cli","compiler","datasets","digest","evaluate","fastmap","graphics","grDevices","htmltools","htmlwidgets","httpuv","igraph","jsonlite","knitr","later","lifecycle","magrittr","methods","mime","pkgconfig","promises","R6","Rcpp","rlang","rmarkdown","rstudioapi","shiny","stats","tools","utils","visNetwork","xfun","xtable","yaml"]},{"type":"character","attributes":{},"value":["4.4.0","3.6.2","4.4.0","4.4.0","0.6.35","0.24.0","1.2.0","4.4.0","4.4.0","0.5.8.1","1.6.4","1.6.15","2.0.3","1.8.8","1.47","1.3.2","1.0.4","2.0.3","4.4.0","0.12","2.0.3","1.3.0","2.5.1","1.0.12","1.1.4","2.27","0.16.0","1.8.1.1","4.4.0","4.4.0","4.4.0","2.1.2","0.44","1.8-4","2.3.8"]}]}]}
+</script>
+<!--/html_preserve-->
+
+<img src="../pres/imgs/University_of_Newcastle_Coat_of_Arms.png" class="slide-logo r-stretch"><div class="footer footer-default">
 <p>twboughen.github.io</p>
 </div>
-<div id="refs" class="references csl-bib-body hanging-indent" role="list">
-<div id="ref-Rohrbeck_2018" class="csl-entry" role="listitem">
-Rohrbeck, Christian, Emma F. Eastoe, Arnoldo Frigessi, and Jonathan A. Tawn. 2018. <span>“<span class="nocase">Extreme value modelling of water-related insurance claims</span>.”</span> <em>The Annals of Applied Statistics</em> 12 (1): 246–82. <a href="https://doi.org/10.1214/17-AOAS1081">https://doi.org/10.1214/17-AOAS1081</a>.
-</div>
-</div>
-</section></section>
+</section>
     </div>
   </div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="pres_files/libs/revealjs/dist/reveal.js"></script>
+  <script src="testing_pres_shiny_files/libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="pres_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="pres_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="pres_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="pres_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="pres_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="testing_pres_shiny_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="testing_pres_shiny_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="testing_pres_shiny_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="testing_pres_shiny_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="testing_pres_shiny_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
-  <script src="pres_files/libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="pres_files/libs/revealjs/plugin/search/search.js"></script>
-  <script src="pres_files/libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="pres_files/libs/revealjs/plugin/math/math.js"></script>
+  <script src="testing_pres_shiny_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="testing_pres_shiny_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="testing_pres_shiny_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="testing_pres_shiny_files/libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>

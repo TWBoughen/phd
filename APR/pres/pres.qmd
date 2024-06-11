@@ -200,6 +200,7 @@ where $\tilde e_j = \{t,\tilde v\}$ and $\tilde v = i$ with weights
 $$
 \displaystyle\frac{g(d(i))}{\sum_{w\in V_{t-1}} g(d(i))}, \qquad i\in V_{t-1}
 $$
+
 #### Degree distribution
 
 $$
@@ -216,6 +217,7 @@ $$
 $$
 g(k) = k
 $$
+
 
 #### Degree Distribution
 
