@@ -9,6 +9,9 @@ format:
     logo: https://raw.githubusercontent.com/TWBoughen/phd/main/APR/pres/imgs/University_of_Newcastle_Coat_of_Arms.png
     theme: default
     institute: Newcastle University
+    width: 1920
+    height: 1080
+    margin: 0.1
 editor: visual
 server: shiny
 bibliography: ../report/references.bib
@@ -18,7 +21,7 @@ nocite: |
   @reactome, @pajek,@jazz,@caida,@meta
 ---
 
-## Barabási-Albert Model @Barabasi99 {.smaller}
+## Barabási-Albert Model @Barabasi99 
 
 ```{css}
 .cell.panel-sidebar{
@@ -41,17 +44,20 @@ nocite: |
 
 ```
 
+::::{.columns}
+
+:::{.column width="25%"}
 ```{r}
-#| panel: sidebar
 library(igraph)
 library(visNetwork)
 # visNetworkOutput("netPlot")
 actionButton('go','BA simulation with m=1')
 
-plotOutput('netplot2')
+plotOutput('netplot2', height = "900px")
 ```
+:::
 
-::: panel-fill
+:::{.column width="50%"}
 **Initial State**
 
 Starting with graph of $m_0>m$ vertices.
@@ -66,11 +72,12 @@ Starting with graph of $m_0>m$ vertices.
 -   Generates a power law degree distribution.
 -   Implements a "rich get richer" scheme.
 :::
+::::
 
-## In Reality {.smaller}
+## In Reality 
 
-- Power law degree distributions are rare @Broido_2019
-- Despite its nice properties BA may not be best for real networks
+-   Power law degree distributions are rare @Broido_2019
+-   Despite its nice properties BA may not be best for real networks
 
 ```{r,echo=FALSE, warning=FALSE, message=FALSE,cache=FALSE, dev = "png", dev.args=list(bg="transparent")}
 #| fig-width: 10
@@ -109,16 +116,14 @@ p+facet_grid(cols=vars(from),scales="free", switch = 'y') + theme(strip.text.y.l
        )+xlab(latex2exp('Degree, $k$'))+ylab(latex2exp('1-$F(k)$'))
 ```
 
-
-:::{.fragment}
-
-- Can see some power law behaviour
-- Main deviation in the right tail
+::: fragment
+-   Can see some power law behaviour
+-   Main deviation in the right tail
 
 Begin to investigate degree distribution of real networks using extreme value theory.
 :::
 
-## Extreme Value Theory {.smaller}
+## Extreme Value Theory 
 
 Common way to model peaks over threshold, $Y$, is to use the generalised Pareto (**GP**) distribution:
 
@@ -127,72 +132,61 @@ $$
 1-\left(1+\displaystyle\frac{\xi (y-u)}{\sigma_0+\xi u}\right)^{-1/\xi},&\xi\ne 0 \\
 1-\exp\left(-\displaystyle\frac{y-u}{\sigma_0}\right),&\xi = 0
 \end{cases}
-$$
-Network data is **discrete** so instead model $\lfloor Y\rfloor$ and use integral generalised Pareto (**IGP**) distribution:
+$$ Network data is **discrete** so instead model $\lfloor Y\rfloor$ and use integral generalised Pareto (**IGP**) distribution:
 
 $$
 \Pr(Y=y|Y>u) = \begin{cases}
 \left(1+\displaystyle\frac{\xi(y+1-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}-\left(1+\displaystyle\frac{\xi(y-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}&,\xi\ne 0\\
 \exp\left(-\displaystyle\frac{y+1-v}{\sigma_0}\right)-\exp\left(-\displaystyle\frac{y-v}{\sigma_0}\right)&,\xi=0
 \end{cases}
-$$
-where $v=\lceil u\rceil$, $\xi \in \mathbb R$ and $u,\sigma_0\in\mathbb R^+$.
+$$ where $v=\lceil u\rceil$, $\xi \in \mathbb R$ and $u,\sigma_0\in\mathbb R^+$.
 
-## Mixture Model {.smaller}
+## Mixture Model
 
-To avoid issues of threshold selection use a mixture that can model all of the data: 
+To avoid issues of threshold selection use a mixture that can model all of the data:
 
 $$
 f(y) = \begin{cases}
-(1-\phi)\displaystyle\frac{y^{-(\alpha+1})}{\sum_{k=1}^v k^{\alpha+1}}, & y=1,2,\ldots, v\\
+(1-\phi)\displaystyle\frac{y^{-(\alpha+1)}}{\sum_{k=1}^v k^{\alpha+1}}, & y=1,2,\ldots, v\\
 \phi\left[\left(1+\displaystyle\frac{\xi(y+1-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}-\left(1+\displaystyle\frac{\xi(y-v)}{\sigma_0+\xi v}\right)_+^{-1/\xi}\right],&y=v+1, v+2,\ldots
 \end{cases}
-$$
-where $\phi \in (0,1)$ and $\alpha\in\mathbb R^+$ @Rohrbeck_2018. 
+$$ where $\phi \in (0,1)$ and $\alpha\in\mathbb R^+$ @Rohrbeck_2018.
 
 Uses a truncated power law for bulk of the data and the IGP for the right tail above a threshold $v$.
 
-
-::::{.columns}
-
-:::{.column width="75%"}
-
+::: columns
+::: {.column width="25%"}
 ```{r}
-#| panel: input
-
-sliderInput("xi", expression(xi), 
-            min = -1, max = 1, value = 0.5, step=0.05, width="150px", ticks=FALSE)
-sliderInput("a", expression(alpha), 
-            min = 0, max = 10, value = 0.5, step=0.1, width="150px", ticks=FALSE)
-sliderInput("sig", expression(sigma), 
-            min = 1, max = 100, value = 30, step=0.1, width="150px", ticks=FALSE)
-sliderInput("v", expression(v), 
-            min = 1, max = 100, value = 30, step=0.1, width="150px", ticks=FALSE)
+sliderInput("xi", '\\( \\xi \\)', 
+            min = -1, max = 2, value = 0.5, step=0.05, width="450px", ticks=FALSE)
+sliderInput("a", '\\( \\alpha \\)', 
+            min = 0, max = 10, value = 0.5, step=0.1, width="450px", ticks=FALSE)
+sliderInput("sig", '\\( \\sigma_0 \\)', 
+            min = 1, max = 100, value = 30, step=0.1, width="450px", ticks=FALSE)
+sliderInput("v", '\\( v \\)', 
+            min = 1, max = 100, value = 30, step=1, width="450px", ticks=FALSE)
+sliderInput("phi", '\\( \\phi \\)', 
+            min = 0, max = 0.5, value = 0.05, step=0.01, width="450px", ticks=FALSE)
 ```
 :::
 
-
-:::{.column width="50%"}
-
+::: {.column width="75%"}
 ```{r}
-plotOutput("mixplot", height = '150px', width="200px")
+plotOutput("mixplot", height = '500px', width='1200px')
 ```
 :::
-
-
-::::
+:::
 
 ## Model Fit
-:::::{.r-stack}
-::::{.columns .fragment .fade-left .fade-out fragment-index=1}
-:::{.column width="50%"}
 
-- Model fits well for real and simulated data.
-- Some evidence for a third component.
-
-
+::: r-stack
+::: {.columns .fragment .fade-left .fade-out fragment-index="1"}
+::: {.column width="50%"}
+-   Model fits well for real and simulated data.
+-   Some evidence for a third component.
 :::
-:::{.column width="50%"}
+
+::: {.column width="50%"}
 ```{r,echo=FALSE, warning=FALSE, message=FALSE, cache=FALSE}
 #| fig-width: 6
 #| fig-asp: 1
@@ -231,28 +225,30 @@ for(i in 1:n){
     if(i>(y-1)*x){
       marge[1] = 2
     }
+    if(i %in% c(1,4,7)){
+      marge[2] = 3
+      y_ax=NULL
+    }
+    
   mcmc_plot(res[,i]$dat, as.data.frame(res[,i]$res_thinned),
             xlim=c(1,mx_dat),ylim=c(min_prob,1),mar=marge,xaxt=x_ax, yaxt=y_ax)
   legend('bottomleft', legend=nms[i], pch=20)
 }
 ```
 :::
-::::
+:::
 
-::::{.columns .fragment .fade-left fragment-index=1}
-:::{.column width="50%"}
-
-- Large range of values of $\xi$ and $\alpha$
-- Nothing really matches uniform attachment or BA
-- $1/\xi$ and $\alpha$ aren't close 
-
+::: {.columns .fragment .fade-left fragment-index="1"}
+::: {.column width="50%"}
+-   Large range of values of $\xi$ and $\alpha$
+-   Nothing really matches uniform attachment or BA
+-   $1/\xi$ and $\alpha$ aren't close
 
 Not enough flexibility from BA and UA models, so look to the more general case.
 :::
 
-:::{.column width="50%"}
-
-:::{layout="[[33,33],[33,33]]"}
+::: {.column width="50%"}
+::: {layout="[[33,33],[33,33]]"}
 ```{r, warning=FALSE, message=FALSE, echo=FALSE,cache=FALSE}
 #| fig-width: 4
 #| fig-asp: 1
@@ -260,6 +256,7 @@ Not enough flexibility from BA and UA models, so look to the more general case.
 dat_list_names = konect_to_df_dir('../data/data_for_mcmc', return_names=T)$names
 nms = gsub('[[:digit:]]+', '', unlist(strsplit(dat_list_names,'out.')))
 nms=nms[nms!='']
+nms = c('jazz', 'meta', 'as-caida','BA simulated','pajek-erdos', 'reactome','UA simulated')
 df = res[,1]$res_thinned
 df$from = nms[1]
 for(i in 2:ncol(res)){
@@ -275,6 +272,7 @@ p = ggplot(df,aes(x=v)) +geom_histogram(binwidth = 1,aes(y = ..density..))+
 p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.left = element_text(angle = 0))
 
 ```
+
 ```{r, warning=FALSE, message=FALSE, echo=FALSE,cache=FALSE}
 #| fig-width: 4
 #| fig-asp: 1
@@ -282,7 +280,7 @@ p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.l
 
 
 
-p = ggplot(df,aes(x=a)) +stat_density() +
+p = ggplot(df,aes(x=a)) +stat_density(n=2^10) +
   theme( 
       axis.text.y=element_blank(), 
       axis.ticks.y=element_blank())+xlim(0,5) 
@@ -313,20 +311,19 @@ p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.l
 
 
 
-p = ggplot(df,aes(x=1/a)) +stat_density() +
+p = ggplot(df,aes(x=1/a)) +stat_density(n=2^10) +
   theme( 
       axis.text.y=element_blank(), 
-      axis.ticks.y=element_blank())+xlim(0,5)+labs(x=TeX('$1 / \\alpha$'))
+      axis.ticks.y=element_blank())+xlim(0,7)+labs(x=TeX('$1 / \\alpha$'))
 p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.left = element_text(angle = 0))
 
 ```
-
 :::
 :::
-::::
-:::::
+:::
+:::
 
-## General Preferential Attachment {.smaller}
+## General Preferential Attachment 
 
 **Initial State**
 
@@ -337,7 +334,7 @@ Starting with graph of $m_0>m$ vertices.
 1.  Add a new vertex.
 2.  Randomly add $m$ edges from the new vertex to those already in the network, with weights proportional to a function of their degree, $g(d(i))$.
 
-**Limiting Degree Distribution**@rudas07
+**Limiting Degree Distribution** @rudas07
 
 If $m=1$
 
@@ -345,10 +342,9 @@ $$
 f(k) = \displaystyle\frac{\lambda^*}{g(k) + \lambda^*}\prod_{i=0}^{k-1}\displaystyle\frac{g(i)}{g(i)+\lambda^*}\quad\text{ where} \quad \sum_{n=1}^\infty \prod_{i=1}^{n-1}\displaystyle\frac{g(i)}{g(i)+\lambda^*}=1
 $$
 
-## Special Cases {.smaller}
+## Special Cases
 
-:::: {.columns}
-
+::: columns
 ::: {.column width="50%"}
 ### Barabási-Albert
 
@@ -356,14 +352,11 @@ $$
 g(k) = k
 $$
 
-
-#### Degree Distribution    
+#### Degree Distribution @barabasibook 
 
 $$
 f(k) = \frac{2m(m+1)}{k(k+1)(k+2)}
-$$
-If $m=1$ @barabasibook:
-$$
+$$ If $m=1$: $$
 f(k) = \frac{4}{k(k+1)(k+2)}
 $$
 
@@ -377,29 +370,25 @@ $$
 g(k) = c
 $$
 
-#### Degree Distribution
+#### Degree Distribution @Barabasi99
 
 $$
 f(k) \approx \displaystyle\frac{e}{m}\exp\left(-\displaystyle\frac{k}{m}\right)
-$$
-If $m=1$:
+$$ If $m=1$:
 
 $$
 f(k) = \left(1\over2\right)^k
 $$
 
 Light tailed
-
 :::
 
-:::{.fragment}
-What if $g(k)=k^\gamma$?
+::: {.fragment color="red"}
+What if $g(k)=k^\gamma$
+:::
 :::
 
-
-::::
-
-## Studying the GPA model {.smaller}
+## Studying the GPA model 
 
 Need a way to study a discrete distribution at the right tail. @shimura12
 
@@ -407,14 +396,12 @@ $$
 \Omega(F,k) = \left(\log\displaystyle\frac{\overline F (k+1)}{\overline F (k+2)}\right)^{-1} - \left(\log\displaystyle\frac{\overline F (k)}{\overline F (k+1)}\right)^{-1}
 $$
 
-- $\lim_{n\rightarrow \infty} \Omega(F,n) = 0$, then F has light tails
-- $\lim_{n\rightarrow \infty} \Omega(F,n) = \alpha^{-1}$, then F has heavy tails
+-   $\lim_{n\rightarrow \infty} \Omega(F,n) = 0$, then F has light tails
+-   $\lim_{n\rightarrow \infty} \Omega(F,n) = \alpha^{-1}$, then F has heavy tails
 
-No result for $\Omega(F,k)$ diverging but taking $\alpha \downarrow 0$ gives:
-$$
+No result for $\Omega(F,k)$ diverging but taking $\alpha \downarrow 0$ gives: $$
 \lim_{n\rightarrow \infty} \Omega(F,n) = \infty
-$$
-Taking $\alpha \downarrow 0$ corresponds to a definition of super heavy tails (slow variation of survival function).
+$$ Taking $\alpha \downarrow 0$ corresponds to a definition of super heavy tails (slow variation of survival function).
 
 ## Numerical results for GPA ($\Omega(F,k)$)
 
@@ -456,6 +443,7 @@ ggplot(df, aes(k,value))+geom_line(aes(colour = a),linewidth=1) + scale_x_log10(
 ```
 
 ## Numerical results for GPA (slow variation)
+
 ```{r,echo=FALSE,message=FALSE,warning=FALSE,cache=FALSE}
 source('../scripts/omega.R')
 g = function(s,a=1){
@@ -492,42 +480,17 @@ p=ggplot(df, aes(k,value))+geom_line(aes(colour = a),linewidth=1)+scale_x_log10(
 p + labs(x=TeX('$k$'),y=TeX('$\\frac{1-F(tk)}{1-F (k)}$') )
 ```
 
-# Next Steps {.smaller .incremental}
+# Next Steps {.incremental}
 
-- Verify empirical results with theory
-- Consider adding a third component to the mixture
-- Modify GPA model to be more flexible
-  * Vertex and Edge deletion
-  * Random number of edges
-  * Changing attachment function $g$
-  
-  
-  
-  
----
+-   Verify empirical results with theory
+-   Consider adding a third component to the mixture
+-   Modify GPA model to be more flexible
+    -   Vertex and Edge deletion
+    -   Random number of edges
+    -   Changing attachment function $g$
 
----
 
 # References
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ```{r}
 #| context: server
@@ -668,11 +631,11 @@ reset_plot<- eventReactive(input$go,{
   
 output$mixplot<-renderPlot({
   source('../scripts/igp_functions.R')
-  par(mar=c(2,2,0,0))
+  par(mar=c(2,2,2,0))
   k=1:200
   phi=1-p_mix(input$v,1e4,0,input$a,input$xi,input$sig)
-  q = p_mix(k,input$v,phi,input$a,input$xi,input$sig)
-  plot(k,1-q,log='xy', type='l')
+  q = p_mix(k,input$v,input$phi,input$a,input$xi+0.01,input$sig)
+  plot(k,c(1,1-q[-length(q)]),log='xy', type='l', subtitle='Survival function log-log plot', xlab='Degree', ylab='1-F(x)', ylim=c(1e-3, 1))
 })
   
   

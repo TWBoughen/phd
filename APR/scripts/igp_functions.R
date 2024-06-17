@@ -389,7 +389,7 @@ mcmc_plot = function(dat, res_thinburn,ylim=c(1e-5, 1), xlim=c(1, max(dat[,1])),
   par(mar=mar)
   Fk = cumsum(dat[,2])/sum(dat[,2])
   plot(dat[,1], 1- c(0,Fk[-length(Fk)]), log='xy', pch=20,
-       xlab='Degree', ylab='Survival', xlim=xlim, ylim=ylim, xaxt=xaxt, yaxt=yaxt)
+       xlab='Degree', ylab='Survival', xlim=xlim, ylim=ylim, xaxt=xaxt, yaxt=yaxt,las=1)
   abline(v=res_thinburn$v, col = alpha('blue', alpha=0.004))
   polygon(c(x, rev(x)), c(1- c(0,cmfs_95[-length(cmfs_95)]), rev(1- c(0,cmfs_05[-length(cmfs_05)]))), col=alpha('gray', 0.5), lty=0)
   lines(x, 1-c(0,cmfs_mean[-length(cmfs_mean)]), col='red')
