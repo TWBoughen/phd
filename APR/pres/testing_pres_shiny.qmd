@@ -14,8 +14,8 @@ format:
     margin: 0.1
 editor: visual
 server: shiny
-bibliography: ../report/references.bib
-csl: ../report/diabetologia.csl
+bibliography: https://raw.githubusercontent.com/TWBoughen/phd/main/APR/report/references.bib
+csl: https://raw.githubusercontent.com/TWBoughen/phd/main/APR/report/diabetologia.csl
 engine: knitr
 nocite: |
   @reactome, @pajek,@jazz,@caida,@meta
@@ -384,7 +384,7 @@ Light tailed
 :::
 
 ::: {.fragment color="red"}
-What if $g(k)=k^\gamma$
+What if $g(k)=k^\gamma$ ?
 :::
 :::
 
@@ -635,7 +635,7 @@ output$mixplot<-renderPlot({
   k=1:200
   phi=1-p_mix(input$v,1e4,0,input$a,input$xi,input$sig)
   q = p_mix(k,input$v,input$phi,input$a,input$xi+0.01,input$sig)
-  plot(k,c(1,1-q[-length(q)]),log='xy', type='l', subtitle='Survival function log-log plot', xlab='Degree', ylab='1-F(x)', ylim=c(1e-3, 1))
+  plot(k,c(1,1-q[-length(q)]),log='xy', type='b', subtitle='Survival function log-log plot', xlab='Degree', ylab='1-F(x)', ylim=c(1e-3, 1), pch=20)
 })
   
   
