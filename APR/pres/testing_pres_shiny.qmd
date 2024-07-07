@@ -21,7 +21,7 @@ nocite: |
   @reactome, @pajek,@jazz,@caida,@meta
 ---
 
-## Barabási-Albert Model @Barabasi99 
+## Barabási-Albert Model @Barabasi99
 
 ```{css}
 .cell.panel-sidebar{
@@ -44,9 +44,8 @@ nocite: |
 
 ```
 
-::::{.columns}
-
-:::{.column width="25%"}
+::: columns
+::: {.column width="25%"}
 ```{r}
 library(igraph)
 library(visNetwork)
@@ -57,7 +56,7 @@ plotOutput('netplot2', height = "900px")
 ```
 :::
 
-:::{.column width="50%"}
+::: {.column width="50%"}
 **Initial State**
 
 Starting with graph of $m_0>m$ vertices.
@@ -72,9 +71,9 @@ Starting with graph of $m_0>m$ vertices.
 -   Generates a power law degree distribution.
 -   Implements a "rich get richer" scheme.
 :::
-::::
+:::
 
-## In Reality 
+## In Reality
 
 -   Power law degree distributions are rare @Broido_2019
 -   Despite its nice properties BA may not be best for real networks
@@ -123,7 +122,7 @@ p+facet_grid(cols=vars(from),scales="free", switch = 'y') + theme(strip.text.y.l
 Begin to investigate degree distribution of real networks using extreme value theory.
 :::
 
-## Extreme Value Theory 
+## Extreme Value Theory
 
 Common way to model peaks over threshold, $Y$, is to use the generalised Pareto (**GP**) distribution:
 
@@ -323,7 +322,7 @@ p+facet_grid(rows=vars(from),scales="free", switch = 'y') + theme(strip.text.y.l
 :::
 :::
 
-## General Preferential Attachment 
+## General Preferential Attachment
 
 **Initial State**
 
@@ -352,7 +351,7 @@ $$
 g(k) = k
 $$
 
-#### Degree Distribution @barabasibook 
+#### Degree Distribution @barabasibook
 
 $$
 f(k) = \frac{2m(m+1)}{k(k+1)(k+2)}
@@ -388,7 +387,7 @@ What if $g(k)=k^\gamma$ ?
 :::
 :::
 
-## Studying the GPA model 
+## Studying the GPA model
 
 Need a way to study a discrete distribution at the right tail. @shimura12
 
@@ -488,7 +487,6 @@ p + labs(x=TeX('$k$'),y=TeX('$\\frac{1-F(tk)}{1-F (k)}$') )
     -   Vertex and Edge deletion
     -   Random number of edges
     -   Changing attachment function $g$
-
 
 # References
 

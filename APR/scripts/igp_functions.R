@@ -102,6 +102,7 @@ d_mix = function(x,v,phi,a,xi,sig){
   }
   return(out)
 }
+
 #Cumulative density
 #could improve this by putting in the actual formula instead of sim. 
 p_mix = Vectorize(function(x,v,phi,a,xi,sig, lower=1){
@@ -319,15 +320,15 @@ mix_mcmc = function(iter, dat, init, params, covs,update_period = 100, debug=F,p
         #                        mean(tail(out$a,5*update_period)),
         #                        mean(tail(out$xi,5*update_period)),
         #                        mean(tail(out$sig,5*update_period)), lower=min(dat[,1])), col='blue')
-        for(i in 1:update_period){
-          iter_dat = tail(out,i)[1,]
-          abline(v= phi_to_u(dat, iter_dat$phi), col=alpha('darkgreen',0.05))
-          lines(dat[,1], 1-p_mix(dat[,1], phi_to_u(dat, iter_dat$phi),
-                                 iter_dat$phi,
-                                 iter_dat$a,
-                                 iter_dat$xi,
-                                 iter_dat$sig, lower=min(dat[,1])), col=alpha('red', 0.05))
-        }
+        # for(i in 1:update_period){
+        #   iter_dat = tail(out,i)[1,]
+        #   abline(v= phi_to_u(dat, iter_dat$phi), col=alpha('darkgreen',0.05))
+        #   lines(dat[,1], 1-p_mix(dat[,1], phi_to_u(dat, iter_dat$phi),
+        #                          iter_dat$phi,
+        #                          iter_dat$a,
+        #                          iter_dat$xi,
+        #                          iter_dat$sig, lower=min(dat[,1])), col=alpha('red', 0.05))
+        # }
         lines(dat[,1],1-cumsum(dat[,2])/sum(dat[,2]), col='blue')
         # lines(dat[,1], 1-p_mix(dat[,1],phi_to_u(dat, quantile(mean(tail(out$phi,5*update_period)),0.95)),
         #                        quantile(tail(out$phi,5*update_period),0.95),
@@ -348,6 +349,31 @@ mix_mcmc = function(iter, dat, init, params, covs,update_period = 100, debug=F,p
 }
 library(dplyr)
 library(coda)
+
+d_mix = function(x,v,phi,a,xi,sig, phi_type='pl'){
+  if(phi_type=='pl'){
+    phi=1-sum((min(x):(v+1))^-(a+1))/sum((min(x):1e4)^-(a+1))
+  }
+  out = x*0
+  if(sum(x<=v)>=1){
+    out[x<=v] = (1-phi) * x[x<=v]^-(a+1) / sum((min(x):v)^-(a+1))
+  }
+  if(sum(x>v)>=1){
+    p1 = pmax(x[x>v]*0, 1 + xi * (x[x>v]+1-v)/(sig+xi*v))
+    p2 = pmax(x[x>v]*0, 1 + xi * (x[x>v]-v)/(sig+xi*v))
+    pows2 = pows1 = x[x>v]*0 + 1
+    pows1[p1>0] = -1/xi
+    pows2[p2>0] = -1/xi
+    out[x>v] =  phi*( p2^pows2 - p1^pows1 )
+  }
+  return(out)
+}
+
+p_mix = Vectorize(function(x,v,phi,a,xi,sig, lower=1,phi_type='pl'){
+  # return(sum(d_mix(lower:x,v,phi,a,xi,sig)))
+ return(1-cumsum(d_mix(x,v,phi,a,xi,sig, phi_type)))
+}, vectorize.args = c('x', 'v', 'phi', 'a', 'xi', 'sig'))
+
 # -------------------------------------------------------------------------
 
 #mcmc wrapper

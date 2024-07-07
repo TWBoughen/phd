@@ -5,7 +5,7 @@ library(doSNOW)
 
 # loading data ------------------------------------------------------------
 
-jazz_raw = read.csv('../data/jazz/out.arenas-jazz',sep='\t',header = F)[-1,]
+jazz_raw = read.csv('../data/data_for_mcmc/out.jazz',sep='\t',header = F)[-1,]
 jazz = data.frame(table(table(unlist(jazz_raw))))
 names(jazz) = c('x','Freq')
 jazz[,1] = as.numeric(jazz[,1])
@@ -138,7 +138,7 @@ write.csv(as_data_frame(G,what='edges'), file='../data/data_for_mcmc/out.UAsim',
 
 
 
-res_ua = mix_mcmc_wrap(dat_list[[7]][-1,], iter=3e4, burn.in=3e6, update_period = 1e3, plotting=T)
+res_ua = mix_mcmc_wrap(dat_list[[3]][-1,], iter=3e4, burn.in=3e6, update_period = 1e2, plotting=T)
 
 dev.new()
 mcmc_plot(res_meta$dat, res_meta$res[-(1:1e4),])
