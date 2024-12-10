@@ -1,0 +1,10 @@
+---
+title: "Testing"
+author: "Thomas Boughen"
+format: pdf
+editor: visual
+---
+
+## Intro
+
+This document serves as a test for hosting my documents on github.
