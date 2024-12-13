@@ -1,0 +1,89 @@
+---
+title: "Model Comparison"
+author: "Thomas Boughen"
+format: html
+server: shiny
+---
+
+
+
+```{r}
+sliderInput("v", "Threshold", 
+            min = 1, max = 200, value = 30)
+sliderInput("a", "Power Law Exponent", 
+            min = 0, max = 4, value = 2, step=0.01)
+sliderInput("xi", "Shape", 
+            min = -2, max = 2, value = 1, step=0.01)
+sliderInput("sig", "Scale", 
+            min = 1, max = 200, value = 1, step=0.01)
+sliderInput("phi", "Exceedance Prob", 
+            min = 0.01, max = 0.99, value = 0.05, step=0.01)
+plotOutput("distPlot")
+```
+
+```{r}
+#| context: server
+
+source('../../APR/scripts/igp_functions.R')
+dat_list=konect_to_df_dir('../../APR/data/data_for_mcmc',lower=1)
+
+output$distPlot <- renderPlot({
+  
+  
+  
+  d_mix = function(x,v,phi,a,xi,sig, phi_type='pl'){
+  if(phi_type=='pl'){
+    phi=1-sum((min(x):(v+1))^-(a+1))/sum((min(x):1e4)^-(a+1))
+  }
+  out = x*0
+  if(sum(x<=v)>=1){
+    out[x<=v] = (1-phi) * x[x<=v]^-(a+1) / sum((min(x):v)^-(a+1))
+  }
+  if(sum(x>v)>=1){
+    p1 = pmax(x[x>v]*0, 1 + xi * (x[x>v]+1-v)/(sig+xi*v))
+    p2 = pmax(x[x>v]*0, 1 + xi * (x[x>v]-v)/(sig+xi*v))
+    pows2 = pows1 = x[x>v]*0 + 1
+    pows1[p1>0] = -1/xi
+    pows2[p2>0] = -1/xi
+    out[x>v] =  phi*( p2^pows2 - p1^pows1 )
+  }
+  return(out)
+}
+  p_mix = Vectorize(function(x,v,phi,a,xi,sig, lower=1,phi_type='pl'){
+  # return(sum(d_mix(lower:x,v,phi,a,xi,sig)))
+  if(phi_type=='pl'){
+    phi=1-sum((min(x):(v+1))^-(a+1))/sum((min(x):1e4)^-(a+1))
+  }
+  if(x<=v){
+    return((1-phi)*sum((lower:x)^(-a-1))/sum((lower:v)^(-a-1)))
+  }
+  else if(x>v){
+    p1 =  max(0,1+xi * (x+1-v)/(sig+xi*v))
+    p2 = max(0,1+xi * (v+1-v)/(sig+xi*v))
+    pows = c(1,1)
+    pows[c(p1,p2)>0] = -1/xi
+    return(1-phi*p1^pows[1])
+  }
+  else{
+    return(0)
+  }
+}, vectorize.args = c('x', 'v', 'phi', 'a', 'xi', 'sig'))
+  
+  x=1:200
+  v = 40
+  phi=0.05
+  a = 2
+  xi = 1
+  sig=20
+  y=1-cumsum(d_mix(x,input$v,phi,input$a,input$xi,input$sig,phi_type = 'pl'))
+  
+  plot(x, c(1,y[-length(y)]), log='xy', type='l', col='red',ylim=c(1e-5,1))
+  lines(x, c(1,(1-cumsum(d_mix(x,input$v,input$phi,input$a,input$xi,input$sig))[-length(y)])))
+  dat=dat_list[[5]][-1,]
+  points(dat$x-1, c(1,(1-cumsum(dat$Freq)/sum(dat$Freq))[-length(dat$Freq)]))
+})
+
+
+
+
+```
