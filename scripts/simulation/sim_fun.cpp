@@ -1,13 +1,7 @@
 #include <Rcpp.h>
 using namespace Rcpp;
-
-// Function to calculate w_ij
 // [[Rcpp::export]]
-double w_ij(double x, int i, int j) {
-  return pow(i*x+1.0,1.0/j);
-}
-// Modify this function to change the behavior of the model it must be vectorized on x
-
+double w_ij(double x, int i, int j){ return pow(i*x+1.0,j/4.0);}
 
 // Function to calculate w_i
 // [[Rcpp::export]]
@@ -18,6 +12,7 @@ double w_i(double x, int i, int ntype) {
   }
   return sum_wij;
 }
+
 
 // Function to calculate I_i
 // [[Rcpp::export]]
