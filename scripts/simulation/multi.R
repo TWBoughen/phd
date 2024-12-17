@@ -1,7 +1,7 @@
 # -------------------------------------------------------------------------
 
 library(Rcpp)
-compute_mat_eig = function(theta, ntype,xmax=1e3){
+compute_mat_eig = function(theta, ntype,xmax=5e3){
   mat = matrix(nrow=ntype, ncol=ntype)
   for(i in 1:ntype){
     for(j in 1:ntype){
@@ -11,7 +11,7 @@ compute_mat_eig = function(theta, ntype,xmax=1e3){
   eig = eigen(mat)
   return(eig)
 }
-perron_optim = Vectorize(function(theta, ntype,xmax=1e3){
+perron_optim = Vectorize(function(theta, ntype,xmax=5e3){
   mat = matrix(nrow=ntype, ncol=ntype)
   for(i in 1:ntype){
     for(j in 1:ntype){
@@ -81,8 +81,10 @@ sim_mt = function(n,ntype=2,quiet=T){
 #w_ij_string must be written using valid Rcpp functions  
 
 ntype <- 2
-w_ij_string = "pow(i*x + 1.0,1.0)"
+w_ij_string = "pow(x+1.0,i/2.0)"
 set_pref(w_ij_string)
+
+out = sim_mt(1e3, ntype, quiet=F)
 
 opt = optim(3,perron_optim, ntype=ntype,method='Brent', lower = 0.1, upper=15)
 alpha = opt$par
@@ -103,17 +105,13 @@ for(i in 1:ntype){
   lines(0:(n-1) + 1, S[i,], col=i+1)
 }
 legend('topright', legend = paste0(c(1:ntype),' : ',round(u /sum(u),2)), fill = 1:ntype + 1)
-out = sim_mt(5e3, ntype, quiet=F)
+# legend('bottomleft', legend = paste0(c(1:ntype),':',))
+
 points(twbfn::deg_surv(out$d + 1), pch=20, col=1)
 points(twbfn::deg_surv(out$d[out$t==1] + 1),pch=20,col=2)
 points(twbfn::deg_surv(out$d[out$t==2] + 1),pch=20,col=3)
 
-
-
-
-
-
-
+as.numeric(table(out$t)/length(out$t))
 
 
 
