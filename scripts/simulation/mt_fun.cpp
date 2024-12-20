@@ -1,7 +1,7 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 // [[Rcpp::export]]
-double w_ij(double x, int i, int j){ return pow(i*x+1.0,1.0);}
+double w_ij(double x, int i, int j){ return pow(x + j,1.0/i);}
 
 // Function to calculate w_i
 // [[Rcpp::export]]

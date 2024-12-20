@@ -5,7 +5,7 @@ compute_mat_eig = function(theta, ntype,xmax=5e3){
   mat = matrix(nrow=ntype, ncol=ntype)
   for(i in 1:ntype){
     for(j in 1:ntype){
-      mat[i,j] = compute_sum(theta, i, j, ntype, x_max)
+      mat[i,j] = compute_sum(theta, i, j, ntype, xmax)
     }
   }
   eig = eigen(mat)
@@ -15,12 +15,13 @@ perron_optim = Vectorize(function(theta, ntype,xmax=5e3){
   mat = matrix(nrow=ntype, ncol=ntype)
   for(i in 1:ntype){
     for(j in 1:ntype){
-      mat[i,j] = compute_sum(theta, i, j, ntype, x_max)
+      mat[i,j] = compute_sum(theta, i, j, ntype, xmax)
     }
   }
   eig = eigen(mat)
   return(abs(eig$values[1]-1))
 },vectorize.args='theta')
+
 set_pref = function(pref_string){
   w_ij_full_string = paste0("double w_ij(double x, int i, int j){ return ",pref_string,';}')
   contents = readLines('nopref.cpp')
@@ -47,18 +48,17 @@ set_pref = function(pref_string){
 get_weights = function(degrees, types, ntype=2){
   node_weights = c()
   type_weights = numeric(ntype)
-  
   for(i in 1:length(degrees)){
     node_weights = c(node_weights,w_i(degrees[i],types[i],ntype))
     for(j in 1:ntype){
-      type_weights[j] = type_weights[j] + w_ij(degrees[i],types[i],j )
+      type_weights[j] = type_weights[j] + w_ij(degrees[i],j,types[i])
     }
   }
   return(list(type = type_weights, node=node_weights))
 }
 sim_mt = function(n,ntype=2,quiet=T){
-  types = c(1,2)
-  degrees = c(1,1)
+  types = c(1)
+  degrees = c(0)
   for(i in 1:n){
     if(!quiet) message(i)
     #decide on type
@@ -80,18 +80,18 @@ sim_mt = function(n,ntype=2,quiet=T){
 
 #w_ij_string must be written using valid Rcpp functions  
 
-ntype <- 2
-w_ij_string = "pow(x+1.0,i/2.0)"
+ntype <- 3
+w_ij_string = "pow(x + j,1.0/i)"
 set_pref(w_ij_string)
 
-out = sim_mt(1e3, ntype, quiet=F)
+out = sim_mt(2e3, ntype, quiet=F)
 
 opt = optim(3,perron_optim, ntype=ntype,method='Brent', lower = 0.1, upper=15)
 alpha = opt$par
 u = compute_mat_eig(alpha, ntype)$vectors[,1]
 
 #conditional survivals
-n=1000
+n=2000
 S = matrix(ncol = n, nrow=ntype)
 S_tot = matrix(ncol=n, nrow=1)
 for(x in 0:(n-1)){
@@ -108,34 +108,33 @@ legend('topright', legend = paste0(c(1:ntype),' : ',round(u /sum(u),2)), fill = 
 # legend('bottomleft', legend = paste0(c(1:ntype),':',))
 
 points(twbfn::deg_surv(out$d + 1), pch=20, col=1)
-points(twbfn::deg_surv(out$d[out$t==1] + 1),pch=20,col=2)
-points(twbfn::deg_surv(out$d[out$t==2] + 1),pch=20,col=3)
+for(i in 1:ntype){
+  points(twbfn::deg_surv(out$d[out$t==i] + 1),pch=20,col=i+1)
+}
 
 as.numeric(table(out$t)/length(out$t))
 
 
 
 
+opt = optim(3,perron_optim, ntype=ntype,method='Brent', lower = 0.1, upper=15)
+
+opt2 = nlm(perron_optim,3,ntype=ntype)
 
 
+perron_optim(0.997999,ntype)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+perron_optim = Vectorize(function(theta, ntype,xmax=5e3){
+  mat = matrix(nrow=ntype, ncol=ntype)
+  for(i in 1:ntype){
+    for(j in 1:ntype){
+      mat[i,j] = compute_sum(theta, i, j, ntype, xmax)
+    }
+  }
+  eig = eigen(mat)
+  return(abs(eig$values[1]-1))
+},vectorize.args='theta')
 
 
 
