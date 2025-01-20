@@ -1,0 +1,360 @@
+---
+title: "Analysing tail behaviour of network generative models"
+format: 
+  revealjs:
+    theme: simple
+editor: source
+---
+
+```{r, message=FALSE,warning=FALSE, error=FALSE}
+library(igraph)
+library(ggplot2)
+library(ggraph)
+library(latex2exp)
+
+
+
+
+
+```
+
+
+```{r,warning=FALSE, message=FALSE, error=FALSE}
+vidal = read.csv('../degreecounts/maayan-vidal.csv')
+names(vidal) = c('degree','count')
+yt = read.csv('../degreecounts/com-youtube.csv')
+names(yt) = c('degree','count')
+dub = read.csv('../degreecounts/infect-dublin.edges', sep=' ')
+G = igraph::graph_from_edgelist(as.matrix(dub))
+dub = twbfn::deg_count(igraph::degree(G))
+
+
+pvidal = ggplot(data=vidal, aes(x=degree, y=1-cumsum(count)/sum(count))) + geom_point()+
+  ylab(TeX('$\\bar{F}(k)$'))+ xlab(TeX('Degree ($k$)')) + scale_x_log10() + scale_y_log10()+ theme(aspect.ratio = 1) +ggtitle('Protein-protein Interaction')
+pyt = ggplot(data=yt, aes(x=degree, y=1-cumsum(count)/sum(count))) + geom_point()+
+  ylab(TeX('$\\bar{F}(k)$'))+ xlab(TeX('Degree ($k$)')) + scale_x_log10() + scale_y_log10()+ theme(aspect.ratio = 1) + ggtitle('YouTube Friendships')
+pdub = ggplot(data=dub, aes(x=degree, y=1-cumsum(count)/sum(count))) + geom_point()+
+  ylab(TeX('$\\bar{F}(k)$'))+ xlab(TeX('Degree ($k$)')) + scale_x_log10() + scale_y_log10()+ theme(aspect.ratio = 1) + ggtitle('Human Contact')
+
+```
+
+## What is a network?
+
+```{r, message=FALSE,warning=FALSE, error=FALSE}
+set.seed(123)
+G = sample_pa(n=4, p=0, m=2)
+edge.labels = numeric(length(E(G)))
+edge.labels[1] = 'Directed edge'
+edge.labels[2] = 'Undirected edge'
+edge.labels[edge.labels==0] = ''
+
+
+
+ggraph(G, layout='kk') +
+  geom_node_point(size = 17, color='darkred') + geom_node_text(aes(label=degree(G)), color='white',size=10)+
+  geom_edge_link(arrow = arrow(length = unit((edge.labels=='Directed edge')*4, 'mm')),
+                 start_cap = circle(12, 'mm'),
+                  end_cap = circle(12, 'mm'),
+                 aes(label=edge.labels),
+                 angle_calc = 'along',
+                   label_dodge = unit(5, 'mm'),label_size=7,width=2) +
+  geom_node_point(aes(x=-0.6,y=0.8), size=17, color='darkred')+
+  geom_node_text(aes(x=-.6,y=0.8, label='k'), color='white', size=10)+
+  geom_node_text(aes(x=-0.45,y=0.65, label='Node with degree k'), size=7)+
+  theme_void() + theme(aspect.ratio=0.66)
+```
+
+
+## Why study networks?
+
+:::{.fragment}
+
+Networks appear in many fields of research
+
+- Epidemiology (contact networks)
+- Social Networks (Twitter followers)
+- Biochemistry (protein-protein interactions)
+
+:::
+
+:::{.fragment}
+
+Studying how these networks grow may allow us to
+
+- Predict how the network will change in future
+- Understand how the individuals in the network function
+
+:::
+
+## Rich get richer model
+
+
+:::{.columns}
+
+::::{.column width='50%'}
+```{=html}
+<iframe width="780" height="500" src="index.html" scrolling="no" title="Webpage example"></iframe>
+```
+::::
+
+::::{.column width='50%'}
+
+### Barabási-Albert Model
+1. Add a vertex
+
+2. Connect to $m$ vertices with probability:
+  $$
+  \pi(u) \propto k_u
+  $$
+
+::::
+:::
+
+## Degree Distribution
+
+```{r}
+m = 1
+x = m:50
+p = (2*m*(m+1)) / (x*(x+1)*(x+2))
+P = 1-cumsum(p)
+
+df = data.frame(x=x, p=p, P=P)
+
+p_raw = ggplot(data=df, aes(x=x)) + geom_point(aes(y=p), color='darkred') + 
+  ylab(TeX('$f(k)$')) + ylim(0,1) + xlab(TeX('Degree ($k$)'))
+P_raw = ggplot(data=df, aes(x=x)) + geom_point(aes(y=P), color='darkred') +
+  ylab(TeX('$\\bar{F}(k)$'))+ ylim(0,1)+ xlab(TeX('Degree ($k$)'))
+
+P_raw
+
+```
+
+## Degree Distribution
+
+```{r}
+ggplot(data=df, aes(x=x)) + geom_point(aes(y=P), color='darkred') +
+  ylab(TeX('$\\bar{F}(k)$'))+ xlab(TeX('Degree ($k$)')) + scale_x_log10() + scale_y_log10(limits=c(1e-4,1))
+```
+
+## Real Data
+
+
+```{r,warning=FALSE, message=FALSE, error=FALSE}
+gridExtra::grid.arrange(pvidal, pyt, pdub, nrow=1)
+```
+
+[- Largest degrees deviate from power law]{.fragment}
+
+[- These vertices are often the most influential]{.fragment}
+
+## A more flexible model 
+
+### Barabási-Albert Model
+
+1. Add a vertex
+
+2. Connect to $m$ vertices with probability:
+  $$
+  \pi(u) \propto k_u
+  $$
+
+## A more flexible model 
+
+### Barabási-Albert Model
+
+1. Add a vertex
+
+2. Connect to $m$ vertices with probability:
+  $$
+  \pi(u) \propto \color{red}{k_u}
+  $$
+
+## A more flexible model 
+
+### General Preferential Attachment
+
+1. Add a vertex
+2. Connect to [$m$]{.fragment .highlight-red fragment-index=2} vertices with probability:
+  $$
+  \pi(u) \propto \color{red}{b(k_u)}
+  $$
+
+[Unable to obtain an expression for the degree distribution]{.fragment .fade-in fragment-index=1}
+
+## A more flexible model
+
+:::{.columns}
+
+::::{.column width="50%"}
+
+```{=html}
+<iframe width="780" height="500" src="gpa.html" scrolling="no" title="Webpage example"></iframe>
+```
+
+::::
+::::{.column width="50%"}
+### General Preferential Attachment Tree
+
+1. Add a vertex
+2. Connect to <span style="color:red;">one</span> vertex with probability:
+  $$
+  \pi(u) \propto \color{red}{b(k_u)}
+  $$
+::::
+  
+:::
+
+[It *is* possible obtain an expression for the degree distribution]{.fragment .fade-in}
+
+
+## A basic choice
+
+:::{.columns}
+
+::::{.column width="50%"}
+```{=html}
+<iframe width="780" height="500" src="aplot_2.gif" scrolling="no" title="Webpage example"></iframe>
+```
+::::
+::::{.column width="50%"}
+
+$$
+b(k) = k^\alpha,\qquad \alpha \ge 0
+$$
+
+:::::{.fragment .fade-in fragment-index=1}
+
+- $\alpha=1$:   BA model
+
+:::::
+
+:::::{.fragment .fade-in fragment-index=2}
+
+- $\alpha>1$:  winner takes all
+
+:::::
+
+:::::{.fragment .fade-in fragment-index=3}
+
+- $\alpha<1$: lose power law behaviour
+
+:::::
+
+::::
+:::
+
+[We need something more complex.]{.fragment .fade-in fragment-index=4}
+
+
+## Another Choice
+
+If we let
+
+
+$$
+b(k) = \begin{cases}
+k^\alpha,&k<T\\
+T^\alpha + \beta(k-T),&k\ge T
+\end{cases}
+$$
+
+:::{.fragment}
+For $\alpha,\beta,T\ge0$.
+
+- $\beta>0$ gives varied power law behaviour after $T$
+- $\beta=0$ loses power law behaviour after $T$
+
+:::
+
+
+## Degree Distribution
+
+The model is much more flexible
+
+:::{.columns}
+::::{.column width="33%"}
+```{=html}
+<iframe width="300" height="300" src="aplot.gif" scrolling="no" title="Webpage example"></iframe>
+```
+::::
+::::{.column width="33%"}
+```{=html}
+<iframe width="300" height="300" src="bplot.gif" scrolling="no" title="Webpage example"></iframe>
+```
+::::
+::::{.column width="33%"}
+```{=html}
+<iframe width="300" height="300" src="n0plot.gif" scrolling="no" title="Webpage example"></iframe>
+```
+::::
+:::
+
+[- Little effect on the smallest degrees]{.fragment}
+
+[- This makes it hard to fit to real data]{.fragment}
+
+[- Most real networks are not trees]{.fragment}
+
+
+## The next steps
+
+:::{.columns}
+
+::::{.column width="50%"}
+```{=html}
+<iframe width="1250" height="1250" src="mtgpa.html" scrolling="yes" title="Webpage example"></iframe>
+```
+::::
+
+::::{.column width="50%"}
+
+:::::{.fragment}
+
+- Like the BA model, are the results similar for $m>1$?
+
+:::::
+
+:::::{.fragment}
+
+- How about a random number of edges?
+
+:::::
+
+:::::{.fragment}
+- Other modifications?
+  - Multiple types
+  - Vertex death
+  
+:::::
+
+::::
+
+:::
+
+
+## Thanks for listening
+
+### References
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
