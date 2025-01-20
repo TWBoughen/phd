@@ -211,8 +211,6 @@ gridExtra::grid.arrange(pvidal, pyt, pdub, nrow=1)
   
 :::
 
-[It *is* possible obtain an expression for the degree distribution]{.fragment .fade-in}
-
 
 ## A basic choice
 
@@ -250,7 +248,7 @@ $$
 ::::
 :::
 
-[We need something more complex.]{.fragment .fade-in fragment-index=4}
+[We need something more flexible]{.fragment .fade-in fragment-index=4}
 
 
 ## Another Choice
@@ -276,7 +274,7 @@ For $\alpha,\beta,T\ge0$.
 
 ## Degree Distribution
 
-The model is much more flexible
+The model is much more flexible and looks more realistic
 
 :::{.columns}
 ::::{.column width="33%"}
