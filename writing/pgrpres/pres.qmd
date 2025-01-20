@@ -1,9 +1,12 @@
 ---
 title: "Analysing tail behaviour of network generative models"
+author: Thomas Boughen
+institute: Newcastle University
 format: 
   revealjs:
     theme: simple
 editor: source
+bibliography: refs.bib
 ---
 
 ```{r, message=FALSE,warning=FALSE, error=FALSE}
@@ -99,10 +102,10 @@ Studying how these networks grow may allow us to
 
 ::::{.column width='50%'}
 
-### Barabási-Albert Model
-1. Add a vertex
+### Barabási-Albert Model^[@Barabasi99]
+1. **Growth:** Add a vertex
 
-2. Connect to $m$ vertices with probability:
+2. **Preferential attachment:** Connect to $m$ vertices with probability:
   $$
   \pi(u) \propto k_u
   $$
@@ -151,35 +154,39 @@ gridExtra::grid.arrange(pvidal, pyt, pdub, nrow=1)
 
 ### Barabási-Albert Model
 
-1. Add a vertex
+1. **Growth:** Add a vertex
 
-2. Connect to $m$ vertices with probability:
+2.**Preferential Attachment:** Connect to $m$ vertices with probability:
   $$
   \pi(u) \propto k_u
   $$
 
 ## A more flexible model 
 
-### Barabási-Albert Model
+### Barabási-Albert Model 
 
-1. Add a vertex
+1. **Growth:** Add a vertex
 
-2. Connect to $m$ vertices with probability:
+2.**Preferential Attachment:** Connect to $m$ vertices with probability:
   $$
   \pi(u) \propto \color{red}{k_u}
   $$
 
+
+
 ## A more flexible model 
 
-### General Preferential Attachment
+### General Preferential Attachment 
 
-1. Add a vertex
-2. Connect to [$m$]{.fragment .highlight-red fragment-index=2} vertices with probability:
+1. **Growth:** Add a vertex
+2. **Preferential Attachment:**Connect to [$m$]{.fragment .highlight-red fragment-index=2} vertices with probability:
   $$
   \pi(u) \propto \color{red}{b(k_u)}
   $$
 
 [Unable to obtain an expression for the degree distribution]{.fragment .fade-in fragment-index=1}
+
+
 
 ## A more flexible model
 
@@ -192,11 +199,11 @@ gridExtra::grid.arrange(pvidal, pyt, pdub, nrow=1)
 ```
 
 ::::
-::::{.column width="50%"}
-### General Preferential Attachment Tree
+::::{.column width="50%"} 
+### General Preferential Attachment Tree ^[@rudas]
 
-1. Add a vertex
-2. Connect to <span style="color:red;">one</span> vertex with probability:
+1. **Growth:** Add a vertex
+2. **Preferential Attachment:** Connect to <span style="color:red;">one</span> vertex with probability:
   $$
   \pi(u) \propto \color{red}{b(k_u)}
   $$
@@ -321,9 +328,9 @@ The model is much more flexible
 :::::
 
 :::::{.fragment}
-- Other modifications?
-  - Multiple types
-  - Vertex death
+- Other modifications? ^[@rosengren, @deijfen]
+  - Multiple types 
+  - Vertex death 
   
 :::::
 

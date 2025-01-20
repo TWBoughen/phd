@@ -10,6 +10,7 @@
 <link href="pres_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.4.555">
 
+  <meta name="author" content="Thomas Boughen">
   <title>Analysing tail behaviour of network generative models</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -28,7 +29,27 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
-  </style>
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
   <link rel="stylesheet" href="pres_files/libs/revealjs/dist/theme/quarto.css">
   <link href="pres_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="pres_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
@@ -328,6 +349,14 @@
   <h1 class="title">Analysing tail behaviour of network generative models</h1>
 
 <div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Thomas Boughen 
+</div>
+        <p class="quarto-title-affiliation">
+            Newcastle University
+          </p>
+    </div>
 </div>
 
 </section>
@@ -359,16 +388,16 @@
 <div class="column" style="width:50%;">
 <iframe width="780" height="500" src="index.html" scrolling="no" title="Webpage example"></iframe>
 </div><div class="column" style="width:50%;">
-<h3 id="barabási-albert-model">Barabási-Albert Model</h3>
+<h3 id="barabási-albert-model">Barabási-Albert Model<sup>1</sup></h3>
 <ol type="1">
-<li><p>Add a vertex</p></li>
-<li><p>Connect to <span class="math inline">\(m\)</span> vertices with probability: <span class="math display">\[
+<li><p><strong>Growth:</strong> Add a vertex</p></li>
+<li><p><strong>Preferential attachment:</strong> Connect to <span class="math inline">\(m\)</span> vertices with probability: <span class="math display">\[
   \pi(u) \propto k_u
   \]</span></p></li>
 </ol>
 </div>
 </div>
-</section>
+<aside><ol class="aside-footnotes"><li id="fn1"><p><span class="citation" data-cites="Barabasi99">Barabási and Albert (<a href="#/thanks-for-listening" role="doc-biblioref" onclick="">1999</a>)</span></p></li></ol></aside></section>
 <section id="degree-distribution" class="slide level2">
 <h2>Degree Distribution</h2>
 
@@ -387,28 +416,28 @@
 <h2>A more flexible model</h2>
 <h3 id="barabási-albert-model-1">Barabási-Albert Model</h3>
 <ol type="1">
-<li><p>Add a vertex</p></li>
-<li><p>Connect to <span class="math inline">\(m\)</span> vertices with probability: <span class="math display">\[
-  \pi(u) \propto k_u
-  \]</span></p></li>
+<li><strong>Growth:</strong> Add a vertex</li>
 </ol>
+<p>2.<strong>Preferential Attachment:</strong> Connect to <span class="math inline">\(m\)</span> vertices with probability: <span class="math display">\[
+  \pi(u) \propto k_u
+  \]</span></p>
 </section>
 <section id="a-more-flexible-model-1" class="slide level2">
 <h2>A more flexible model</h2>
 <h3 id="barabási-albert-model-2">Barabási-Albert Model</h3>
 <ol type="1">
-<li><p>Add a vertex</p></li>
-<li><p>Connect to <span class="math inline">\(m\)</span> vertices with probability: <span class="math display">\[
-  \pi(u) \propto \color{red}{k_u}
-  \]</span></p></li>
+<li><strong>Growth:</strong> Add a vertex</li>
 </ol>
+<p>2.<strong>Preferential Attachment:</strong> Connect to <span class="math inline">\(m\)</span> vertices with probability: <span class="math display">\[
+  \pi(u) \propto \color{red}{k_u}
+  \]</span></p>
 </section>
 <section id="a-more-flexible-model-2" class="slide level2">
 <h2>A more flexible model</h2>
 <h3 id="general-preferential-attachment">General Preferential Attachment</h3>
 <ol type="1">
-<li>Add a vertex</li>
-<li>Connect to <span class="fragment highlight-red" data-fragment-index="2"><span class="math inline">\(m\)</span></span> vertices with probability: <span class="math display">\[
+<li><strong>Growth:</strong> Add a vertex</li>
+<li><strong>Preferential Attachment:</strong>Connect to <span class="fragment highlight-red" data-fragment-index="2"><span class="math inline">\(m\)</span></span> vertices with probability: <span class="math display">\[
   \pi(u) \propto \color{red}{b(k_u)}
   \]</span></li>
 </ol>
@@ -420,17 +449,17 @@
 <div class="column" style="width:50%;">
 <iframe width="780" height="500" src="gpa.html" scrolling="no" title="Webpage example"></iframe>
 </div><div class="column" style="width:50%;">
-<h3 id="general-preferential-attachment-tree">General Preferential Attachment Tree</h3>
+<h3 id="general-preferential-attachment-tree">General Preferential Attachment Tree <sup>1</sup></h3>
 <ol type="1">
-<li>Add a vertex</li>
-<li>Connect to <span style="color:red;">one</span> vertex with probability: <span class="math display">\[
+<li><strong>Growth:</strong> Add a vertex</li>
+<li><strong>Preferential Attachment:</strong> Connect to <span style="color:red;">one</span> vertex with probability: <span class="math display">\[
   \pi(u) \propto \color{red}{b(k_u)}
   \]</span></li>
 </ol>
 </div>
 </div>
 <p><span class="fragment fade-in">It <em>is</em> possible obtain an expression for the degree distribution</span></p>
-</section>
+<aside><ol class="aside-footnotes"><li id="fn2"><p><span class="citation" data-cites="rudas">Rudas, Tóth, and Valkó (<a href="#/thanks-for-listening" role="doc-biblioref" onclick="">2007</a>)</span></p></li></ol></aside></section>
 <section id="a-basic-choice" class="slide level2">
 <h2>A basic choice</h2>
 <div class="columns">
@@ -510,7 +539,7 @@ T^\alpha + \beta(k-T),&amp;k\ge T
 </div>
 <div class="fragment">
 <ul>
-<li>Other modifications?
+<li>Other modifications? <sup>1</sup>
 <ul>
 <li>Multiple types</li>
 <li>Vertex death</li>
@@ -519,8 +548,8 @@ T^\alpha + \beta(k-T),&amp;k\ge T
 </div>
 </div>
 </div>
-</section>
-<section id="thanks-for-listening" class="slide level2">
+<aside><ol class="aside-footnotes"><li id="fn3"><p><span class="citation" data-cites="rosengren">Rosengren (<a href="#/thanks-for-listening" role="doc-biblioref" onclick="">2017</a>)</span>, <span class="citation" data-cites="deijfen">Deijfen (<a href="#/thanks-for-listening" role="doc-biblioref" onclick="">2010</a>)</span></p></li></ol></aside></section>
+<section id="thanks-for-listening" class="slide level2 smaller scrollable">
 <h2>Thanks for listening</h2>
 <h3 id="references">References</h3>
 <div class="quarto-auto-generated-content">
@@ -528,7 +557,22 @@ T^\alpha + \beta(k-T),&amp;k\ge T
 
 </div>
 </div>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-Barabasi99" class="csl-entry" role="listitem">
+Barabási, Albert-László, and Réka Albert. 1999. <span>“Emergence of Scaling in Random Networks.”</span> <em>Science</em> 286 (5439): 509–12. <a href="https://doi.org/10.1126/science.286.5439.509">https://doi.org/10.1126/science.286.5439.509</a>.
+</div>
+<div id="ref-deijfen" class="csl-entry" role="listitem">
+Deijfen, Maria. 2010. <span>“RANDOM NETWORKS WITH PREFERENTIAL GROWTH AND VERTEX DEATH.”</span> <em>Journal of Applied Probability</em> 47 (4): 1150–63. <a href="http://www.jstor.org/stable/29777433">http://www.jstor.org/stable/29777433</a>.
+</div>
+<div id="ref-rosengren" class="csl-entry" role="listitem">
+Rosengren, Sebastian. 2017. <span>“<span class="nocase">A Multi-type Preferential Attachment Tree</span>.”</span> <em>arXiv e-Prints</em>, April, arXiv:1704.03256. <a href="https://doi.org/10.48550/arXiv.1704.03256">https://doi.org/10.48550/arXiv.1704.03256</a>.
+</div>
+<div id="ref-rudas" class="csl-entry" role="listitem">
+Rudas, Anna, Bálint Tóth, and Benedek Valkó. 2007. <span>“Random Trees and General Branching Processes.”</span> <em>Random Structures &amp; Algorithms</em> 31 (2): 186–202. https://doi.org/<a href="https://doi.org/10.1002/rsa.20137">https://doi.org/10.1002/rsa.20137</a>.
+</div>
+</div>
 </section>
+
     </div>
   </div>
 
