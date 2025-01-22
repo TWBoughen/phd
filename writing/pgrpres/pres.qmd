@@ -1,7 +1,7 @@
 ---
 title: "Analysing tail behaviour of network generative models"
 author: Thomas Boughen
-institute: Newcastle University
+institute: "Maths, Stats and Physics"
 format: 
   revealjs:
     theme: simple
@@ -14,11 +14,6 @@ library(igraph)
 library(ggplot2)
 library(ggraph)
 library(latex2exp)
-
-
-
-
-
 ```
 
 
@@ -32,65 +27,32 @@ G = igraph::graph_from_edgelist(as.matrix(dub))
 dub = twbfn::deg_count(igraph::degree(G))
 
 
-pvidal = ggplot(data=vidal, aes(x=degree, y=1-cumsum(count)/sum(count))) + geom_point()+
+pvidal = ggplot(data=vidal, aes(x=degree, y=1-cumsum(count)/sum(count))) + geom_point(colour='darkred')+
   ylab(TeX('$\\bar{F}(k)$'))+ xlab(TeX('Degree ($k$)')) + scale_x_log10() + scale_y_log10()+ theme(aspect.ratio = 1) +ggtitle('Protein-protein Interaction')
-pyt = ggplot(data=yt, aes(x=degree, y=1-cumsum(count)/sum(count))) + geom_point()+
+pyt = ggplot(data=yt, aes(x=degree, y=1-cumsum(count)/sum(count))) + geom_point(colour='darkred')+
   ylab(TeX('$\\bar{F}(k)$'))+ xlab(TeX('Degree ($k$)')) + scale_x_log10() + scale_y_log10()+ theme(aspect.ratio = 1) + ggtitle('YouTube Friendships')
-pdub = ggplot(data=dub, aes(x=degree, y=1-cumsum(count)/sum(count))) + geom_point()+
+pdub = ggplot(data=dub, aes(x=degree, y=1-cumsum(count)/sum(count))) + geom_point(colour='darkred')+
   ylab(TeX('$\\bar{F}(k)$'))+ xlab(TeX('Degree ($k$)')) + scale_x_log10() + scale_y_log10()+ theme(aspect.ratio = 1) + ggtitle('Human Contact')
 
 ```
 
-## What is a network?
-
-```{r, message=FALSE,warning=FALSE, error=FALSE}
-set.seed(123)
-G = sample_pa(n=4, p=0, m=2)
-edge.labels = numeric(length(E(G)))
-edge.labels[1] = 'Directed edge'
-edge.labels[2] = 'Undirected edge'
-edge.labels[edge.labels==0] = ''
-
-
-
-ggraph(G, layout='kk') +
-  geom_node_point(size = 17, color='darkred') + geom_node_text(aes(label=degree(G)), color='white',size=10)+
-  geom_edge_link(arrow = arrow(length = unit((edge.labels=='Directed edge')*4, 'mm')),
-                 start_cap = circle(12, 'mm'),
-                  end_cap = circle(12, 'mm'),
-                 aes(label=edge.labels),
-                 angle_calc = 'along',
-                   label_dodge = unit(5, 'mm'),label_size=7,width=2) +
-  geom_node_point(aes(x=-0.6,y=0.8), size=17, color='darkred')+
-  geom_node_text(aes(x=-.6,y=0.8, label='k'), color='white', size=10)+
-  geom_node_text(aes(x=-0.45,y=0.65, label='Node with degree k'), size=7)+
-  theme_void() + theme(aspect.ratio=0.66)
-```
 
 
 ## Why study networks?
 
-:::{.fragment}
-
 Networks appear in many fields of research
 
-- Epidemiology (contact networks)
-- Social Networks (Twitter followers)
+- Epidemiology (human contact networks)
+- Social Networks (YouTube Friendships)
 - Biochemistry (protein-protein interactions)
-
-:::
-
-:::{.fragment}
 
 Studying how these networks grow may allow us to
 
 - Predict how the network will change in future
 - Understand how the individuals in the network function
 
-:::
 
-## Rich get richer model
-
+## Preferential attachment model
 
 :::{.columns}
 
@@ -102,10 +64,10 @@ Studying how these networks grow may allow us to
 
 ::::{.column width='50%'}
 
-### Barabási-Albert Model^[@Barabasi99]
-1. **Growth:** Add a vertex
+### Barabási-Albert (BA) Model^[@Barabasi99]
+1.  Add a vertex
 
-2. **Preferential attachment:** Connect to $m$ vertices with probability:
+2.  Connect to $m$ vertices with weights:
   $$
   \pi(u) \propto k_u
   $$
@@ -115,7 +77,7 @@ Studying how these networks grow may allow us to
 
 ## Degree Distribution
 
-```{r}
+```{r, fig.align='center'}
 m = 1
 x = m:50
 p = (2*m*(m+1)) / (x*(x+1)*(x+2))
@@ -123,68 +85,49 @@ P = 1-cumsum(p)
 
 df = data.frame(x=x, p=p, P=P)
 
-p_raw = ggplot(data=df, aes(x=x)) + geom_point(aes(y=p), color='darkred') + 
-  ylab(TeX('$f(k)$')) + ylim(0,1) + xlab(TeX('Degree ($k$)'))
 P_raw = ggplot(data=df, aes(x=x)) + geom_point(aes(y=P), color='darkred') +
-  ylab(TeX('$\\bar{F}(k)$'))+ ylim(0,1)+ xlab(TeX('Degree ($k$)'))
+  ylab(TeX('$\\bar{F}(k)$'))+ ylim(0,1)+ xlab(TeX('Degree ($k$)')) + theme(aspect.ratio = 1)
 
-P_raw
+P_log = ggplot(data=df, aes(x=x)) + geom_point(aes(y=P), color='darkred') +
+  ylab(TeX('$\\bar{F}(k)$'))+ xlab(TeX('Degree ($k$)')) + scale_x_log10() + scale_y_log10(limits=c(1e-4,1))+ theme(aspect.ratio = 1)
+
+gridExtra::grid.arrange(P_raw, P_log, nrow=1)
 
 ```
 
-## Degree Distribution
-
-```{r}
-ggplot(data=df, aes(x=x)) + geom_point(aes(y=P), color='darkred') +
-  ylab(TeX('$\\bar{F}(k)$'))+ xlab(TeX('Degree ($k$)')) + scale_x_log10() + scale_y_log10(limits=c(1e-4,1))
-```
 
 ## Real Data
 
 
-```{r,warning=FALSE, message=FALSE, error=FALSE}
+```{r,warning=FALSE, message=FALSE, error=FALSE, fig.align='center'}
 gridExtra::grid.arrange(pvidal, pyt, pdub, nrow=1)
 ```
 
-[- Largest degrees deviate from power law]{.fragment}
-
-[- These vertices are often the most influential]{.fragment}
+- Largest degrees deviate from power law
+- These vertices are often the most influential
 
 ## A more flexible model 
 
 ### Barabási-Albert Model
 
-1. **Growth:** Add a vertex
+1.  Add a vertex
 
-2.**Preferential Attachment:** Connect to $m$ vertices with probability:
-  $$
-  \pi(u) \propto k_u
-  $$
-
-## A more flexible model 
-
-### Barabási-Albert Model 
-
-1. **Growth:** Add a vertex
-
-2.**Preferential Attachment:** Connect to $m$ vertices with probability:
+2. Connect to $m$ vertices with weight:
   $$
   \pi(u) \propto \color{red}{k_u}
   $$
-
-
 
 ## A more flexible model 
 
 ### General Preferential Attachment 
 
-1. **Growth:** Add a vertex
-2. **Preferential Attachment:**Connect to [$m$]{.fragment .highlight-red fragment-index=2} vertices with probability:
+1.  Add a vertex
+2.  Connect to $m$ vertices with weight:
   $$
   \pi(u) \propto \color{red}{b(k_u)}
   $$
 
-[Unable to obtain an expression for the degree distribution]{.fragment .fade-in fragment-index=1}
+Unable to obtain an expression for the degree distribution
 
 
 
@@ -202,8 +145,8 @@ gridExtra::grid.arrange(pvidal, pyt, pdub, nrow=1)
 ::::{.column width="50%"} 
 ### General Preferential Attachment Tree ^[@rudas]
 
-1. **Growth:** Add a vertex
-2. **Preferential Attachment:** Connect to <span style="color:red;">one</span> vertex with probability:
+1.  Add a vertex
+2.  Connect to <span style="color:red;">one</span> vertex with probability:
   $$
   \pi(u) \propto \color{red}{b(k_u)}
   $$
@@ -227,33 +170,17 @@ $$
 b(k) = k^\alpha,\qquad \alpha \ge 0
 $$
 
-:::::{.fragment .fade-in fragment-index=1}
 
 - $\alpha=1$:   BA model
-
-:::::
-
-:::::{.fragment .fade-in fragment-index=2}
-
 - $\alpha>1$:  winner takes all
-
-:::::
-
-:::::{.fragment .fade-in fragment-index=3}
-
 - $\alpha<1$: lose power law behaviour
-
-:::::
-
 ::::
 :::
 
-[We need something more flexible]{.fragment .fade-in fragment-index=4}
+We need something more flexible
 
 
 ## Another Choice
-
-If we let
 
 
 $$
@@ -263,13 +190,30 @@ T^\alpha + \beta(k-T),&k\ge T
 \end{cases}
 $$
 
-:::{.fragment}
-For $\alpha,\beta,T\ge0$.
 
-- $\beta>0$ gives varied power law behaviour after $T$
-- $\beta=0$ loses power law behaviour after $T$
+```{r, warning=FALSE, message=FALSE, error=FALSE, fig.align='center'}
 
-:::
+x = seq(0,50,length.out=100)
+y1 = twbfn::ppa_pref(x, 1.5, 1, 25)
+y2 = twbfn::ppa_pref(x, 0.5, 0.2, 30)
+y3 = twbfn::ppa_pref(x, 1, 0.5, 25)
+y4 = twbfn::ppa_pref(x, 1, 2, 25)
+y5 = twbfn::ppa_pref(x, 0.5, 0.03, 25)
+
+
+df = data.frame(x=x, y1,y2,y3,y4,y5)
+
+p1 = ggplot(data=df, aes(x=x)) + geom_line(aes(y=y1), colour='darkred',linewidth=3)+ theme_void() +theme(aspect.ratio = 1) 
+p2 = ggplot(data=df, aes(x=x)) + geom_line(aes(y=y2), colour='darkred',linewidth=3)+ theme_void() +theme(aspect.ratio = 1) 
+p3 = ggplot(data=df, aes(x=x)) + geom_line(aes(y=y3), colour='darkred',linewidth=3)+ theme_void() +theme(aspect.ratio = 1) 
+p4 = ggplot(data=df, aes(x=x)) + geom_line(aes(y=y4), colour='darkred',linewidth=3)+ theme_void() +theme(aspect.ratio = 1) 
+
+p5 = ggplot(data=df, aes(x=x)) + geom_line(aes(y=y5), colour='darkred',linewidth=3)+ theme_void() +theme(aspect.ratio = 1) 
+gridExtra::grid.arrange(p1,p2,p3,p4,p5,nrow=1, respect=T)
+```
+
+- Can guarantee power law behaviour for large degrees
+
 
 
 ## Degree Distribution
@@ -294,11 +238,9 @@ The model is much more flexible and looks more realistic
 ::::
 :::
 
-[- Little effect on the smallest degrees]{.fragment}
-
-[- This makes it hard to fit to real data]{.fragment}
-
-[- Most real networks are not trees]{.fragment}
+- Small degrees resistant to parameter changes 
+- This makes it hard to fit to real data
+- Most real networks are not trees
 
 
 ## The next steps
@@ -313,27 +255,13 @@ The model is much more flexible and looks more realistic
 
 ::::{.column width="50%"}
 
-:::::{.fragment}
-
 - Like the BA model, are the results similar for $m>1$?
-
-:::::
-
-:::::{.fragment}
-
 - How about a random number of edges?
-
-:::::
-
-:::::{.fragment}
 - Other modifications? ^[@rosengren, @deijfen]
   - Multiple types 
   - Vertex death 
   
-:::::
-
 ::::
-
 :::
 
 

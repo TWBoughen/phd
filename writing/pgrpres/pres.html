@@ -354,44 +354,36 @@
 Thomas Boughen 
 </div>
         <p class="quarto-title-affiliation">
-            Newcastle University
+            Maths, Stats and Physics
           </p>
     </div>
 </div>
 
 </section>
-<section id="what-is-a-network" class="slide level2">
-<h2>What is a network?</h2>
-
-<img data-src="pres_files/figure-revealjs/unnamed-chunk-3-1.png" width="960" class="r-stretch"></section>
 <section id="why-study-networks" class="slide level2">
 <h2>Why study networks?</h2>
-<div class="fragment">
 <p>Networks appear in many fields of research</p>
 <ul>
-<li>Epidemiology (contact networks)</li>
-<li>Social Networks (Twitter followers)</li>
+<li>Epidemiology (human contact networks)</li>
+<li>Social Networks (YouTube Friendships)</li>
 <li>Biochemistry (protein-protein interactions)</li>
 </ul>
-</div>
-<div class="fragment">
 <p>Studying how these networks grow may allow us to</p>
 <ul>
 <li>Predict how the network will change in future</li>
 <li>Understand how the individuals in the network function</li>
 </ul>
-</div>
 </section>
-<section id="rich-get-richer-model" class="slide level2">
-<h2>Rich get richer model</h2>
+<section id="preferential-attachment-model" class="slide level2">
+<h2>Preferential attachment model</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <iframe width="780" height="500" src="index.html" scrolling="no" title="Webpage example"></iframe>
 </div><div class="column" style="width:50%;">
-<h3 id="barabási-albert-model">Barabási-Albert Model<sup>1</sup></h3>
+<h3 id="barabási-albert-ba-model">Barabási-Albert (BA) Model<sup>1</sup></h3>
 <ol type="1">
-<li><p><strong>Growth:</strong> Add a vertex</p></li>
-<li><p><strong>Preferential attachment:</strong> Connect to <span class="math inline">\(m\)</span> vertices with probability: <span class="math display">\[
+<li><p>Add a vertex</p></li>
+<li><p>Connect to <span class="math inline">\(m\)</span> vertices with weights: <span class="math display">\[
   \pi(u) \propto k_u
   \]</span></p></li>
 </ol>
@@ -401,49 +393,37 @@ Thomas Boughen
 <section id="degree-distribution" class="slide level2">
 <h2>Degree Distribution</h2>
 
-<img data-src="pres_files/figure-revealjs/unnamed-chunk-4-1.png" width="960" class="r-stretch"></section>
-<section id="degree-distribution-1" class="slide level2">
-<h2>Degree Distribution</h2>
-
-<img data-src="pres_files/figure-revealjs/unnamed-chunk-5-1.png" width="960" class="r-stretch"></section>
+<img data-src="pres_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
 <section id="real-data" class="slide level2">
 <h2>Real Data</h2>
 
-<img data-src="pres_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch"><p><span class="fragment">- Largest degrees deviate from power law</span></p>
-<p><span class="fragment">- These vertices are often the most influential</span></p>
+<img data-src="pres_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><ul>
+<li>Largest degrees deviate from power law</li>
+<li>These vertices are often the most influential</li>
+</ul>
 </section>
 <section id="a-more-flexible-model" class="slide level2">
 <h2>A more flexible model</h2>
-<h3 id="barabási-albert-model-1">Barabási-Albert Model</h3>
+<h3 id="barabási-albert-model">Barabási-Albert Model</h3>
 <ol type="1">
-<li><strong>Growth:</strong> Add a vertex</li>
+<li><p>Add a vertex</p></li>
+<li><p>Connect to <span class="math inline">\(m\)</span> vertices with weight: <span class="math display">\[
+  \pi(u) \propto \color{red}{k_u}
+  \]</span></p></li>
 </ol>
-<p>2.<strong>Preferential Attachment:</strong> Connect to <span class="math inline">\(m\)</span> vertices with probability: <span class="math display">\[
-  \pi(u) \propto k_u
-  \]</span></p>
 </section>
 <section id="a-more-flexible-model-1" class="slide level2">
 <h2>A more flexible model</h2>
-<h3 id="barabási-albert-model-2">Barabási-Albert Model</h3>
-<ol type="1">
-<li><strong>Growth:</strong> Add a vertex</li>
-</ol>
-<p>2.<strong>Preferential Attachment:</strong> Connect to <span class="math inline">\(m\)</span> vertices with probability: <span class="math display">\[
-  \pi(u) \propto \color{red}{k_u}
-  \]</span></p>
-</section>
-<section id="a-more-flexible-model-2" class="slide level2">
-<h2>A more flexible model</h2>
 <h3 id="general-preferential-attachment">General Preferential Attachment</h3>
 <ol type="1">
-<li><strong>Growth:</strong> Add a vertex</li>
-<li><strong>Preferential Attachment:</strong>Connect to <span class="fragment highlight-red" data-fragment-index="2"><span class="math inline">\(m\)</span></span> vertices with probability: <span class="math display">\[
+<li>Add a vertex</li>
+<li>Connect to <span class="math inline">\(m\)</span> vertices with weight: <span class="math display">\[
   \pi(u) \propto \color{red}{b(k_u)}
   \]</span></li>
 </ol>
-<p><span class="fragment fade-in" data-fragment-index="1">Unable to obtain an expression for the degree distribution</span></p>
+<p>Unable to obtain an expression for the degree distribution</p>
 </section>
-<section id="a-more-flexible-model-3" class="slide level2">
+<section id="a-more-flexible-model-2" class="slide level2">
 <h2>A more flexible model</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -451,8 +431,8 @@ Thomas Boughen
 </div><div class="column" style="width:50%;">
 <h3 id="general-preferential-attachment-tree">General Preferential Attachment Tree <sup>1</sup></h3>
 <ol type="1">
-<li><strong>Growth:</strong> Add a vertex</li>
-<li><strong>Preferential Attachment:</strong> Connect to <span style="color:red;">one</span> vertex with probability: <span class="math display">\[
+<li>Add a vertex</li>
+<li>Connect to <span style="color:red;">one</span> vertex with probability: <span class="math display">\[
   \pi(u) \propto \color{red}{b(k_u)}
   \]</span></li>
 </ol>
@@ -468,43 +448,29 @@ Thomas Boughen
 <p><span class="math display">\[
 b(k) = k^\alpha,\qquad \alpha \ge 0
 \]</span></p>
-<div class="fragment fade-in" data-fragment-index="1">
 <ul>
 <li><span class="math inline">\(\alpha=1\)</span>: BA model</li>
-</ul>
-</div>
-<div class="fragment fade-in" data-fragment-index="2">
-<ul>
 <li><span class="math inline">\(\alpha&gt;1\)</span>: winner takes all</li>
-</ul>
-</div>
-<div class="fragment fade-in" data-fragment-index="3">
-<ul>
 <li><span class="math inline">\(\alpha&lt;1\)</span>: lose power law behaviour</li>
 </ul>
 </div>
 </div>
-</div>
-<p><span class="fragment fade-in" data-fragment-index="4">We need something more flexible</span></p>
+<p>We need something more flexible</p>
 </section>
 <section id="another-choice" class="slide level2">
 <h2>Another Choice</h2>
-<p>If we let</p>
 <p><span class="math display">\[
 b(k) = \begin{cases}
 k^\alpha,&amp;k&lt;T\\
 T^\alpha + \beta(k-T),&amp;k\ge T
 \end{cases}
 \]</span></p>
-<div class="fragment">
-<p>For <span class="math inline">\(\alpha,\beta,T\ge0\)</span>.</p>
-<ul>
-<li><span class="math inline">\(\beta&gt;0\)</span> gives varied power law behaviour after <span class="math inline">\(T\)</span></li>
-<li><span class="math inline">\(\beta=0\)</span> loses power law behaviour after <span class="math inline">\(T\)</span></li>
+
+<img data-src="pres_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"><ul>
+<li>Can guarantee power law behaviour for large degrees</li>
 </ul>
-</div>
 </section>
-<section id="degree-distribution-2" class="slide level2">
+<section id="degree-distribution-1" class="slide level2">
 <h2>Degree Distribution</h2>
 <p>The model is much more flexible and looks more realistic</p>
 <div class="columns">
@@ -516,9 +482,11 @@ T^\alpha + \beta(k-T),&amp;k\ge T
 <iframe width="300" height="300" src="n0plot.gif" scrolling="no" title="Webpage example"></iframe>
 </div>
 </div>
-<p><span class="fragment">- Little effect on the smallest degrees</span></p>
-<p><span class="fragment">- This makes it hard to fit to real data</span></p>
-<p><span class="fragment">- Most real networks are not trees</span></p>
+<ul>
+<li>Small degrees resistant to parameter changes</li>
+<li>This makes it hard to fit to real data</li>
+<li>Most real networks are not trees</li>
+</ul>
 </section>
 <section id="the-next-steps" class="slide level2">
 <h2>The next steps</h2>
@@ -526,25 +494,15 @@ T^\alpha + \beta(k-T),&amp;k\ge T
 <div class="column" style="width:50%;">
 <iframe width="1250" height="1250" src="mtgpa.html" scrolling="yes" title="Webpage example"></iframe>
 </div><div class="column" style="width:50%;">
-<div class="fragment">
 <ul>
 <li>Like the BA model, are the results similar for <span class="math inline">\(m&gt;1\)</span>?</li>
-</ul>
-</div>
-<div class="fragment">
-<ul>
 <li>How about a random number of edges?</li>
-</ul>
-</div>
-<div class="fragment">
-<ul>
 <li>Other modifications? <sup>1</sup>
 <ul>
 <li>Multiple types</li>
 <li>Vertex death</li>
 </ul></li>
 </ul>
-</div>
 </div>
 </div>
 <aside><ol class="aside-footnotes"><li id="fn3"><p><span class="citation" data-cites="rosengren">Rosengren (<a href="#/thanks-for-listening" role="doc-biblioref" onclick="">2017</a>)</span>, <span class="citation" data-cites="deijfen">Deijfen (<a href="#/thanks-for-listening" role="doc-biblioref" onclick="">2010</a>)</span></p></li></ol></aside></section>
