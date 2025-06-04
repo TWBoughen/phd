@@ -1,0 +1,44 @@
+---
+title: "Animated Slider in RevealJS"
+format: revealjs
+transition: fade
+self-contained: true
+execute:
+  enabled: true
+server: shiny
+---
+
+```{r setup}
+library(shiny)
+```
+
+## Animated Slider Demo
+
+This slide contains an animated slider with a play button using Shiny.
+
+```{r}
+# Dynamically render the slider to ensure JS loads correctly
+uiOutput("delayedSlider")
+```
+
+```{r}
+# Display slider value
+textOutput("sliderVal")
+```
+
+```{r}
+#| context: server
+
+
+# Server-side rendering logic
+output$delayedSlider <- renderUI({
+  sliderInput("mySlider", "Animated Slider",
+              min = 1, max = 10, value = 1,
+              animate = animationOptions(interval = 500, loop = TRUE))
+})
+
+output$sliderVal <- renderText({
+  req(input$mySlider)
+  paste("Current value:", input$mySlider)
+})
+```

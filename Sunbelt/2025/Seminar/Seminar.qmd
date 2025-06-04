@@ -1,0 +1,337 @@
+---
+title: Preferential Attachment with Flexible Heavy Tails
+format: 
+  metropolis-beamer-revealjs:
+    theme: style.scss
+    aspectratio: 169
+header-logo: images/ncl-logo.png
+header-logo-link: "https://ncl.ac.uk/"
+slide-number: "c/t"
+author:
+  - name: Thomas Boughen
+    orcid: 0009-0005-1979-2479
+    email: t.w.boughen1@newcastle.ac.uk
+    corresponding: true
+    equal-contributor: true
+    affiliations: 
+      id: 1
+      name: Newcastle Univeristy
+  - name: Clement Lee
+    orcid: 0000-0003-1785-8671
+    email: Clement.Lee@newcastle.ac.uk
+    affiliations:
+      ref: 1
+      name: Newcastle Univeristy
+  - name: Vianey Palacios Ramirez
+    orcid: 0009-0005-8089-2401
+    email: vianey.palacios-ramirez@newcastle.ac.uk
+    affiliations:
+      ref: 1
+      name: Newcastle Univeristy
+date: last-modified
+bibliography: refs.bib
+csl: diabetologia.csl
+citecolor: '#da1a35'
+include-in-header:
+  - text: |
+      <link rel = "shortcut icon" href = "images/ncl-icon.png" />
+---
+
+```{r}
+library(ggplot2)
+library(igraph)
+library(network)
+library(networkDynamic)
+library(ndtv)
+library(intergraph)
+n =  100
+g_igraph <- sample_pa(n, directed = FALSE)
+el = as_edgelist(g_igraph)
+g_net <- network.initialize(n)
+
+add.edges.active(g_net, tail = el[,2], head=el[,1], onset = 2:(nrow(el)+1), terminus = rep(Inf, nrow(el)))
+activate.vertices(g_net, onset=1:n, terminus = rep(Inf,n))
+slice.par<-list(start=1,end=n,interval=1,
+                aggregate.dur=1,rule='earliest')
+reconcile.vertex.activity(g_net)
+reconcile.edge.activity(g_net)
+
+
+```
+
+## Mechanistic Models
+::::: columns
+::: {.column width="50%"}
+```{r, results='asis'}
+render.d3movie(g_net,
+               verbose = FALSE,output.mode='inline',animateOnLoad=TRUE, 
+               vertex.col = '#da1a35',displaylabels=FALSE, bg = '#f1f1f1', vertex.cex=1,
+               vertex.lwd=0,durationControl=FALSE)
+```
+:::
+
+::: {.column width="50%"}
+:::{.callout type='example'}
+## Preferential attachment
+
+1.  Add vertex
+2.  Connect to existing vertex with weights: 
+      $$
+      b(k_i)
+      $$ 
+    Barabasi-Albert is special case when:
+    $$
+    b(k) = k+\varepsilon
+    $$
+    
+:::
+
+**Problems when modelling**
+
+-   Scarce evolution data
+-   Usually only have a snapshot
+:::
+:::::
+
+## Modelling Degrees
+
+::::{.columns}
+
+:::{.column width=80%}
+Gives information about (in)equality of degrees.
+
+:::{.callout type='example'}
+## Modelling options
+
+- Power law 
+- Mixture distributions
+:::
+These don't give information about how network evolved.
+:::
+
+
+:::{.column width=15%}
+```{r,out.width='100%', dev='svg', dev.args=list(bg="transparent")}
+#| layout-ncol: 1
+#| fig-asp: 1
+#| fig-dpi: 300
+#| fig-width: 2
+
+library(crandep)
+library(thematic)
+source('scripts/funcs.R')
+
+
+# thematic_on(bg='#f1f1f1', fg = '#604c38', inherit=T)
+fits = readRDS('results/mixfits.rds')
+dat_list = readRDS('results/dat_list.rds')
+p_list= list()
+selected = c(1,2,10)
+titles = c('Internet', 'Citations', 'Proteins')
+for(i in 1:length(selected)){
+  p_list[[i]] = ggplot() + geom_point(data = twbfn::deg_surv(counts_to_degs(dat_list[[selected[i]]])), aes(x=degree, y=surv), color = '#da1a35') +
+                scale_y_log10() + scale_x_log10()+ylab('Survival') + xlab('Degree')+ggtitle(titles[i])+
+    theme_classic()+
+    theme(rect = element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+}
+
+
+p_list[[1]]
+p_list[[2]]
+p_list[[3]]
+
+```
+:::
+::::
+
+## Combining Methods
+
+By using a preference function of the form:
+
+$$
+b(k) = \begin{cases}
+k^\alpha + \varepsilon,&k<k_0\\
+k_0^\alpha + \varepsilon + \beta(k-k_0), &k\ge k_0
+\end{cases}
+$$
+
+The survival function for the in-degrees is:
+
+$$
+\bar F(k) = \prod_{i=0}^k\frac{b(i)}{\lambda^* + b(i)}
+$$
+
+## Properties
+
+- Tail heaviness of $\beta/\lambda^*$
+
+
+- Always heavy tailed
+
+
+- Allows super/sub linear behaviour
+
+
+## Testing on Simulated Data
+
+
+::::{.columns}
+
+:::{.column width=50%}
+
+**The data**
+
+- 48 networks
+- 48 parameter combinations
+- 100,000 vertex network size
+
+**The results**
+
+Model are parameters generally recovered quite well.
+
+:::
+
+
+:::{.column width=50%}
+:::{.callout type='example'}
+### Results
+![](images/mcmc_plot.jpg)
+:::
+:::
+
+::::
+
+
+
+## Modelling Real Data
+
+**The data**
+
+
+```{r,out.width='100%', dev='svg', dev.args=list(bg="transparent")}
+#| layout-ncol: 3
+#| fig-asp: 1
+#| fig-dpi: 300
+#| fig-width: 6
+
+fits = readRDS('results/mixfits.rds')
+dat_list = readRDS('results/dat_list.rds')
+p_list= list()
+for(i in 1:length(selected)){
+  p_list[[i]] = ggplot() + geom_point(data = twbfn::deg_surv(counts_to_degs(dat_list[[selected[i]]])), aes(x=degree, y=surv), color = '#da1a35') +
+                scale_x_log10(limits = c(1, max(dat_list[[selected[i]]][,1]))) + scale_y_log10(limits=c(1/sum(dat_list[[selected[i]]][,2]),1)) +
+    ylab('Survival') + xlab('Degree')+ggtitle(titles[i])+
+    theme_classic()+
+    theme(rect = element_blank())
+}
+
+
+p_list[[1]]
+p_list[[2]]
+p_list[[3]]
+
+```
+
+
+## Modelling Real Data
+
+**The results**
+
+```{r,out.width='100%', dev='svg', dev.args=list(bg="transparent")}
+#| layout-ncol: 3
+#| fig-asp: 1
+#| fig-dpi: 300
+#| fig-width: 6
+
+fits = readRDS('results/modelfits.rds')
+mixfits = readRDS('results/mixfits.rds')
+dat_list = readRDS('results/dat_list.rds')
+p_list= list()
+
+plots = list()
+for(i in 1:length(selected)){
+  udf = as.data.frame(table(fits[[selected[i]]]$smps$k0))
+  udf$Var1 = as.numeric(as.character(udf$Var1))
+  sdf = twbfn::deg_surv(counts_to_degs(dat_list[[selected[i]]]))
+  ptrunc = sdf$surv[sdf$degree==min(fits[[selected[i]]]$dat[,1])]
+  ptrunc_mix = sdf$surv[sdf$degree==min(mixfits[[selected[i]]]$data[,1])]
+  plots[[i]] = ggplot() + scale_x_log10(limits = c(1, max(dat_list[[selected[i]]][,1]))) + scale_y_log10(limits=c(1/sum(dat_list[[selected[i]]][,2]),1)) +
+    geom_segment(aes(x = jitter(!!fits[[selected[i]]]$smps$k0[seq(1,length(fits[[selected[i]]]$smps$k0),by=20)]),yend=0.5,y=1, colour='GPA'), alpha=0.1)+
+    geom_segment(data=NULL,aes(x = jitter(mixfits[[selected[i]]]$pars$u[seq(1,length(mixfits[[selected[i]]]$pars$u),by=20)]),yend=0.5,y=1, colour='Zipf-IGP'), alpha=0.5)+
+    geom_point(data = twbfn::deg_surv(counts_to_degs(dat_list[[selected[i]]])),aes(x=degree, y=surv), color = '#da1a35')+
+    geom_line(aes(x=!!fits[[selected[i]]]$dat[,1],y=!!fits[[selected[i]]]$surv$est*!!ptrunc/fits[[selected[i]]]$surv$est[1], colour='GPA')) + 
+    geom_line(aes(x=!!fits[[selected[i]]]$dat[,1],y= !!fits[[selected[i]]]$surv$CI[1,]*!!ptrunc/fits[[selected[i]]]$surv$CI[1,1], colour='GPA'),linetype=2) + 
+    geom_line(aes(x=!!fits[[selected[i]]]$dat[,1],y= !!fits[[selected[i]]]$surv$CI[2,]*!!ptrunc/fits[[selected[i]]]$surv$CI[2,1], colour='GPA'),linetype=2)+
+    geom_line(data = mixfits[[selected[i]]]$fitted,aes(x=x, y=S_975*!!ptrunc_mix/S_975[1], colour='Zipf-IGP'), lty=2)+
+    geom_line(data = mixfits[[selected[i]]]$fitted,aes(x=x, y=S_025*!!ptrunc_mix/S_025[1], colour='Zipf-IGP'),lty=2)+
+    geom_line(data = mixfits[[selected[i]]]$fitted,aes(x=x, y=S_med*!!ptrunc_mix/S_med[1], colour='Zipf-IGP'))+
+    ggtitle(titles[i]) + theme_classic()+ theme(aspect.ratio = 1,rect = element_blank())+ labs(colour='Model') + ylab('Survival') + xlab('Degree')
+    
+}
+
+plots[[1]]
+plots[[2]]
+plots[[3]]
+
+```
+
+Fits quite well and performs similarly to a Zipf-IGPD mixture model.
+
+
+## Preference Functions
+
+**The bonus**
+
+```{r,out.width='100%', dev='svg', dev.args=list(bg="transparent")}
+#| layout-ncol: 3
+#| fig-asp: 1
+#| fig-dpi: 300
+#| fig-width: 6
+
+
+plots = list()
+
+for(i in 1:length(selected)){
+  plots[[i]] = ggplot() + 
+    geom_line(aes(x=!!fits[[selected[i]]]$dat$x,y=!!fits[[selected[i]]]$PA$est)) + 
+    geom_line(aes(x=!!fits[[selected[i]]]$dat$x,y=!!fits[[selected[i]]]$PA$CI[1,]),lty=2) +
+    geom_line(aes(x=!!fits[[selected[i]]]$dat$x,y=!!fits[[selected[i]]]$PA$CI[2,]),lty=2) +
+    theme_classic()+ xlab('Degree') + ylab('Preference')+
+    theme(aspect.ratio = 1,rect = element_blank(),
+          axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank()) + ggtitle(titles[i])
+}
+
+plots[[1]]
+plots[[2]]
+plots[[3]]
+
+```
+
+Although the credible interval is quite large, it is still more information than is gained normally.
+
+## Conclusions
+
+**Outcomes**
+
+- We have presented a viable method for modelling degrees
+- Able to gain information about evolution from degrees alone
+
+**Discussion**
+
+- Theory used is for trees, not very applicable to real networks
+- Could include other modifications to model in future e.g. fitness
+
+
+
+
+## References
+
+::: {#refs}
+:::
