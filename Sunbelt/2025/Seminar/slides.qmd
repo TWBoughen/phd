@@ -1,0 +1,82 @@
+---
+title: Preferential Attachment with Flexible Heavy Tails
+format: 
+  metropolis-beamer-revealjs:
+    theme: style.scss
+    aspectratio: 169
+header-logo: images/ncl-logo.png
+header-logo-link: "https://ncl.ac.uk/"
+slide-number: "c/t"
+author:
+  - name: Thomas Boughen
+    orcid: 0009-0005-1979-2479
+    email: t.w.boughen1@newcastle.ac.uk
+    corresponding: true
+    equal-contributor: true
+    affiliations: 
+      id: 1
+      name: Newcastle Univeristy
+  - name: Clement Lee
+    orcid: 0000-0003-1785-8671
+    email: Clement.Lee@newcastle.ac.uk
+    affiliations:
+      ref: 1
+      name: Newcastle Univeristy
+  - name: Vianey Palacios Ramirez
+    orcid: 0009-0005-8089-2401
+    email: vianey.palacios-ramirez@newcastle.ac.uk
+    affiliations:
+      ref: 1
+      name: Newcastle Univeristy
+date: last-modified
+bibliography: refs.bib
+csl: diabetologia.csl
+citecolor: '#da1a35'
+include-in-header:
+  - text: |
+      <link rel = "shortcut icon" href = "images/ncl-icon.png" />
+---
+
+
+## Motivation
+
+## What Degree Distributions Tell Us
+
+## The Problem with Mechanistic Models
+
+## Preferential Attachment
+
+## Insights on the Preference Function
+
+## Building a Model
+
+## Recovering Parameters from Degrees
+
+## Real World Application
+
+## More Than Just the Degrees
+
+## Takeaways
+
+## Future Work
+
+# Thank You 
+
+Any questions?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
