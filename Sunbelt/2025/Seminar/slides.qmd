@@ -4,7 +4,7 @@ format:
   metropolis-beamer-revealjs:
     theme: style.scss
     aspectratio: 169
-header-logo: images/ncl-logo.png
+header-logo: images/ncl-icon.png
 header-logo-link: "https://ncl.ac.uk/"
 slide-number: "c/t"
 author:
@@ -38,31 +38,9 @@ include-in-header:
 ---
 
 
-## Motivation
 
-## What Degree Distributions Tell Us
 
-## The Problem with Mechanistic Models
 
-## Preferential Attachment
-
-## Insights on the Preference Function
-
-## Building a Model
-
-## Recovering Parameters from Degrees
-
-## Real World Application
-
-## More Than Just the Degrees
-
-## Takeaways
-
-## Future Work
-
-# Thank You 
-
-Any questions?
 
 
 
