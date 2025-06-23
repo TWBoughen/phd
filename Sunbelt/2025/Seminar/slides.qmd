@@ -6,6 +6,7 @@ format:
     aspectratio: 169
 header-logo: images/ncl-icon.png
 header-logo-link: "https://ncl.ac.uk/"
+footer: 'twboughen.github.io/phd/sunbelt25'
 slide-number: "c/t"
 author:
   - name: Thomas Boughen
@@ -35,7 +36,813 @@ citecolor: '#da1a35'
 include-in-header:
   - text: |
       <link rel = "shortcut icon" href = "images/ncl-icon.png" />
+auto-stretch: false
 ---
+```{r}
+library(igraph)
+library(cowplot)
+library(ggplot2)
+library(igraph)
+library(network)
+library(networkDynamic)
+library(ndtv)
+library(intergraph)
+source('scripts/funcs.R')
+```
+
+
+
+## Areas of Focus
+
+:::{.columns}
+
+::::{.column width=45%}
+### Mechanistic Models
+
+- e.g. Forest fire, preferential attachment (PA) , duplication divergence
+- Model behaviour of individual nodes and edges over time
+
+::::
+::::{.column width=10%}
+::::
+::::{.column width=45%}
+### Degree Distributions
+
+- e.g. Power Laws, tail estimation, mixture models
+- Model feature of a network structure, usually at a snapshot in time
+
+::::
+:::
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Mechanistic Models
+
+
+:::{layout-ncol=3}
+
+
+```{r, fig.height="100px", fig.asp=1, results='asis'}
+# Parameters
+p_fwd <- 0.1   # Forward burning probability
+p_bwd <- 0.01   # Backward burning probability
+n =  25
+
+# Initialize dynamic network
+ffg <- network.initialize(n, directed = FALSE)
+activate.vertices(ffg, onset = 1, terminus = Inf)
+
+# Bookkeeping: adjacency list
+adj_list <- vector("list", n)
+
+# Step 1: Add initial node
+edge_list <- list()
+node_times <- rep(NA, n)
+node_times[1] <- 1
+
+# Step 2: Loop through remaining nodes
+for (i in 2:n) {
+  # Pick a random previous node as ambassador
+  ambassador <- sample(which(!is.na(node_times[1:(i-1)])), 1)
+  visited <- rep(FALSE, n)
+  queue <- c(ambassador)
+  visited[ambassador] <- TRUE
+  new_edges <- list(c(i, ambassador))  # i connects to ambassador
+  
+  # Recursive burning process
+  while (length(queue) > 0) {
+    current <- queue[1]
+    queue <- queue[-1]
+    neighbors <- adj_list[[current]]
+    if (length(neighbors) > 0) {
+      for (nbr in neighbors) {
+        if (!visited[nbr]) {
+          burn_fwd <- runif(1) < p_fwd
+          burn_bwd <- runif(1) < p_bwd
+          if (burn_fwd || burn_bwd) {
+            new_edges[[length(new_edges)+1]] <- c(i, nbr)
+            queue <- c(queue, nbr)
+            visited[nbr] <- TRUE
+          }
+        }
+      }
+    }
+  }
+  
+  # Record time of appearance
+  node_times[i] <- i
+  
+  # Add edges to dynamic network
+  for (edge in new_edges) {
+    a <- edge[1]
+    b <- edge[2]
+    # Update adjacency list
+    adj_list[[a]] <- unique(c(adj_list[[a]], b))
+    adj_list[[b]] <- unique(c(adj_list[[b]], a))
+    add.edges.active(ffg, tail = a, head = b, onset = i, terminus = Inf)
+  }
+}
+
+# Layout animation for stability
+layout_static <- gplot.layout.kamadakawai(ffg, layout.par = NULL)
+set.vertex.attribute(ffg, "x", layout_static[,1])
+set.vertex.attribute(ffg, "y", layout_static[,2])
+compute.animation(ffg,
+                  seed.coords = layout_static,
+                  animation.mode = 'useAttribute',
+                  slice.par = list(start = 1, end = n, interval = 1, aggregate.dur = 1, rule = 'latest'))
+
+# Render animation
+render.d3movie(ffg,
+               verbose = FALSE,
+               output.mode = 'inline',
+               d3.options = list(animateOnLoad=TRUE, slider=FALSE, durationControl=FALSE, margin=list(x=0,y=0),
+                                 ani.height=100, ani.width=100),
+               vertex.col = '#da1a35',
+               displaylabels = FALSE,
+               bg = '#f1f1f1',
+               vertex.cex = 1,
+               vertex.lwd = 0,
+               durationControl = FALSE,
+               ani.height = 100,
+               ain.width=100,
+               main = 'Forest Fire',
+               slice.par = list(start = 1, end = n, interval = 1, aggregate.dur = 1, rule = 'latest'))
+```
+
+
+```{r, fig.height="100px", fig.asp=1, results='asis'}
+
+g_igraph <- sample_pa(n, directed = FALSE)
+
+
+el = as_edgelist(g_igraph)
+pag <- network.initialize(n)
+
+pag = add.edges.active(pag, tail = el[,2], head=el[,1], onset = 2:(nrow(el)+1), terminus = rep(Inf, nrow(el)))
+pag = activate.vertices(pag, onset=1:n, terminus = rep(Inf,n))
+
+slice.par<-list(start=1,end=n,interval=1,
+                aggregate.dur=1,rule='earliest')
+pag = reconcile.vertex.activity(pag)
+pag = reconcile.edge.activity(pag)
+
+
+layout_static <- gplot.layout.kamadakawai(pag, layout.par = NULL)
+pag = set.vertex.attribute(pag, "x", layout_static[,1])
+pag = set.vertex.attribute(pag, "y", layout_static[,2])
+pag = compute.animation(pag,
+                  seed.coords = layout_static,
+                  animation.mode = 'useAttribute',
+                  slice.par = list(start = 1, end = n, interval = 1, aggregate.dur = 1, rule = 'latest'))
+
+
+render.d3movie(pag,
+               verbose = FALSE,
+               output.mode = 'inline',
+               d3.options = list(animateOnLoad=TRUE, slider=FALSE, durationControl=FALSE, margin=list(x=0,y=0),
+                                 ani.height=100, ani.width=100),
+               vertex.col = '#da1a35',
+               displaylabels = FALSE,
+               bg = '#f1f1f1',
+               vertex.cex = 1,
+               vertex.lwd = 0,
+               durationControl = FALSE,
+               ani.height = 100,
+               ain.width=100,
+               main='Preferential Attachment (PA)',
+               slice.par = list(start = 1, end = n, interval = 1, aggregate.dur = 1, rule = 'latest'))
+
+
+```
+
+```{r, fig.height="100px", fig.asp=1, results='asis'}
+
+p_retain <- 0.6
+ddg <- network.initialize(n, directed = FALSE)
+
+# Activate the first two nodes
+ddg = activate.vertices(ddg, onset = 1, terminus = Inf, v = c(1, 2))
+ddg = add.edges.active(ddg, tail = 1, head = 2, onset = 2, terminus = Inf)
+
+# Duplication-Divergence process
+for (new_node in 3:n) {
+  parent <- sample(1:(new_node - 1), 1)
+  neighbors <- get.neighborhood(ddg, parent)
+  
+  retained <- neighbors[runif(length(neighbors)) < p_retain]
+  
+  # Activate the new node
+  ddg = activate.vertices(ddg, onset = new_node, terminus = Inf, v = new_node)
+  
+  for (neighbor in retained) {
+    ddg = add.edges.active(ddg,
+                     tail = new_node,
+                     head = neighbor,
+                     onset = new_node + 1,
+                     terminus = Inf)
+  }
+  
+  if (runif(1) < 0.3 && !(parent %in% retained)) {
+    ddg = add.edges.active(ddg,
+                     tail = new_node,
+                     head = parent,
+                     onset = new_node + 1,
+                     terminus = Inf)
+  }
+}
+
+# Set static layout coordinates
+coords <- gplot.layout.fruchtermanreingold(ddg, layout.par = NULL)
+ddg = set.vertex.attribute(ddg, "x", coords[,1])
+ddg = set.vertex.attribute(ddg, "y", coords[,2])
+
+# Animate with static coordinates
+ddg = compute.animation(ddg,
+                  animation.mode = "useAttribute",
+                  slice.par = list(start = 1, end = n, interval = 1,
+                                   aggregate.dur = 1, rule = 'latest'))
+
+
+render.d3movie(ddg,
+               verbose = FALSE,
+               output.mode = 'inline',
+               d3.options = list(animateOnLoad=TRUE, slider=FALSE, durationControl=FALSE, margin=list(x=0,y=0),
+                                 ani.height=100, ani.width=100),
+               vertex.col = '#da1a35',
+               displaylabels = FALSE,
+               bg = '#f1f1f1',
+               vertex.cex = 1,
+               vertex.lwd = 0,
+               durationControl = FALSE,
+               ani.height = 100,
+               ain.width=100,
+               main='Duplication Divergence',
+               slice.par = list(start = 1, end = n, interval = 1, aggregate.dur = 1, rule = 'latest'))
+
+```
+
+
+:::
+
+## Preferential Attachment
+
+::::{.columns}
+
+:::{.column width=30%}
+```{r, fig.height="100px", fig.asp=1, results='asis'}
+n =  100
+g_igraph <- sample_pa(n, directed = FALSE)
+
+
+el = as_edgelist(g_igraph)
+pag <- network.initialize(n)
+
+add.edges.active(pag, tail = el[,2], head=el[,1], onset = 2:(nrow(el)+1), terminus = rep(Inf, nrow(el)))
+activate.vertices(pag, onset=1:n, terminus = rep(Inf,n))
+
+slice.par<-list(start=1,end=n,interval=1,
+                aggregate.dur=1,rule='earliest')
+reconcile.vertex.activity(pag)
+reconcile.edge.activity(pag)
+
+
+layout_static <- gplot.layout.kamadakawai(pag, layout.par = NULL)
+set.vertex.attribute(pag, "x", layout_static[,1])
+set.vertex.attribute(pag, "y", layout_static[,2])
+compute.animation(pag,
+                  seed.coords = layout_static,
+                  animation.mode = 'useAttribute',
+                  slice.par = list(start = 1, end = n, interval = 1, aggregate.dur = 1, rule = 'latest'))
+
+
+render.d3movie(pag,
+               verbose = FALSE,
+               output.mode = 'inline',
+               d3.options = list(animateOnLoad=TRUE, slider=FALSE, durationControl=FALSE, margin=list(x=0,y=0),
+                                 ani.height=100, ani.width=100, loop=TRUE),
+               vertex.col = '#da1a35',
+               displaylabels = FALSE,
+               bg = '#f1f1f1',
+               vertex.cex = 1,
+               vertex.lwd = 0,
+               durationControl = FALSE,
+               ani.height = 100,
+               ain.width=100,
+               loop=TRUE,
+               slice.par = list(start = 1, end = n, interval = 1, aggregate.dur = 1, rule = 'latest'))
+
+
+```
+:::
+
+:::{.column width=70%}
+### Steps
+
+1. Node added to network
+2. Connects to existing nodes with weights $\pi_i$:
+$$
+\pi_i\propto b(k_i),
+$$
+where $k_i$ is degree of node $i$.
+:::
+
+::::
+
+## Preference Function {auto-animate=true} 
+
+
+::: {style="text-align: center;font-size: 125%  !important;"}
+$$
+\begin{gather}
+b(k) = k^\alpha
+\end{gather}
+$$
+:::
+
+
+::::{.columns}
+
+:::{.column width=8%}
+
+```{r, warning=FALSE, message=FALSE, error=FALSE, fig.align='center', fig.show='hide'}
+
+x = seq(0,50,length.out=100)
+y1 = twbfn::ppa_pref(x, 0.2, 1, 1e4)
+y2 = twbfn::ppa_pref(x, 1, 1, 1e4)
+y3 = twbfn::ppa_pref(x, 5, 1, 1e4)
+
+df = data.frame(x=x, y1,y2,y3)
+
+p1 = ggplot(data=df, aes(x=x)) + geom_line(aes(y=y1), colour='darkred',linewidth=3)+ theme_void() +theme(aspect.ratio = 1,plot.background = element_rect(fill="#f1f1f1", color = NA),panel.background = element_rect(fill="#f1f1f1", color = NA),axis.title=element_blank())
+p2 = ggplot(data=df, aes(x=x)) + geom_line(aes(y=y2), colour='darkred',linewidth=3)+ theme_void() +theme(aspect.ratio = 1,plot.background = element_rect(fill="#f1f1f1", color = NA),panel.background = element_rect(fill="#f1f1f1", color = NA),axis.title=element_blank())
+p3 = ggplot(data=df, aes(x=x)) + geom_line(aes(y=y3), colour='darkred',linewidth=3)+ theme_void() +theme(aspect.ratio = 1,plot.background = element_rect(fill="#f1f1f1", color = NA),panel.background = element_rect(fill="#f1f1f1", color = NA),axis.title=element_blank())
+
+g = gridExtra::arrangeGrob(p1,p2,p3,nrow=3, respect=T)
+
+```
+
+```{r, warning=FALSE, message=FALSE, error=FALSE, fig.align='center', fig.show='hide'}
+print(cowplot::ggdraw(g) + theme(plot.background = element_rect(fill="#f1f1f1", color = NA)))
+```
+
+
+```{r, warning=FALSE, message=FALSE, error=FALSE, fig.align='center', fig.asp=1}
+p1
+```
+
+:::
+
+:::{.column width='45%'}
+:::
+
+:::{.column width=45%}
+
+$0\le\alpha<1$ : not scale-free network
+:::
+
+
+:::{.column width=8% }
+```{r, warning=FALSE, message=FALSE, error=FALSE, fig.align='center', fig.asp=1}
+p2
+```
+:::
+
+:::{.column width='45%'}
+:::
+
+:::{.column width=45%}
+
+$0\le\alpha<1$ : scale-free network
+:::
+
+:::{.column width=8%}
+```{r, warning=FALSE, message=FALSE, error=FALSE, fig.align='center', fig.asp=1}
+p3
+```
+:::
+
+:::{.column width='45%'}
+:::
+
+:::{.column width=45%}
+
+$0\le\alpha<1$ : "winner takes all"
+:::
+::::
+
+
+## Mechanistic Models
+
+
+:::{.columns}
+
+::::{.column width=45%}
+### + {style="text-align: center;font-size: 200%  !important;"}
+
+- Can achieve complex behaviour with simple rules
+- Can gain insight into individual behaviour
+- If able to fit, can create predictions for network growth
+
+::::
+
+::::{.column width=10%}
+::::
+
+::::{.column width=45%}
+### - {style="text-align: center;font-size: 200%  !important;"}
+
+- Can be hard to fit, full evolution often not available
+
+::::
+:::
+
+## Modelling Degrees
+
+
+:::{.columns}
+::::{.column width=33%}
+#### Power Law
+```{r, fig.asp=1}
+dat_list = readRDS('results/dat_list.rds')
+asc = dat_list[[1]]
+
+asc_surv = twbfn::deg_surv(counts_to_degs(asc))
+asc_plt = ggplot() + geom_point(data=asc_surv,aes(x=degree, y=surv)) + scale_x_log10() + scale_y_log10(limits=c(min(asc_surv[-nrow(asc_surv),2]),1))
+
+a = 1.8
+x = 1:40
+y = x^-a / (sum((1:1e4)^-a))
+
+asc_plt + geom_line(data=NULL,aes(x=x, y=y), colour='red')
+```
+
+::::
+::::{.column width=33%}
+#### Tail Estimation
+
+```{r, fig.asp=1}
+fl = dat_list[[8]]
+fl_surv = twbfn::deg_surv(counts_to_degs(fl))
+fl_plt = ggplot() + geom_point(data=fl_surv,aes(x=degree, y=surv)) + scale_x_log10() + scale_y_log10(limits=c(min(fl_surv[-nrow(fl_surv),2]),1))
+
+x = 50:500
+y = evd::pgpd(x, loc=50, scale=43.8, shape = -0.1157, lower.tail=F)*fl_surv$surv[fl_surv$degree>=50][1]
+fl_plt = fl_plt + geom_line(data=NULL,aes(x=x, y=y), colour='red')
+fl_plt
+```
+
+::::
+::::{.column width=33%}
+#### Mixture Model
+```{r, fig.asp=1, cache=TRUE, echo=FALSE,results='hide',fig.keep='all'}
+library(crandep)
+
+rea = dat_list[[10]]
+rea_surv = twbfn::deg_surv(counts_to_degs(rea))
+rea_plt = ggplot() + geom_point(data=rea_surv,aes(x=degree, y=surv)) + scale_x_log10() + scale_y_log10(limits=c(min(rea_surv[-nrow(rea_surv),2]),1))
+
+rea_counts= twbfn::deg_count(counts_to_degs(rea))
+rea_counts$degree = as.integer(rea_counts$degree)
+rea_counts$count = as.integer(rea_counts$count)
+names(rea_counts) = c('x','count')
+rea_fit = mcmc_mix2_wrapper(rea_counts, seed=3234L,iter=1000L, u_max=100L, burn=1000L)
+
+rea_plt  = rea_plt + geom_line(data=rea_fit$fitted, aes(x=x, y=S_med), col='red') + geom_vline(aes(xintercept = median(rea_fit$pars$u)), lty=2, col='red')
+
+rea_plt
+
+```
+::::
+:::
+
+
+
+## Mixture Model [@Lee24]
+
+
+:::{.columns}
+
+
+::::{.column width=25%}
+```{r, fig.asp=1, cache=TRUE, echo=FALSE,results='hide',fig.keep='all'}
+rea_plt
+```
+::::
+
+::::{.column width=10%}
+::::
+
+::::{.column width=65%}
+[**Zipf-Polylog until threshold**]{.underline}
+
+$$
+f(k) \propto x^{-\alpha} \theta^x, \qquad x=1, 2, \ldots, u
+$$
+
+[**Discrete Generalised Pareto after**]{.underline}
+
+$$
+f(k)\propto 1-\left(1+\frac{\xi(k-u)}{\sigma +\xi u}\right)_+^{-1/\xi}, \qquad x=u+1, u+2,\ldots
+$$
+::::
+:::
+
+
+## Modelling Degrees
+
+
+:::{.columns}
+
+::::{.column width=45%}
+### + {style="text-align: center;font-size: 200%  !important;"}
+
+- Easy to fit
+- Learn about (in)equality between nodes
+
+::::
+
+::::{.column width=10%}
+::::
+
+::::{.column width=45%}
+### - {style="text-align: center;font-size: 200%  !important;"}
+
+- Learn nothing about network growth
+- Degrees aren't everything
+
+::::
+:::
+
+## Returning to Preferential Attachment
+
+Propose preference function of the form:
+
+$$
+b(k) = \begin{cases}
+k^\alpha + \varepsilon, &k\le k_0,\\
+(k_0^\alpha + \varepsilon) + \beta(k-k_0), &k\ge k_0.
+\end{cases}
+$$
+
+```{r, warning=FALSE, message=FALSE, error=FALSE, fig.align='center', fig.show='hide'}
+
+x = seq(0,50,length.out=100)
+y1 = twbfn::ppa_pref(x, 1.5, 1, 25)
+y2 = twbfn::ppa_pref(x, 0.5, 0.2, 30)
+y3 = twbfn::ppa_pref(x, 1, 0.5, 25)
+y4 = twbfn::ppa_pref(x, 1, 2, 25)
+y5 = twbfn::ppa_pref(x, 0.5, 0.03, 25)
+
+
+df = data.frame(x=x, y1,y2,y3,y4,y5)
+
+p1 = ggplot(data=df, aes(x=x)) + geom_line(aes(y=y1), colour='darkred',linewidth=3)+ theme_void() +theme(aspect.ratio = 1) 
+p2 = ggplot(data=df, aes(x=x)) + geom_line(aes(y=y2), colour='darkred',linewidth=3)+ theme_void() +theme(aspect.ratio = 1) 
+p3 = ggplot(data=df, aes(x=x)) + geom_line(aes(y=y3), colour='darkred',linewidth=3)+ theme_void() +theme(aspect.ratio = 1) 
+p4 = ggplot(data=df, aes(x=x)) + geom_line(aes(y=y4), colour='darkred',linewidth=3)+ theme_void() +theme(aspect.ratio = 1) 
+
+p5 = ggplot(data=df, aes(x=x)) + geom_line(aes(y=y5), colour='darkred',linewidth=3)+ theme_void() +theme(aspect.ratio = 1) 
+g = gridExtra::grid.arrange(p1,p2,p3,p4,p5,nrow=1, respect=T)
+```
+
+```{r, warning=FALSE, message=FALSE, error=FALSE, fig.align='center', fig.asp=0.2}
+print(cowplot::ggdraw(g) + theme(plot.background = element_rect(fill="#f1f1f1", color = NA)))
+```
+
+## Limiting Degree Distribution [@rudas07]
+
+$$
+\bar F(k) = \prod_{i=0}^k\frac{b(i)}{\lambda^* + b(i)},\qquad k=0,1,2,\ldots
+$$
+
+- Heavy-tailed for all parameter choices
+
+- Allows sub/super-linear behaviour
+
+- Tail over $k_0$ approximately discrete GP
+
+## Fitting Simulated Data
+
+:::{.columns}
+
+::::{.column width='50%'}
+```{r, fig.asp=1, fig.dpi=400, cache=TRUE, out.width='95%'}
+
+library(ggridges)
+
+recover_pars = readRDS('results/recovery_pars.rds')
+recovery_list = readRDS('results/recovery_dat.rds')
+
+thin.by = 5
+selected = c(
+  which(recover_pars$a%in%c(0.5,1,1.5) & 
+          recover_pars$eps%in%c(0.5,1.0) &
+          recover_pars$b%in%c(1.0,1.5))
+)
+
+selected = unique(selected)
+full_pars = recovery_list[[selected[i]]]$mcmc$smps
+
+
+for(i in 2:length(selected)){
+  full_pars = rbind(full_pars, recovery_list[[selected[i]]]$mcmc$smps)
+}
+
+library(latex2exp)
+library(ggridges)
+labeller = label_bquote(cols = `epsilon`==.(true_eps),rows = `alpha`==.(true_a))
+pa = ggplot(data=full_pars) + geom_density_ridges(aes(x=a,y=as.character(true_b), fill = as.character(true_b))) + geom_point(aes(x=true_a, y=as.character(true_b)))+xlim(0,2)+
+  xlab(TeX('\\alpha'))+ylab(TeX(''))+labs(fill=TeX('\\beta'))+
+  facet_grid(true_a~true_eps ,labeller=labeller, scales='fixed')+ theme(aspect.ratio = .5,axis.title.y=element_blank(),
+                                                                       axis.text.y=element_blank(),
+                                                                       axis.ticks.y=element_blank()) + theme_bw()
+
+labeller = label_bquote(cols = `epsilon`==.(true_eps),rows = `alpha`==.(true_a))
+peps = ggplot(data=full_pars) + geom_density_ridges(aes(x=eps,y=as.character(true_b), fill = as.character(true_b))) +geom_point(aes(x=true_eps, y=as.character(true_b)))+
+  xlab(TeX('\\epsilon'))+ylab(TeX(''))+labs(fill=TeX('\\beta'))+
+  facet_grid(true_a~true_eps ,labeller=labeller, scales='fixed')+ theme(aspect.ratio = .5,axis.title.y=element_blank(),
+                                                                       axis.text.y=element_blank(),
+                                                                       axis.ticks.y=element_blank()) + theme_bw()
+
+labeller = label_bquote(cols = `epsilon`==.(true_eps),rows = `alpha`==.(true_a))
+pk0 = ggplot(data=full_pars) + stat_binline(aes(x=k0,y=as.character(true_b), fill = as.character(true_b)),binwidth = 1) +geom_point(aes(x=true_k0, y=as.character(true_b)))+
+  xlab(TeX('$k_0$'))+ylab(TeX(''))+labs(fill=TeX('\\beta'))+xlim(0,200)+
+  facet_grid(true_a~true_eps ,labeller=labeller, scales='fixed')+ theme(aspect.ratio = .5,axis.title.y=element_blank(),
+                                                                       axis.text.y=element_blank(),
+                                                                       axis.ticks.y=element_blank()) + theme_bw()
+
+labeller = label_bquote(cols = `epsilon`==.(true_eps),rows = `alpha`==.(true_a))
+pb=ggplot(data=full_pars) + geom_density_ridges(aes(x=b,y=as.character(true_b), fill = as.character(true_b))) +geom_point(aes(x=true_b, y=as.character(true_b)))+
+  xlab(TeX('\\beta'))+ylab('')+labs(fill=TeX('\\beta'))+
+  facet_grid(true_a~true_eps ,labeller=labeller, scales='fixed') + theme(aspect.ratio = .5,axis.title.y=element_blank(),
+                                                                        axis.text.y=element_blank(),
+                                                                        axis.ticks.y=element_blank()) + theme_bw()
+full_plot = ggpubr::ggarrange(pa,peps,pk0,pb,common.legend = T, nrow=2,ncol=2,legend='right')
+
+
+cowplot::ggdraw(full_plot)
+
+
+```
+::::
+
+::::{.column width=50%}
+
+- Networks simulated with 100,000 nodes
+
+- Various parameter choices
+
+- Seems to recover parameters from degrees alone
+
+::::
+
+:::
+## Real Data
+
+[description of data sets, add icon so can be easily tracked to next slides]
+
+1. as-caida
+
+2. open-flights
+
+3. reactome
+
+
+## Fitting to Real Data
+
+[show posterior survival and  mixture model and data on sample plot]
+
+## Bonus Information
+
+[show posterior preference functions, not obtained normally when modelling degrees]
+
+## Summary
+
+[presented a model for degree distributions that may shed light on how a network grew, 
+using a preference function that generates realistic tail behaviour]
+
+[theory used is for trees, so the bonus information may only really applicable for tree-like networks]
+
+
+
+## 
+
+#### Thank you for listening! {style="text-align: center;font-size: 200%  !important;"}
+
+
+![](images/transparent.png){width=20%}
+![](images/ncl-logo2.png){width=20%}
+
+
+:::{.columns}
+##### Contacts {style="text-align: center;font-size: 75%  !important;"}
+::::{.column width=33%}
+:::::{style="text-align: center;font-size: 50%  !important;"}
+Thomas Boughen*
+
+(t.w.boughen1@ncl.ac.uk)
+:::::
+::::
+
+::::{.column width=34%}
+:::::{style="text-align: center;font-size: 50%  !important;"}
+
+Clement Lee
+
+(Clement.Lee@ncl.ac.uk)
+:::::
+::::
+::::{.column width=33%}
+:::::{style="text-align: center;font-size: 50%  !important;"}
+
+Vianey Palacios Ramirez
+
+(vianey.palacios-ramirez@ncl.ac.uk)
+:::::
+::::
+
+
+
+
+
+
+
+
+
+
+:::
+
+
+
+
+
+
+
+
+
+
+## References
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

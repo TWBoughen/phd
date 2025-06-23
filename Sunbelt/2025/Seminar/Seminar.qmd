@@ -44,7 +44,7 @@ library(network)
 library(networkDynamic)
 library(ndtv)
 library(intergraph)
-n =  100
+n =  10
 g_igraph <- sample_pa(n, directed = FALSE)
 el = as_edgelist(g_igraph)
 g_net <- network.initialize(n)
