@@ -405,11 +405,6 @@ b(k) = k^\alpha
 $$
 :::
 
-
-::::{.columns}
-
-:::{.column width=8%}
-
 ```{r, warning=FALSE, message=FALSE, error=FALSE, fig.align='center', fig.show='hide'}
 
 x = seq(0,50,length.out=100)
@@ -427,54 +422,51 @@ g = gridExtra::arrangeGrob(p1,p2,p3,nrow=3, respect=T)
 
 ```
 
-```{r, warning=FALSE, message=FALSE, error=FALSE, fig.align='center', fig.show='hide'}
-print(cowplot::ggdraw(g) + theme(plot.background = element_rect(fill="#f1f1f1", color = NA)))
-```
+:::{.columns}
 
+::::{.column style="text-align:center; width:33%;"}
 
-```{r, warning=FALSE, message=FALSE, error=FALSE, fig.align='center', fig.asp=1}
+$0<\alpha<1$
+
+```{r, fig.asp=1, fig.dpi=30, out.width="50%"}
 p1
+
 ```
 
-:::
-
-:::{.column width='45%'}
-:::
-
-:::{.column width=45%}
-
-$0\le\alpha<1$ : not scale-free network
-:::
-
-
-:::{.column width=8% }
-```{r, warning=FALSE, message=FALSE, error=FALSE, fig.align='center', fig.asp=1}
-p2
-```
-:::
-
-:::{.column width='45%'}
-:::
-
-:::{.column width=45%}
-
-$0\le\alpha<1$ : scale-free network
-:::
-
-:::{.column width=8%}
-```{r, warning=FALSE, message=FALSE, error=FALSE, fig.align='center', fig.asp=1}
-p3
-```
-:::
-
-:::{.column width='45%'}
-:::
-
-:::{.column width=45%}
-
-$0\le\alpha<1$ : "winner takes all"
-:::
+Not scale-free
 ::::
+
+::::{.column style="text-align:center; width:33%;"}
+
+$\alpha=1$
+
+```{r, fig.asp=1, fig.dpi=30, out.width="50%"}
+p2
+
+```
+
+Scale-free
+
+::::
+
+::::{.column style="text-align:center; width:33%;"}
+
+$\alpha>1$
+
+```{r, fig.asp=1, fig.dpi=30, out.width="50%"}
+p3
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+```
+
+Winner takes all
+
+::::
+
+:::
+
+
+
+
 
 
 ## Mechanistic Models
@@ -508,9 +500,16 @@ $0\le\alpha<1$ : "winner takes all"
 :::{.columns}
 ::::{.column width=33%}
 #### Power Law
-```{r, fig.asp=1}
+```{r, fig.asp=1, out.width="75%", fig.dpi=50}
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+
 dat_list = readRDS('results/dat_list.rds')
 asc = dat_list[[1]]
+newtheme = theme(aspect.ratio = 1, axis.title.x = element_blank(), axis.title.y =element_blank(), legend.position = 'none',
+          text = element_text(size = 20),plot.background = element_rect(fill="#f1f1f1", color = NA),
+          panel.background = element_rect(fill="#f1f1f1", color = NA),
+          plot.margin=grid::unit(c(0,0,0,0), "mm"))
+
 
 asc_surv = twbfn::deg_surv(counts_to_degs(asc))
 asc_plt = ggplot() + geom_point(data=asc_surv,aes(x=degree, y=surv)) + scale_x_log10() + scale_y_log10(limits=c(min(asc_surv[-nrow(asc_surv),2]),1))
@@ -519,14 +518,16 @@ a = 1.8
 x = 1:40
 y = x^-a / (sum((1:1e4)^-a))
 
-asc_plt + geom_line(data=NULL,aes(x=x, y=y), colour='red')
+asc_plt + geom_line(data=NULL,aes(x=x, y=y), colour='red')+newtheme
 ```
 
 ::::
 ::::{.column width=33%}
 #### Tail Estimation
 
-```{r, fig.asp=1}
+```{r, fig.asp=1, out.width="75%", fig.dpi=50}
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+
 fl = dat_list[[8]]
 fl_surv = twbfn::deg_surv(counts_to_degs(fl))
 fl_plt = ggplot() + geom_point(data=fl_surv,aes(x=degree, y=surv)) + scale_x_log10() + scale_y_log10(limits=c(min(fl_surv[-nrow(fl_surv),2]),1))
@@ -534,14 +535,15 @@ fl_plt = ggplot() + geom_point(data=fl_surv,aes(x=degree, y=surv)) + scale_x_log
 x = 50:500
 y = evd::pgpd(x, loc=50, scale=43.8, shape = -0.1157, lower.tail=F)*fl_surv$surv[fl_surv$degree>=50][1]
 fl_plt = fl_plt + geom_line(data=NULL,aes(x=x, y=y), colour='red')
-fl_plt
+fl_plt+newtheme
 ```
 
 ::::
 ::::{.column width=33%}
 #### Mixture Model
-```{r, fig.asp=1, cache=TRUE, echo=FALSE,results='hide',fig.keep='all'}
+```{r, fig.asp=1, cache=TRUE, echo=FALSE,results='hide',fig.keep='all', out.width="75%", fig.dpi=50}
 library(crandep)
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
 
 rea = dat_list[[10]]
 rea_surv = twbfn::deg_surv(counts_to_degs(rea))
@@ -555,7 +557,7 @@ rea_fit = mcmc_mix2_wrapper(rea_counts, seed=3234L,iter=1000L, u_max=100L, burn=
 
 rea_plt  = rea_plt + geom_line(data=rea_fit$fitted, aes(x=x, y=S_med), col='red') + geom_vline(aes(xintercept = median(rea_fit$pars$u)), lty=2, col='red')
 
-rea_plt
+rea_plt+newtheme
 
 ```
 ::::
@@ -563,32 +565,32 @@ rea_plt
 
 
 
-## Mixture Model [@Lee24]
+## Mixture Model [@Lee24] {.center}
 
 
 :::{.columns}
 
 
 ::::{.column width=25%}
-```{r, fig.asp=1, cache=TRUE, echo=FALSE,results='hide',fig.keep='all'}
-rea_plt
+```{r, fig.asp=1, cache=TRUE, echo=FALSE,results='hide',fig.keep='all', out.width="90%", fig.dpi=50}
+rea_plt+newtheme
 ```
 ::::
 
-::::{.column width=10%}
+::::{.column width=5%}
 ::::
 
-::::{.column width=65%}
-[**Zipf-Polylog until threshold**]{.underline}
+::::{.column width=70%}
+[**Zipf-Polylog**]{.underline}
 
 $$
 f(k) \propto x^{-\alpha} \theta^x, \qquad x=1, 2, \ldots, u
 $$
 
-[**Discrete Generalised Pareto after**]{.underline}
+[**Integer Generalised Pareto**]{.underline}
 
 $$
-f(k)\propto 1-\left(1+\frac{\xi(k-u)}{\sigma +\xi u}\right)_+^{-1/\xi}, \qquad x=u+1, u+2,\ldots
+f(k)\propto 1-\left(1+\frac{\xi(k-u)}{\sigma +\xi u}\right)_+^{-1/\xi}, \qquad x=u+1,\ldots
 $$
 ::::
 :::
@@ -619,7 +621,7 @@ $$
 ::::
 :::
 
-## Returning to Preferential Attachment
+## Returning to Preferential Attachment {.center}
 
 Propose preference function of the form:
 
@@ -631,6 +633,7 @@ k^\alpha + \varepsilon, &k\le k_0,\\
 $$
 
 ```{r, warning=FALSE, message=FALSE, error=FALSE, fig.align='center', fig.show='hide'}
+#| fig-cap: Example of preference function shapes
 
 x = seq(0,50,length.out=100)
 y1 = twbfn::ppa_pref(x, 1.5, 1, 25)
@@ -655,24 +658,99 @@ g = gridExtra::grid.arrange(p1,p2,p3,p4,p5,nrow=1, respect=T)
 print(cowplot::ggdraw(g) + theme(plot.background = element_rect(fill="#f1f1f1", color = NA)))
 ```
 
-## Limiting Degree Distribution [@rudas07]
+## Limiting Degree Distribution [@rudas07] {.center}
 
+
+
+:::{.columns}
+
+
+::::{.column width="40%"}
 $$
-\bar F(k) = \prod_{i=0}^k\frac{b(i)}{\lambda^* + b(i)},\qquad k=0,1,2,\ldots
+\bar F(k) = \prod_{i=0}^k\frac{b(i)}{\lambda^* + b(i)}
 $$
 
+::::
+
+::::{.column width="60%"}
 - Heavy-tailed for all parameter choices
 
 - Allows sub/super-linear behaviour
 
 - Tail over $k_0$ approximately discrete GP
 
+::::
+
+:::
+
+
 ## Fitting Simulated Data
 
-:::{.columns}
+::::{.columns}
 
-::::{.column width='50%'}
-```{r, fig.asp=1, fig.dpi=400, cache=TRUE, out.width='95%'}
+:::{.column width=30%}
+
+```{r, fig.height="100px", fig.asp=1, results='asis'}
+n =  100
+g_igraph <- sample_pa(n, directed = FALSE)
+
+
+el = as_edgelist(g_igraph)
+pag <- network.initialize(n)
+
+add.edges.active(pag, tail = el[,2], head=el[,1], onset = 2:(nrow(el)+1), terminus = rep(Inf, nrow(el)))
+activate.vertices(pag, onset=1:n, terminus = rep(Inf,n))
+
+slice.par<-list(start=1,end=n,interval=1,
+                aggregate.dur=1,rule='earliest')
+reconcile.vertex.activity(pag)
+reconcile.edge.activity(pag)
+
+
+layout_static <- gplot.layout.kamadakawai(pag, layout.par = NULL)
+set.vertex.attribute(pag, "x", layout_static[,1])
+set.vertex.attribute(pag, "y", layout_static[,2])
+compute.animation(pag,
+                  seed.coords = layout_static,
+                  animation.mode = 'useAttribute',
+                  slice.par = list(start = 1, end = n, interval = 1, aggregate.dur = 1, rule = 'latest'))
+
+
+render.d3movie(pag,
+               verbose = FALSE,
+               output.mode = 'inline',
+               d3.options = list(animateOnLoad=TRUE, slider=FALSE, durationControl=FALSE, margin=list(x=0,y=0),
+                                 ani.height=100, ani.width=100, loop=TRUE),
+               vertex.col = '#da1a35',
+               displaylabels = FALSE,
+               bg = '#f1f1f1',
+               vertex.cex = 1,
+               vertex.lwd = 0,
+               durationControl = FALSE,
+               ani.height = 100,
+               ain.width=100,
+               loop=TRUE,
+               slice.par = list(start = 1, end = n, interval = 1, aggregate.dur = 1, rule = 'latest'))
+
+
+```
+:::
+
+:::{.column width=70%}
+### Simulating data
+
+- 100,000 nodes
+- 36 parameter combinations
+- $k_0$ fixed at $20$
+- Only using final degrees
+:::
+::::
+
+```{r, fig.asp=0.5, fig.dpi=100, cache=FALSE, out.width='75%', message=FALSE}
+
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+
+
 
 library(ggridges)
 
@@ -682,102 +760,325 @@ recovery_list = readRDS('results/recovery_dat.rds')
 thin.by = 5
 selected = c(
   which(recover_pars$a%in%c(0.5,1,1.5) & 
-          recover_pars$eps%in%c(0.5,1.0) &
-          recover_pars$b%in%c(1.0,1.5))
+          recover_pars$eps%in%c(0.1,0.5,1.0) &
+          recover_pars$b%in%c(0.1,0.5,1.0,1.5))
 )
 
 selected = unique(selected)
-full_pars = recovery_list[[selected[i]]]$mcmc$smps
+full_pars = recovery_list[[1]]$mcmc$smps
 
 
-for(i in 2:length(selected)){
-  full_pars = rbind(full_pars, recovery_list[[selected[i]]]$mcmc$smps)
+for(i in 2:length(recovery_list)){
+  full_pars = rbind(full_pars, recovery_list[[i]]$mcmc$smps)
 }
-
+newtheme =  theme(aspect.ratio = 1, axis.title.x = element_blank(), axis.title.y =element_blank(), legend.position = 'none',
+          text = element_text(size = 20),plot.background = element_rect(fill="#f1f1f1", color = NA),
+          panel.background = element_rect(fill="#f1f1f1", color = NA), legend.background = element_rect(fill='#f1f1f1'),
+          element_text(angle = 90, vjust = 0.5, hjust=1))
 library(latex2exp)
 library(ggridges)
-labeller = label_bquote(cols = `epsilon`==.(true_eps),rows = `alpha`==.(true_a))
-pa = ggplot(data=full_pars) + geom_density_ridges(aes(x=a,y=as.character(true_b), fill = as.character(true_b))) + geom_point(aes(x=true_a, y=as.character(true_b)))+xlim(0,2)+
-  xlab(TeX('\\alpha'))+ylab(TeX(''))+labs(fill=TeX('\\beta'))+
-  facet_grid(true_a~true_eps ,labeller=labeller, scales='fixed')+ theme(aspect.ratio = .5,axis.title.y=element_blank(),
-                                                                       axis.text.y=element_blank(),
-                                                                       axis.ticks.y=element_blank()) + theme_bw()
+
 
 labeller = label_bquote(cols = `epsilon`==.(true_eps),rows = `alpha`==.(true_a))
 peps = ggplot(data=full_pars) + geom_density_ridges(aes(x=eps,y=as.character(true_b), fill = as.character(true_b))) +geom_point(aes(x=true_eps, y=as.character(true_b)))+
   xlab(TeX('\\epsilon'))+ylab(TeX(''))+labs(fill=TeX('\\beta'))+
-  facet_grid(true_a~true_eps ,labeller=labeller, scales='fixed')+ theme(aspect.ratio = .5,axis.title.y=element_blank(),
+  facet_grid(true_a~true_eps ,labeller=labeller, scales='fixed')+ theme(aspect.ratio = .3,axis.title.y=element_blank(),
                                                                        axis.text.y=element_blank(),
-                                                                       axis.ticks.y=element_blank()) + theme_bw()
+                                                                       axis.ticks.y=element_blank()) + theme_bw()+ newtheme+
+  scale_x_continuous(limits = c(0,1.5), breaks=c(0,0.5,1))
+  
 
 labeller = label_bquote(cols = `epsilon`==.(true_eps),rows = `alpha`==.(true_a))
 pk0 = ggplot(data=full_pars) + stat_binline(aes(x=k0,y=as.character(true_b), fill = as.character(true_b)),binwidth = 1) +geom_point(aes(x=true_k0, y=as.character(true_b)))+
   xlab(TeX('$k_0$'))+ylab(TeX(''))+labs(fill=TeX('\\beta'))+xlim(0,200)+
-  facet_grid(true_a~true_eps ,labeller=labeller, scales='fixed')+ theme(aspect.ratio = .5,axis.title.y=element_blank(),
+  facet_grid(true_a~true_eps ,labeller=labeller, scales='fixed')+ theme(aspect.ratio = 0.3,axis.title.y=element_blank(),
                                                                        axis.text.y=element_blank(),
-                                                                       axis.ticks.y=element_blank()) + theme_bw()
+                                                                       axis.ticks.y=element_blank()) + theme_bw()+ newtheme+
+  scale_x_continuous(limits = c(0,40), breaks=c(0,20,40))
 
 labeller = label_bquote(cols = `epsilon`==.(true_eps),rows = `alpha`==.(true_a))
 pb=ggplot(data=full_pars) + geom_density_ridges(aes(x=b,y=as.character(true_b), fill = as.character(true_b))) +geom_point(aes(x=true_b, y=as.character(true_b)))+
   xlab(TeX('\\beta'))+ylab('')+labs(fill=TeX('\\beta'))+
-  facet_grid(true_a~true_eps ,labeller=labeller, scales='fixed') + theme(aspect.ratio = .5,axis.title.y=element_blank(),
+  facet_grid(true_a~true_eps ,labeller=labeller, scales='fixed') + theme(aspect.ratio = .3,axis.title.y=element_blank(),
                                                                         axis.text.y=element_blank(),
-                                                                        axis.ticks.y=element_blank()) + theme_bw()
-full_plot = ggpubr::ggarrange(pa,peps,pk0,pb,common.legend = T, nrow=2,ncol=2,legend='right')
+                                                                        axis.ticks.y=element_blank()) + theme_bw() + newtheme+
+  scale_x_continuous(limits = c(0,2), breaks=c(0,1,2))
+# full_plot = ggpubr::ggarrange(pa,peps,pk0,pb,common.legend = T, nrow=2,ncol=2,legend='bottom' ) + ggpubr::bgcolor('#f1f1f1')
 
+labeller = label_bquote(cols = `epsilon`==.(true_eps),rows = `alpha`==.(true_a))
 
-cowplot::ggdraw(full_plot)
+pa = ggplot(data=full_pars) + geom_density_ridges(aes(x=a,y=as.character(true_b), fill = as.character(true_b))) + geom_point(aes(x=true_a, y=as.character(true_b)))+xlim(0,2)+
+  xlab(TeX('\\alpha'))+ylab(TeX(''))+labs(fill=TeX('\\beta'))+
+  facet_grid(true_a~true_eps ,labeller=labeller, scales='fixed')+ theme(aspect.ratio = .3,axis.title.y=element_blank(),
+                                                                       axis.text.y=element_blank(),
+                                                                       axis.ticks.y=element_blank()) + theme_bw()+ newtheme+
+  scale_x_continuous(limits = c(0,2), breaks=c(0,1,2))
 
 
 ```
-::::
 
-::::{.column width=50%}
+## The results
 
-- Networks simulated with 100,000 nodes
+#### $\alpha$ posterior {style="text-align: center;font-size: 200%  !important;"}
 
-- Various parameter choices
+```{r, fig.asp=.5, fig.dpi=100, cache=FALSE, out.width='75%', message=FALSE}
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
 
-- Seems to recover parameters from degrees alone
+pa
+```
+## The results
 
-::::
+#### $\varepsilon$ posterior {style="text-align: center;font-size: 200%  !important;"}
 
-:::
+```{r, fig.asp=.5, fig.dpi=100, cache=FALSE, out.width='75%', message=FALSE}
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+
+peps
+```
+
+## The results
+
+#### $k_0$ posterior {style="text-align: center;font-size: 200%  !important;"}
+
+
+```{r, fig.asp=.5, fig.dpi=100, cache=FALSE, out.width='75%', message=FALSE}
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+
+pk0
+```
+
+## The results
+
+#### $\beta$ posterior {style="text-align: center;font-size: 200%  !important;"}
+
+```{r, fig.asp=.5, cache=FALSE,fig.dpi=100, out.width='75%', message=FALSE}
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+
+pb
+```
+
+
+
+
 ## Real Data
 
-[description of data sets, add icon so can be easily tracked to next slides]
+:::{.columns}
 
-1. as-caida
+::::{.column style="width:33%;text-align:center;"}
+ {{< fa globe size=3x title=''>}}
+ 
+ Internet
+::::
 
-2. open-flights
+::::{.column style="width:33%;text-align:center;"}
+ {{< fa plane size=3x title=''>}}
+ 
+ Flights
+::::
 
-3. reactome
+::::{.column style="width:33%;text-align:center;"}
+ {{< fa y size=3x title=''>}}
+ 
+ Proteins
+::::
+:::
+
+:::{style="text-align:center;"}
+
+Data sourced from [Network Data Repository](https://networkrepository.com/)[@nr]
+
+We will fit the model and compare it to the mixture model.
+:::
+
+
 
 
 ## Fitting to Real Data
 
-[show posterior survival and  mixture model and data on sample plot]
+```{r, warning=FALSE}
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+mixfits = readRDS('results/mixfits.rds')
+fits = readRDS('results/modelfits.rds')
+nms = readRDS('results/nms.rds')
+plots = list()
+selected = c(1,8,10)
+
+for(j in 1:length(selected)){
+  i = selected[j]
+  udf = as.data.frame(table(fits[[i]]$smps$k0))
+  udf$Var1 = as.numeric(as.character(udf$Var1))
+  sdf = twbfn::deg_surv(counts_to_degs(dat_list[[i]]))
+  ptrunc = sdf$surv[sdf$degree==min(fits[[i]]$dat[,1])]
+  ptrunc_mix = sdf$surv[sdf$degree==min(mixfits[[i]]$data[,1])]
+  plots[[j]] = ggplot() + scale_x_log10(limits = c(1, max(dat_list[[i]][,1]))) + scale_y_log10(limits=c(1/sum(dat_list[[i]][,2]),1)) +
+    geom_segment(aes(x = jitter(!!fits[[i]]$smps$k0[seq(1,length(fits[[i]]$smps$k0),by=20)]),yend=0.5,y=1, colour='GPA'), alpha=0.1)+
+    geom_segment(data=NULL,aes(x = jitter(mixfits[[i]]$pars$u[seq(1,length(mixfits[[i]]$pars$u),by=20)]),yend=0.5,y=1, colour='Zipf-IGP'), alpha=0.5)+
+    geom_point(data = twbfn::deg_surv(counts_to_degs(dat_list[[i]])),aes(x=degree, y=surv))+
+    geom_line(aes(x=!!fits[[i]]$dat[,1],y=!!fits[[i]]$surv$est*!!ptrunc/fits[[i]]$surv$est[1], colour='GPA')) + 
+    geom_line(aes(x=!!fits[[i]]$dat[,1],y= !!fits[[i]]$surv$CI[1,]*!!ptrunc/fits[[i]]$surv$CI[1,1], colour='GPA'),linetype=2) + 
+    geom_line(aes(x=!!fits[[i]]$dat[,1],y= !!fits[[i]]$surv$CI[2,]*!!ptrunc/fits[[i]]$surv$CI[2,1], colour='GPA'),linetype=2)+
+    geom_line(data = mixfits[[i]]$fitted,aes(x=x, y=S_975*!!ptrunc_mix/S_975[1], colour='Zipf-IGP'), lty=2)+
+    geom_line(data = mixfits[[i]]$fitted,aes(x=x, y=S_025*!!ptrunc_mix/S_025[1], colour='Zipf-IGP'),lty=2)+
+    geom_line(data = mixfits[[i]]$fitted,aes(x=x, y=S_med*!!ptrunc_mix/S_med[1], colour='Zipf-IGP'))+
+    theme_minimal()+
+    labs(colour='Model')+theme(legend.position="bottom",legend.title=element_blank())
+ leg = get_legend(plots[[j]])
+ legplot = ggpubr::as_ggplot(leg)
+ plots[[j]] = plots[[j]] + theme(aspect.ratio = 1, axis.title.x = element_blank(), axis.title.y =element_blank(), legend.position = 'none',
+                      text = element_text(size = 20),plot.background = element_rect(fill="#f1f1f1", color = NA), panel.background = element_rect(fill="#f1f1f1", color = NA), plot.margin=grid::unit(c(0,0,0,0), "mm"))
+    
+}
+
+
+# comp_plot = ggpubr::ggarrange(plotlist = plots,common.legend = T,label.x = 'Degree', label.y = 'Survival',legend = 'bottom', nrow=1)
+
+```
+
+
+:::{.columns}
+
+::::{.column style="text-align: center; width:33%;"}
+
+{{<fa globe>}}
+```{r, warning=FALSE, fig.asp=1, fig.dpi=30}
+plots[[1]]
+```
+::::
+::::{.column style="text-align: center;width:33%;"}
+{{<fa plane>}}
+```{r, warning=FALSE, fig.asp=1, fig.dpi=30}
+plots[[2]]
+```
+
+```{r, fig.asp=0.5, fig.dpi=30}
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+legplot = ggplot(data.frame(x = c(1,1), y = c(1,1), colour = c('PA', 'Zipf-IGP')),
+       aes(x, y, fill = colour)) +
+  geom_point(shape = 21, size = 0) +  # use a shape that uses fill
+  guides(fill = guide_legend(override.aes = list(size = 10)))  +
+  theme(
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    legend.position = c(.5, .5),
+    legend.direction = 'horizontal',
+    legend.title = element_blank(),
+    legend.text = element_text(size = 30),
+    legend.key = element_rect(fill = '#f1f1f1'),
+    panel.grid = element_blank(),
+    plot.background = element_rect(fill='#f1f1f1'),
+    panel.background = element_rect(fill='#f1f1f1'),
+    plot.margin=grid::unit(c(0,0,0,0), "mm"),
+    panel.border = element_rect(colour = "black", fill = '#f1f1f1', size = 0),
+    legend.background = element_rect(fill='#f1f1f1')
+  )
+```
+
+::::
+::::{.column style="text-align: center;width:33%;"}
+{{<fa y>}}
+```{r, warning=FALSE, fig.asp=1, fig.dpi=30}
+plots[[3]]
+```
+::::
+:::
+
+```{r, fig.dpi=70}
+legplot
+```
 
 ## Bonus Information
 
-[show posterior preference functions, not obtained normally when modelling degrees]
+```{r, warning=FALSE}
+pref = function(pars,x){
+  return(ifelse(x<=pars[3], x^pars[1] + pars[2], pars[3]^pars[1] + pars[2] + pars[4]*(x-pars[3])))
+}
+plts = list()
+for(j in 1:length(selected)){
+  i = selected[j]
+  pars = fits[[i]]$smps
+  x = fits[[i]]$dat$x
+  
+  plots  = list()
+  PA_overlay = ggplot()
+  
+  pref_mat = apply(pars, 1, pref, x = x)
+  pref_CI = apply(pref_mat, 1, quantile, prob =c(0.025, 0.5, 0.975))
+  
+  plts[[j]] = ggplot() +
+    geom_line(aes(x=!!x, y=!!pref_CI[3,]), lty=2)+
+    geom_line(aes(x=!!x, y=!!pref_CI[2,]))+
+    geom_line(aes(x=!!x, y=!!pref_CI[1,]), lty=2)+
+    theme(aspect.ratio = 1, axis.title.x = element_blank(), axis.title.y =element_blank(), legend.position = 'none',
+          text = element_text(size = 20),plot.background = element_rect(fill="#f1f1f1", color = NA),
+          panel.background = element_rect(fill="#f1f1f1", color = NA),
+          plot.margin=grid::unit(c(0,0,0,0), "mm"))
+}
 
-## Summary
 
-[presented a model for degree distributions that may shed light on how a network grew, 
-using a preference function that generates realistic tail behaviour]
+```
 
-[theory used is for trees, so the bonus information may only really applicable for tree-like networks]
+:::{.columns}
+
+::::{.column style="text-align: center; width:33%;"}
+{{<fa globe>}}
+
+```{r, warning=FALSE, fig.asp=1, fig.dpi=30}
+plts[[1]]
+```
+
+::::
+
+::::{.column style="text-align: center; width:33%;"}
+{{<fa plane>}}
+
+```{r, warning=FALSE, fig.asp=1, fig.dpi=30}
+plts[[2]]
+```
+::::
+
+::::{.column style="text-align: center; width:33%;"}
+{{<fa y>}}
+
+```{r, warning=FALSE, fig.asp=1, fig.dpi=30}
+plts[[3]]
+```
+::::
+
+:::
 
 
+
+
+## Conslusion
+
+### Summary
+
+- Preference function
+  - Guarantees flexible heavy tail
+  - Allows for sub/super-linear behaviour
+
+- Parameters can be recovered from degrees of snapshot
+- Performs similarly to existing degree modelling
+
+### Discussion
+
+- Could consider more than degrees
+- Model could be made more realistic
+- Results beyond trees?
 
 ## 
 
-#### Thank you for listening! {style="text-align: center;font-size: 200%  !important;"}
+#### Thank you for listening! {style="text-align: center;font-size: 150%  !important;"}
 
 
 ![](images/transparent.png){width=20%}
-![](images/ncl-logo2.png){width=20%}
+
+#### Preprint {style="text-align:center; font-size:80%;"}
+
+```{r, out.width="20%"}
+plot(qrcode::qr_code("https://arxiv.org/abs/2506.18726"), col=c('#f1f1f1',"#051435"))
+```
 
 
 :::{.columns}
@@ -807,24 +1108,9 @@ Vianey Palacios Ramirez
 :::::
 ::::
 
-
-
-
-
-
-
-
-
-
 :::
 
-
-
-
-
-
-
-
+![](images/ncl-logo2.png){width=20%}
 
 
 ## References

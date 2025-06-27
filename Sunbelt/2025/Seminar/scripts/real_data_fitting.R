@@ -139,9 +139,9 @@ plt = readRDS('real_survs.rds')
 
 # -------------------------------------------------------------------------
 
-mixfits = readRDS('mixfits.rds')
-fits = readRDS('fits.rds')
-nms = readRDS('nms.rds')
+mixfits = readRDS('../results/mixfits.rds')
+fits = readRDS('../results/real_mcmc.rds')
+nms = readRDS('../results/nms.rds')
 plts = list()
 for(j in 1:length(fits)){
   fit = fits[[j]]
@@ -154,11 +154,6 @@ for(j in 1:length(fits)){
     labs(fill='Model', x='',y='Shape')+ylim(0,1) +ggtitle(nms[j])
 }
 
-
-
-
-
-  
 shape_plt = ggpubr::ggarrange(plotlist = plts, common.legend = T, legend = 'right')
 saveRDS(shape_plt, 'shape_plt.rds')
 

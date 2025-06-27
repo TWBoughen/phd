@@ -73,8 +73,8 @@ saveRDS(fits, 'modelfits.rds')
 
 
 # saveRDS(fits,'modelfits.rds')
-mixfits = readRDS('mixfits.rds')
-dat_list = readRDS('dat_list.rds')
+mixfits = readRDS('../results/mixfits.rds')
+dat_list = readRDS('../results/dat_list.rds')
 real_survs = ggpubr::ggarrange(plotlist = plots)
 real_survs
 saveRDS(real_survs,'real_survs.rds')
@@ -102,7 +102,7 @@ mixfits[[i]] = crandep::mcmc_mix2_wrapper(df,seed=123L,burn=1e4L)
 # -------------------------------------------------------------------------
 
 
-mixfits  =readRDS('mixfits.rds')
+mixfits  =readRDS('../results/mixfits.rds')
 
 for(i in 1:length(mixfits)){
   udf = as.data.frame(table(mixfits[[i]]$pars$u))
@@ -131,7 +131,8 @@ mixplt = readRDS('mix_survs.rds')
 comp_plot = ggpubr::ggarrange(mixplt, real_survs,labels=c('Zipf-IGP', 'GPA'), ncol=1)
 
 saveRDS(comp_plot, 'comp_plot.rds')
-fits = readRDS('modelfits.rds')
+
+fits = readRDS('../results/modelfits.rds')
 plots = list()
 for(i in 1:length(fits)){
   udf = as.data.frame(table(fits[[i]]$smps$k0))
@@ -152,8 +153,6 @@ for(i in 1:length(fits)){
     ggtitle(nms[i]) + theme_bw()+ theme(aspect.ratio = 1, axis.title.x = element_blank(), axis.title.y =element_blank())+ labs(colour='Model')
     
 }
-
-
 
 comp_plot = ggpubr::ggarrange(plotlist = plots,common.legend = T,label.x = 'Degree', label.y = 'Survival',legend = 'right')
 comp_plot
