@@ -764,7 +764,7 @@ Now we use an adaptive Metroplis-Hastings to obtain posterior samples
 %show model fitting the degree distribution well
 
 
-```{r, fig.asp=0.5, fig.dpi=100, cache=FALSE, out.width='75%', message=FALSE}
+```{r, fig.asp=0.5, fig.dpi=100, cache=FALSE, out.width='75%', message=FALSE,dev = "png"}
 
 knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
 
@@ -839,7 +839,7 @@ pa = ggplot(data=full_pars) + geom_density_ridges(aes(x=a,y=as.character(true_b)
 
 #### $\alpha$ posterior {style="text-align: center;font-size: 200%  !important;"}
 
-```{r, fig.asp=.5, fig.dpi=100, cache=FALSE, out.width='75%', message=FALSE}
+```{r, fig.asp=.5, fig.dpi=100, cache=FALSE, out.width='75%', message=FALSE,dev = "png"}
 knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
 
 pa
@@ -848,7 +848,7 @@ pa
 
 #### $\varepsilon$ posterior {style="text-align: center;font-size: 200%  !important;"}
 
-```{r, fig.asp=.5, fig.dpi=100, cache=FALSE, out.width='75%', message=FALSE}
+```{r, fig.asp=.5, fig.dpi=100, cache=FALSE, out.width='75%', message=FALSE,dev = "png"}
 knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
 
 peps
@@ -859,7 +859,7 @@ peps
 #### $k_0$ posterior {style="text-align: center;font-size: 200%  !important;"}
 
 
-```{r, fig.asp=.5, fig.dpi=100, cache=FALSE, out.width='75%', message=FALSE}
+```{r, fig.asp=.5, fig.dpi=100, cache=FALSE, out.width='75%', message=FALSE,dev = "png"}
 knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
 
 pk0
@@ -869,7 +869,7 @@ pk0
 
 #### $\beta$ posterior {style="text-align: center;font-size: 200%  !important;"}
 
-```{r, fig.asp=.5, cache=FALSE,fig.dpi=100, out.width='75%', message=FALSE}
+```{r, fig.asp=.5, cache=FALSE,fig.dpi=100, out.width='75%', message=FALSE,dev = "png"}
 knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
 
 pb
