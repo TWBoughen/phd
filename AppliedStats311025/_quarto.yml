@@ -1,0 +1,41 @@
+
+title: "Beyond Descriptive Modelling of Network Degrees: Tail-Realistic Preferential Attachment"
+# subtitle: "A tail realisitc approach to modelling degree distributions and inferring growth mechanisms"
+author: 
+  - name: Thomas Boughen
+date: 2025/10/31
+date-format: long
+format: 
+  revealjs:
+    mathjax: 
+      extensions: ["AMScd", "centernot"]
+      macros:
+          centernot: "\\mathrel{\\not\\kern-2pt}"
+          centernotimplies: "\\mathrel{\\ooalign{\\hidewidth$\\not\\Rightarrow$\\hidewidth}}"
+    theme: [solarized, custom.scss]
+    transition: none
+    history: false
+    progress: true
+    hash-type: number
+    toc: false
+    toc-depth: 1
+    width: 1920
+    height: 1080
+    max-scale: 1
+    auto-stretch: true
+    slide-number: c/t
+    fontawesome: true
+    background-size: contain
+    footer: Beyond the Descriptive Modelling of Degrees - Thomas Boughen
+knitr: 
+  opts_chunk: 
+    R.options:
+      echo: FALSE
+      message: FALSE
+      warning: FALSE
+from: markdown+emoji
+execute:
+  fig-format: svg
+  fig-bg: "transparent"
+
+

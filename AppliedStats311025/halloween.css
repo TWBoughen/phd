@@ -1,0 +1,90 @@
+/* ===============================
+   Pumpkin Cream + Plum Accent Theme
+   =============================== */
+
+:root {
+  --r-background-color: #fffaf0;   /* cream base */
+  --r-main-color: #2e2e2e;        /* dark text */
+  --r-heading-color: #fd990d;     /* pumpkin orange */
+  --r-link-color: #644b77;        /* deep plum */
+  --r-link-color-hover: #a78eb8;  /* soft lilac */
+}
+
+/* --- Headings --- */
+.reveal h1, .reveal h2, .reveal h3 {
+  color: var(--r-heading-color);
+  font-family: "Georgia", serif;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #a78eb8;
+  padding-bottom: 0.25em;
+  text-shadow: 0 0 4px rgba(167,142,184,0.3);
+}
+
+/* --- Body text --- */
+.reveal section {
+  color: var(--r-main-color);
+  font-size: 1.05em;
+  line-height: 1.4;
+}
+
+/* --- Lists --- */
+.reveal ul li::marker {
+  content: "🎃 ";
+  color: #fd990d;
+}
+
+/* --- Emphasis --- */
+.reveal strong, .reveal b {
+  color: #644b77;
+}
+
+/* --- Blockquotes --- */
+.reveal blockquote {
+  border-left: 4px solid #a78eb8;
+  background: #fef6e9;
+  color: #2e2e2e;
+  padding-left: 1em;
+  font-style: italic;
+}
+
+/* --- Links --- */
+.reveal a {
+  color: var(--r-link-color);
+  text-decoration: none;
+}
+.reveal a:hover {
+  color: var(--r-link-color-hover);
+  text-decoration: underline;
+}
+
+/* --- Images --- */
+.reveal img {
+  border: 3px solid #a78eb8;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(167,142,184,0.3);
+}
+
+/* --- Code blocks --- */
+.reveal pre code {
+  background: #f9f4ff;
+  border-left: 4px solid #644b77;
+  color: #2e2e2e;
+  font-family: "Fira Code", monospace;
+}
+
+/* --- Progress bar --- */
+.reveal .progress span {
+  background: #fd990d;
+}
+
+/* --- Slide number --- */
+.reveal .slide-number {
+  color: #a78eb8;
+}
+
+section:first-of-type {
+  background-image: url("web-overlay.png");
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: lighten;
+}

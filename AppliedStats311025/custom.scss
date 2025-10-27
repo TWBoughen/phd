@@ -1,0 +1,63 @@
+/*-- scss:defaults --*/
+$rich-black: #04151fff;       /* main text / accents */
+$wheat: #efd6acff;            /* slide background / body */
+$mahogany: #c44900ff;         /* headings / accents */
+$dark-purple: #432534ff;      /* callout background */
+
+/* Reveal.js variable overrides */
+$body-bg: $wheat;
+$body-color: $rich-black;
+$link-color: $mahogany;
+$link-color-hover: lighten($mahogany, 10%);
+$heading-color: $mahogany;
+$code-bg: lighten($dark-purple, 35%);
+$code-color: $rich-black;
+
+/*-- scss:rules --*/
+.reveal {
+  /* Headings */
+  h1, h2, h3, h4 {
+    color: $mahogany;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+  }
+
+  // /* Slide backgrounds and text */
+  // section {
+  //   background-color: $wheat;
+  //   color: $rich-black;
+  // }
+
+
+    .slide-background {
+    background-image: url("/images/netweb.svg") !important;
+    background-size: 100% auto !important;          // scale up the SVG
+    background-repeat: no-repeat !important;   // prevent tiling
+    background-position: left left !important;
+    opacity: 0.05 !important;                   // transparency (simulate background-opacity)
+  }
+
+  a {
+    color: $mahogany;
+    text-decoration: underline;
+  }
+
+  /* Callouts */
+  .callout {
+    background: $dark-purple;
+    color: $wheat;
+    border-left: 6px solid $mahogany;
+    padding: 1em;
+    border-radius: 10px;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(196,73,0,0.3);
+  }
+
+  /* Blockquotes */
+  blockquote {
+    border-left: 4px solid $mahogany;
+    padding-left: 1em;
+    font-style: italic;
+    color: $rich-black;
+    text-shadow: 0px 0px 1px rgba(0,0,0,0.2);
+  }
+}
