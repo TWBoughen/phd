@@ -1,7 +1,7 @@
 require(Rcpp)
 require(RcppArmadillo)
 
-sourceCpp('scripts/cpp_funcs.cpp')
+sourceCpp('phd/AppliedStats311025/scripts/cpp_funcs.cpp')
 
 f = Vectorize(function(x, g, lambda, k0, b){
   if(x>=k0){

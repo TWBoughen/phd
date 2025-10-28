@@ -216,7 +216,7 @@ $$
 **Integer Generalised Pareto**
 
 >$$
-f(k)\propto 1-\left(1+\frac{\xi(k-u)}{\sigma +\xi u}\right)_+^{-1/\xi}, \qquad x=u+1,\ldots
+F(k)= 1-\left(1+\frac{\xi(k-u)}{\sigma +\xi u}\right)_+^{-1/\xi}, \qquad x=u+1,\ldots
 $$
 ::::
 :::
@@ -416,10 +416,19 @@ Construct tree $\Upsilon(t)$ determined by $\zeta(t)$, where each node in the tr
 Then the tail of the limiting degree distribution is:
 
 $$
-\bar F(k) = \lim_{t\rightarrow \infty} \frac{\sum_{x\in\Upsilon(t)}\mathbb I \left\{\text{deg}(x, \Upsilon(t))_{\downarrow x}>k\right\}}{ \sum_{x\in\Upsilon(t)} 1}
+\bar F(k) = \lim_{t\rightarrow \infty} \frac{\sum_{x\in\Upsilon(t)}\mathbb I \left\{\text{deg}(x, \Upsilon(t))_{\downarrow x}>k\right\}}{ \sum_{x\in\Upsilon(t)} \mathbb I \left\{\text{deg}(x, \Upsilon(t))_{\downarrow x}\ge     0\right\}\right\}}
 $$
 
+
 **Now applying a result from [Rudas et al.]**
+
+## Rudas result
+
+For a characteristic $\phi$ of the tree $\Upsilon(t)$:
+
+$$
+\lim_{t\rightarrow\infty} \frac{1}{\left|\Upsilon(r)\right|}\sum_{x\in\Upsilon(t)}\phi(\Upsilon(t)_{\downarrow x}) = \lambda^* \int_0^\infty e^{-\lambda^*}\mathbb E \left[\phi(\Upsilon(t))\right]\text{d}t
+$$
 
 
 
