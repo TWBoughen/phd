@@ -1,0 +1,1458 @@
+```{r}
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+library(paletteer)
+library(Rcpp)
+library(cowplot)
+library(network)
+library(networkDynamic)
+library(ndtv)
+library(ggraph)
+library(intergraph)
+library(ggplot2)
+library(igraph)
+if(file.exists('phd/AppliedStats311025/scripts/funcs.R')){
+  source('phd/AppliedStats311025/scripts/funcs.R')
+}else if(file.exists('scripts/funcs.R')){
+  source('scripts/funcs.R')
+}
+
+invisible(ggplot() + geom_blank())
+set.seed(1234)
+theme_callout <- function() {
+  theme_minimal(base_family = "Arial", base_size = 14) +
+    theme(
+      # Transparent backgrounds for blending into the callout
+      plot.background = element_rect(fill = "#432534", color = NA),
+      panel.background = element_rect(fill = "#432534", color = NA),
+      legend.background = element_rect(fill = "#432534", color = NA),
+      legend.box.background = element_rect(fill = "#432534", color = NA),
+      
+      # Text styling for dark background
+      plot.title = element_text(color = "#efd6ac", size = 20, face = "bold", hjust = 0.5),
+      plot.subtitle = element_text(color = "#efd6ac", size = 14, hjust = 0.5),
+      plot.caption = element_text(color = "#efd6ac", size = 10, hjust = 1),
+      axis.title = element_text(color = "#efd6ac", face = "bold"),
+      axis.text = element_text(color = "#efd6ac"),
+      
+      # Gridlines (light wheat color for contrast)
+      panel.grid.major = element_line(color = "#efd6ac55", size = 0.3),
+      panel.grid.minor = element_blank(),
+      
+      # Legend
+      legend.title = element_text(color = "#efd6ac", face = "bold"),
+      legend.text = element_text(color = "#efd6ac"),
+      
+      # Axis lines and ticks (slightly lighter for visibility)
+      axis.line = element_line(color = "#efd6ac88"),
+      axis.ticks = element_line(color = "#efd6ac88"),
+      
+      # Tight margins (avoid white edges)
+      plot.margin = margin(0, 0, 0, 0)
+    ) 
+}
+
+theme_presentation <- function() {
+  theme_minimal(base_size = 14) +
+    theme(
+      rect = element_rect(fill = "transparent"),
+      # Backgrounds
+      plot.background = element_rect(fill = "transparent", color = NA),
+      panel.background = element_rect(fill = "transparent", color = NA),
+      legend.background = element_rect(fill = "transparent", color = NA),
+      
+      # Text
+      plot.title = element_text(color = "#c44900", size = 20, face = "bold", hjust = 0.5),
+      plot.subtitle = element_text(color = "#432534", size = 14, face = "italic", hjust = 0.5),
+      plot.caption = element_text(color = "#432534", size = 10, hjust = 1),
+      axis.title = element_text(color = "#04151f", face = "bold"),
+      axis.text = element_text(color = "#04151f"),
+      
+      # Gridlines
+      panel.grid.major = element_line(color = "#432534", size = 0.3),
+      panel.grid.minor = element_blank(),
+      
+      # Legend
+      legend.title = element_text(color = "#04151f", face = "bold"),
+      legend.text = element_text(color = "#432534"),
+      
+      # Axis lines and ticks
+      axis.line = element_line(color = "#04151f"),
+      axis.ticks = element_line(color = "#04151f")
+    )
+}
+
+```
+
+
+## Networks
+
+:::{.columns}
+
+::::{.column width="50%"}
+
+### Examples
+
+>- Instagram
+>- Flights
+>- Protein Interactions
+>- Citations
+>- CRAN
+
+::::
+
+::::{.column width="50%"}
+
+
+```{r, out.width="100%"}
+#| fig-width: 3
+#| fig-asp: 0.5
+
+
+set.seed(1234)
+g = igraph::sample_pa(5, power=0.2, m=2)
+
+
+ggraph(g, layout='stress') +
+  geom_edge_link0()+
+   geom_edge_link2(arrow = arrow(length=unit(0.1,'inches')), end_cap = circle()) +
+   geom_node_point(size=5, color='#432534') + geom_node_text(aes(label=1:vcount(g)), color='#efd6ac')+
+    theme_void()
+
+df1 = data.frame(Node=1:vcount(g), 'In-Degree' = igraph::degree(g, mode='in'), 'Out-Degree'  =igraph::degree(g, mode='out'))
+
+
+knitr::kable(df1)
+
+```
+
+
+
+
+
+::::
+
+
+:::
+
+## Network Data
+
+:::{.columns}
+::::{.column width="50%" height="50%"}
+:::::{.callout-tip title="Full Evolution"}
+```{r, fig.height="100px", fig.asp=1, results='asis'}
+#| label: anim0
+#| fig-asp: 1
+n =  25
+out.seq = rpois(n, 1) + 1
+g_igraph <- igraph::sample_pa(n, directed = FALSE, out.seq = out.seq )
+
+
+el = as_edgelist(g_igraph)
+pag <- network.initialize(n)
+
+add.edges.active(pag, tail = el[,2], head=el[,1], onset = 2:(nrow(el)+1), terminus = rep(Inf, nrow(el)))
+activate.vertices(pag, onset=1:n, terminus = rep(Inf,n))
+
+slice.par<-list(start=1,end=n,interval=1,
+                aggregate.dur=1,rule='earliest')
+reconcile.vertex.activity(pag)
+reconcile.edge.activity(pag)
+
+
+layout_static <- gplot.layout.kamadakawai(pag, layout.par = NULL)
+network::set.vertex.attribute(pag, "x", layout_static[,1])
+network::set.vertex.attribute(pag, "y", layout_static[,2])
+compute.animation(pag,
+                  seed.coords = layout_static,
+                  animation.mode = 'useAttribute',
+                  slice.par = list(start = 1, end = n, interval = 1, aggregate.dur = 1, rule = 'latest'))
+
+
+render.d3movie(pag,
+               verbose = FALSE,
+               output.mode = 'inline',
+               d3.options = list(animateOnLoad=TRUE, slider=FALSE, durationControl=FALSE, margin=list(x=0,y=0),
+                                 ani.height=100, ani.width=100, loop=TRUE),
+               vertex.col = '#c44900',
+               edge.col = '#efd6ac',
+               displaylabels = FALSE,
+               bg = NA,
+               vertex.cex = 1,
+               vertex.lwd = 0,
+               durationControl = FALSE,
+               ani.height = 100,
+               ain.width=100,
+               loop=TRUE,
+               slice.par = list(start = 1, end = n, interval = 1, aggregate.dur = 1, rule = 'latest'))
+
+
+```
+:::::
+
+
+>- Often unavailable or too costly to extract
+>- Contains a lot of information
+> $~$
+
+::::
+
+::::{.column width="50%"}
+:::::{.callout-tip title="Snapshot" height="50%"}
+```{r, fig.asp=0.55, out.width="100%"}
+
+ggraph(g_igraph, layout='stress') + geom_edge_link2(color='#efd6ac') + geom_edge_link0(color='#efd6ac', size=1) + 
+  geom_node_point(color='#c44900') + theme_void()
+
+```
+:::::
+
+>- More often available
+>- Much easier to work with
+>- Can still study key properties e.g. degrees
+
+::::
+:::
+
+
+## The scale-free debate
+
+**There has been a *heated* debate over the presence of scale-free networks in reality.**
+
+::::{.columns}
+
+::: {.column width="45%"}
+:::{.callout-tip title="Scale-free Degree Distribution --- Orginal scale"}
+```{r, style="margin-left:auto; margin-right:auto; display:block;", cache=TRUE}
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+library(igraph)
+library(ggplot2)
+g = sample_pa(1e5, m=1)
+degs = degree(g, mode='in') + 1
+
+ggplot(twbfn::deg_surv(degs)) + geom_point(aes(x=degree, y=surv), color = '#efd6ac') + ylim(1e-5,1) + theme_callout()
+
+```
+:::
+:::
+:::{.column width="10%"}
+:::
+::: {.column width="45%"}
+:::{.callout-tip title="Scale-free Degree Distribution --- Log scale"}
+```{r, cache=TRUE}
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+
+library(igraph)
+library(ggplot2)
+ggplot(twbfn::deg_surv(degs)) + geom_point(aes(x=degree, y=surv), color = '#efd6ac') +
+scale_x_log10() + scale_y_log10(limits=c(1e-5,1))+
+geom_smooth(method='lm', formula=y~x, se=FALSE, aes(x=degree, y=surv), color = '#c44900', lty=2)+
+theme_callout() 
+
+```
+:::
+:::
+::::
+
+Several definitions of scale-free in the literature
+
+:::{.columns}
+::::{.column width="33%"}
+**Heavier than exponential**
+
+$$
+\bar F (k) \gg e^{-ck}
+$$
+
+::::
+::::{.column width="34%"}
+**Power-law**
+$$
+\bar F(k) \sim k^{-\gamma}
+$$
+
+::::
+::::{.column width="33%"}
+**Regularly varying tail**
+$$
+ \bar F(k) = k^{-\gamma}\mathcal L (k)
+$$
+::::
+
+:::
+
+
+
+
+
+## Modelling the degrees
+
+
+:::{.columns}
+::::{.column width=33%}
+#### Power Law
+```{r, fig.asp=1, out.width="75%", fig.dpi=50, cache=TRUE}
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+
+
+dat_list = readRDS('results/dat_list.rds')
+asc = dat_list[[1]]
+
+asc_surv = twbfn::deg_surv(counts_to_degs(asc))
+
+a = 1.8
+x = 1:40
+y = x^-a / (sum((1:1e4)^-a))
+
+asc_plt = ggplot()+ geom_line(data=NULL,aes(x=x, y=y), colour='red') + geom_point(data=asc_surv,aes(x=degree, y=surv)) + scale_x_log10() + scale_y_log10(limits=c(min(asc_surv[-nrow(asc_surv),2]),1))+theme_presentation()
+
+
+print(asc_plt)
+```
+
+>$$
+K\sim \text{Pareto}(\gamma)
+$$
+> Estimate $\gamma$
+
+
+::::
+::::{.column width=33%}
+#### Tail Estimation
+
+```{r, fig.asp=1, out.width="75%", fig.dpi=50, cache=TRUE}
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+
+fl = dat_list[[8]]
+fl_surv = twbfn::deg_surv(counts_to_degs(fl))
+fl_plt = ggplot() + geom_point(data=fl_surv,aes(x=degree, y=surv)) + scale_x_log10() + scale_y_log10(limits=c(min(fl_surv[-nrow(fl_surv),2]),1))
+
+x = 50:500
+y = evd::pgpd(x, loc=50, scale=43.8, shape = -0.1157, lower.tail=F)*fl_surv$surv[fl_surv$degree>=50][1]
+fl_plt = fl_plt + geom_line(data=NULL,aes(x=x, y=y), colour='red')+theme_presentation()
+fl_plt
+```
+
+>$$
+K|K>u \sim \text{GP}(\xi, \sigma)
+$$
+> Estimate $(\xi,\sigma)$
+
+::::
+::::{.column width=33%}
+#### Piecewise Model
+```{r, fig.asp=1, cache=TRUE, echo=FALSE,results='hide',fig.keep='all', out.width="75%", fig.dpi=50}
+library(crandep)
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+
+rea = dat_list[[10]]
+rea_surv = twbfn::deg_surv(counts_to_degs(rea))
+rea_plt = ggplot() + geom_point(data=rea_surv,aes(x=degree, y=surv)) + scale_x_log10() + scale_y_log10(limits=c(min(rea_surv[-nrow(rea_surv),2]),1))
+
+rea_counts= twbfn::deg_count(counts_to_degs(rea))
+rea_counts$degree = as.integer(rea_counts$degree)
+rea_counts$count = as.integer(rea_counts$count)
+names(rea_counts) = c('x','count')
+rea_fit = mcmc_mix2_wrapper(rea_counts, seed=3234L,iter=1000L, u_max=100L, burn=1000L)
+
+rea_plt  = rea_plt + geom_line(data=rea_fit$fitted, aes(x=x, y=S_med), col='red') + geom_vline(aes(xintercept = median(rea_fit$pars$u)), lty=2, col='red')
+
+rea_plt+theme_presentation()
+
+```
+
+>$$
+\begin{aligned}
+K|K< u &\sim \text{Pareto}(\gamma)\\
+K|K>u &\sim \text{GP}(\xi, \sigma)
+\end{aligned}
+$$
+> Estimate $(\gamma, u, \xi, \sigma)$
+::::
+
+
+
+:::
+
+
+## Discrete Piecewise Model
+
+
+:::{.columns}
+
+
+::::{.column width=25%}
+```{r, fig.asp=1, cache=TRUE, echo=FALSE,results='hide',fig.keep='all', out.width="90%", fig.dpi=50}
+rea_plt+theme_presentation()
+```
+::::
+
+::::{.column width=5%}
+::::
+
+::::{.column width=70%}
+**Zipf-Polylog**
+
+>$$
+f(k) \propto x^{-\alpha} \theta^x, \qquad x=1, 2, \ldots, u
+$$
+
+**Integer Generalised Pareto**
+
+>$$
+F(k)= 1-\left(1+\frac{\xi(k-u)}{\sigma +\xi u}\right)_+^{-1/\xi}, \qquad x=u+1,\ldots
+$$
+::::
+:::
+
+Using this model @Lee24 found that networks often have a heavy tail but not quite as heavy as implied by the body.
+
+## Why care about scale-freeness?
+
+**Many use *scale-freeness* of a network to justify the mechanics behind the network's growth.**
+
+>Preferential Attachment (rich-get-richer) $\Rightarrow$ Power-law degree distribution
+
+::::{.fragment}
+but
+
+>Power-law degree distribution $\nRightarrow$ Preferential Attachment (rich-get-richer)
+
+**This is fairly common as modelling the degrees does not generally inform the network growth.**
+
+::::
+
+
+
+
+
+## Preferential Attachment
+
+:::::{.columns}
+::::{.column width=30%}
+
+:::{.callout-tip title="Example"}
+```{r, fig.height="100px", fig.asp=1, results='asis'}
+#| label: anim1
+n =  50
+g_igraph <- igraph::sample_pa(n, directed = FALSE)
+
+
+el = as_edgelist(g_igraph)
+pag <- network.initialize(n)
+
+add.edges.active(pag, tail = el[,2], head=el[,1], onset = 2:(nrow(el)+1), terminus = rep(Inf, nrow(el)))
+activate.vertices(pag, onset=1:n, terminus = rep(Inf,n))
+
+slice.par<-list(start=1,end=n,interval=1,
+                aggregate.dur=1,rule='earliest')
+reconcile.vertex.activity(pag)
+reconcile.edge.activity(pag)
+
+
+layout_static <- gplot.layout.kamadakawai(pag, layout.par = NULL)
+network::set.vertex.attribute(pag, "x", layout_static[,1])
+network::set.vertex.attribute(pag, "y", layout_static[,2])
+compute.animation(pag,
+                  seed.coords = layout_static,
+                  animation.mode = 'useAttribute',
+                  slice.par = list(start = 1, end = n, interval = 1, aggregate.dur = 1, rule = 'latest'))
+
+
+render.d3movie(pag,
+               verbose = FALSE,
+               output.mode = 'inline',
+               d3.options = list(animateOnLoad=TRUE, slider=FALSE, durationControl=FALSE, margin=list(x=0,y=0),
+                                 ani.height=100, ani.width=100, loop=TRUE),
+               vertex.col = '#c44900',
+               edge.col = '#efd6ac',
+               displaylabels = FALSE,
+               bg = NA,
+               vertex.cex = 1,
+               vertex.lwd = 0,
+               durationControl = FALSE,
+               ani.height = 100,
+               ain.width=100,
+               loop=TRUE,
+               slice.par = list(start = 1, end = n, interval = 1, aggregate.dur = 1, rule = 'latest'))
+
+
+```
+:::
+::::
+
+::::{.column width=70%}
+### Steps
+
+
+
+:::{.blockquote}
+1. Node added to network
+2. Connects to $m$ existing nodes with weights $\pi_i$:
+
+$$
+\pi_i = \left. k_i \middle/ \sum k_j \right.
+$$
+where $k_i$ is degree of node $i$.
+:::
+
+::::
+:::::
+
+**Results in a power-law degree distribution**
+
+>$$
+\bar F(k)\sim k^{-2}
+$$
+
+
+
+## General Preferential Attachment
+
+:::::{.columns}
+::::{.column width=30%}
+
+:::{.callout-tip title="Example"}
+```{r, fig.height="100px", fig.asp=1, results='asis'}
+#| label: anim2
+
+
+n =  50
+g_igraph <- sample_pa(n, directed = FALSE)
+
+
+el = as_edgelist(g_igraph)
+pag <- network.initialize(n)
+
+add.edges.active(pag, tail = el[,2], head=el[,1], onset = 2:(nrow(el)+1), terminus = rep(Inf, nrow(el)))
+activate.vertices(pag, onset=1:n, terminus = rep(Inf,n))
+
+slice.par<-list(start=1,end=n,interval=1,
+                aggregate.dur=1,rule='earliest')
+reconcile.vertex.activity(pag)
+reconcile.edge.activity(pag)
+
+
+layout_static <- gplot.layout.kamadakawai(pag, layout.par = NULL)
+network::set.vertex.attribute(pag, "x", layout_static[,1])
+network::set.vertex.attribute(pag, "y", layout_static[,2])
+compute.animation(pag,
+                  seed.coords = layout_static,
+                  animation.mode = 'useAttribute',
+                  slice.par = list(start = 1, end = n, interval = 1, aggregate.dur = 1, rule = 'latest'))
+
+
+render.d3movie(pag,
+               verbose = FALSE,
+               output.mode = 'inline',
+               d3.options = list(animateOnLoad=TRUE, slider=FALSE, durationControl=FALSE, margin=list(x=0,y=0),
+                                 ani.height=100, ani.width=100, loop=TRUE),
+               vertex.col = '#c44900',
+               edge.col = '#efd6ac',
+               displaylabels = FALSE,
+               bg = NA,
+               vertex.cex = 1,
+               vertex.lwd = 0,
+               durationControl = FALSE,
+               ani.height = 100,
+               ain.width=100,
+               loop=TRUE,
+               slice.par = list(start = 1, end = n, interval = 1, aggregate.dur = 1, rule = 'latest'))
+
+
+```
+:::
+::::
+
+::::{.column width=70%}
+### Steps
+
+
+
+:::{.blockquote}
+1. Node added to network
+2. Connects to $m$ existing nodes with weights $\pi_i$:
+
+$$
+\pi_i = \left. b(k_i) \middle/ \sum b(k_j) \right.
+$$
+where $k_i$ is degree of node $i$.
+:::
+
+::::
+
+How do we study the degree distribution of this?
+
+:::::
+
+## Aims
+
+
+:::{.v-center-container}
+- Propose a flexible  tail-realisitic model for network degrees
+- Connect preference function to tail behaviour
+- Obtain information about network growth from degrees alone
+:::
+
+## Starting with a branching process
+
+Consider the GPA model when $m=1$, and a continuous time branching process $\zeta(t)$ where:
+
+- $\zeta(0)=0$
+- $\zeta(t)$ driven by Markovian pure birth 
+
+$$
+\Pr(\zeta(t+\text{d}t) = k+1 | \zeta(t) =k) = b(k) \text{d}t + o(\text{d}t)
+$$
+
+This pure birth process corresponds to the growth of an individual nodes degree.
+
+
+## Equivalence to GPA
+
+Construct the tree $\Upsilon(t)$ determined by $\zeta(t)$ such that:
+
+- $\Upsilon(0)=\left\{\emptyset\right\}$
+- Each node, $x$, in $\Upsilon(t)$ gives birth at rate $b(\text{deg}(x, \Upsilon(t)))$ 
+
+Denote $\Upsilon(t)_{\downarrow x}$ the tree when treating $x$ as the root.
+
+**This construction is equivalent to the GPA model with $m=1$ and preference function $b(\cdot)$**
+
+## A limiting result
+
+@rudas07 states that for a given characteristc function $\phi(\cdot)$
+
+$$
+\lim_{t\rightarrow\infty} \frac{1}{\left|\Upsilon(r)\right|}\sum_{x\in\Upsilon(t)}\phi(\Upsilon(t)_{\downarrow x}) = \lambda^* \int_0^\infty e^{-\lambda^*}\mathbb E \left[\phi(\Upsilon(t))\right]\text{d}t
+$$
+
+where $\lambda^*$ satisfies
+
+$$
+\hat\rho(\lambda^*) = \int_0^\infty e^{-\lambda^*t}\rho(t)\text{d}t = 1
+$$
+
+and $\rho(t)$ is the density of the point process associated with $\zeta(t)$.
+
+## Getting the degree distribution
+
+We can write the tail of the degree distribution at time $t$ as:
+
+$$
+\frac{\sum_{x\in\Upsilon(t)} \mathbb I\left\{\text{deg}(x, \Upsilon(t)\downarrow x)>k \right\} }{\left|\Upsilon(t)\right|}
+$$
+
+and so the tail of the limiting degree distribution as $t\rightarrow \infty$ is:
+
+$$
+\bar F(k) = \lim_{t\rightarrow\infty} \frac{\sum_{x\in\Upsilon(t)} \mathbb I\left\{\text{deg}(x, \Upsilon(t)\downarrow x)>k \right\} }{\left|\Upsilon(t)\right|}
+$$
+
+So we can now use the previous result to obtain:
+
+$$
+\bar F(k) = \lambda^* \int_0^\infty e^{-\lambda^*t}\mathbb E\left[\mathbb I\left\{\text{deg}(x, \Upsilon(t)\downarrow x)>k \right\}\right]\text{d}x
+$$
+
+
+---
+
+Through fairly simple calculations we get:
+
+$$
+\bar F(k) = \prod_{i=0}^k\frac{b(i)}{\lambda^*+b(i)}
+$$
+
+where $\lambda^*$ satisfies 
+
+$$
+\hat \rho(\lambda^*) = \sum_{k=0}^\infty \prod_{i=0}^k\frac{b(i)}{\lambda^* + b(i)} = 1
+$$
+
+**What effect does $b(\cdot)$ have on this degree distribution, particularly in the tail?**
+
+## Studying the tail{.r-fit-text}
+
+**We want to pay careful attention to the extreme values**
+
+>Studies of empirical degrees often use methods from continuous extremes
+
+As this is a discrete distribution we need some new machinery.
+
+## Continuous Extremes Recap
+
+### Maximum Domains of Attraction (MDA)
+
+:::{.columns}
+::::{.column width="50%"}
+[**Frechet (heavy tailed)**]{.r-stack}
+
+>$$
+\bar F(x) = x^{-\gamma} \mathcal L(x)
+$$
+e.g. Pareto, Cauchy, Lévy
+
+
+::::
+
+::::{.column width="50%"}
+[**Gumbel (light-tailed)**]{.r-stack}
+
+>$$
+\lim_{x\rightarrow\infty}\frac{\bar F (x + t a(x))}{\bar F(x)}= e^{-t}
+$$
+e.g. Exponential, Normal, Gamma
+::::
+
+
+- The Frechet is equivalent to regular variation with tail-index $\gamma$
+- Power-law falls into the Frechet MDA with $\mathcal L(x)=1$
+
+*All continuous distributions with infinite right endpoint fall into one of these.*
+
+**Many discrete distributions don't satisfy the conditions to belong to an MDA**
+:::
+
+
+## Discrete Extremes
+
+
+@shimura12 uses the following quantity to categorise discrete distributions
+$$
+\Omega(F, k) = \left(\log \frac{\bar F(k+1)}{ \bar F(k+2)}\right)^{-1} - \left(\log \frac{\bar F(k)}{ \bar F(k+1)}\right)^{-1}
+$$
+
+:::{.columns}
+::::{.column width="33%"}
+ [**Frechet**]{.r-stack}
+
+>$$
+\lim_{k\rightarrow\infty} \Omega(F,k) = 1/\alpha
+$$
+>*and* 
+>$$
+\lim_{k\rightarrow\infty} \frac{\bar F(k+1)}{\bar F(k)} = 1
+$$
+
+::::
+::::{.column width="33%"}
+[**Gumbel**]{.r-stack}
+
+>$$
+\lim_{k\rightarrow\infty} \Omega(F,k) = 0
+$$
+>*and*
+>$$
+\lim_{k\rightarrow\infty} \frac{\bar F(k+1)}{\bar F(k)} = 1
+$$
+::::
+
+
+
+::::{.column width="33%"}
+[**Recoverable to Gumbel**]{.r-stack}
+
+>$$
+\lim_{k\rightarrow\infty} \Omega(F,k) = 0
+$$
+>*and*
+>$$
+\lim_{k\rightarrow\infty} \frac{\bar F(k+1)}{\bar F(k)} \neq 1
+$$
+::::
+
+:::
+
+## Analysing GPA degrees
+
+Now we can use the limiting survival function of a GPA model to show that:
+
+$$
+\lim_{k\rightarrow\infty} \Omega(F,k)= \begin{cases} \lim_{k\rightarrow \infty}\frac{b(k+1)-b(k)}{\lambda^*}, &\text{when } b(k) \rightarrow \infty\\
+0, &\text{otherwise}
+\end{cases}
+$$
+
+and therefore for $b(k)\rightarrow\infty$ as $k\rightarrow\infty$
+
+>- $\bar F (k)$ is regularly varying (**Frechet MDA**) if and only if $\lim_{k\rightarrow \infty}[b(k+1)-b(k)] = \nu >0$, in which case the tail index is $\lambda^*/\nu$ 
+>- $\bar F(k)$ is light-tailed (**Gumbel MDA**) if and only if $\lim_{k\rightarrow \infty}[b(k+1)-b(k)]=0$.
+
+
+*Note that if $\lim_{k\rightarrow\infty} b(k)<\infty$, then $\bar F(k)$ is recoverable to the Gubmel MDA.*
+
+
+--- 
+
+
+```{r}
+x = seq(0,50,length.out=100)
+y1 = twbfn::ppa_pref(x, 0.2, 1, 1e4)
+y2 = twbfn::ppa_pref(x, 1, 1, 1e4)
+y3 = twbfn::ppa_pref(x, 0, 1, 1e4)
+
+df = data.frame(x=x, y1,y2,y3)
+
+p1 = ggplot(data=df, aes(x=x)) + geom_line(aes(y=y1), colour='darkred',linewidth=3)+ theme_void() +theme(aspect.ratio = 1,plot.background = element_rect(fill=NA, color = NA),panel.background = element_rect(fill=NA, color = NA),axis.title=element_blank())
+p2 = ggplot(data=df, aes(x=x)) + geom_line(aes(y=y2), colour='darkred',linewidth=3)+ theme_void() +theme(aspect.ratio = 1,plot.background = element_rect(fill=NA, color = NA),panel.background = element_rect(fill=NA, color = NA),axis.title=element_blank())
+p3 = ggplot(data=df, aes(x=x)) + geom_line(aes(y=y3), colour='darkred',linewidth=3)+ theme_void() +theme(aspect.ratio = 1,plot.background = element_rect(fill=NA, color = NA),panel.background = element_rect(fill=NA, color = NA),axis.title=element_blank())
+```
+
+
+### Examples
+:::{.columns}
+::::{.column width="33%"}
+
+>**Barabasi-Albert (BA)**
+>$$
+b(k) = k+1
+>$$
+>```{r}
+>p2
+>```
+>$$
+\lim_{k\rightarrow\infty} \Omega(F,k) = 1/\lambda^* = 1/2
+>$$
+>$$
+\lim_{k\rightarrow\infty} \frac{\bar F(k+1)}{\bar F(k)} = 1
+>$$
+>Frechet, with index 2
+::::
+::::{.column width="33%"}
+
+>**Polynomial**
+>$$
+b(k) = (k+1)^\alpha, \quad \alpha\in (0,1)
+>$$
+>```{r}
+>p1
+>```
+>$$
+\lim_{k\rightarrow\infty} \Omega(F,k) = 1/\lambda^* = 0
+>$$
+>$$
+\lim_{k\rightarrow\infty} \frac{\bar F(k+1)}{\bar F(k)} = 1
+>$$
+>Gumbel 
+
+::::
+
+
+::::{.column width="33%"}
+
+>**Uniform**
+>$$
+b(k) = c, \quad c>0
+$$
+>```{r}
+>p3
+>```
+>$$
+\lim_{k\rightarrow\infty} \Omega(F,k) = 0
+$$
+>$$
+\lim_{k\rightarrow\infty} \frac{\bar F(k+1)}{\bar F(k)} = 0
+$$
+>Recoverable to Gumbel 
+::::
+
+:::
+
+## What we have learned so far.
+
+### Main result
+
+>- $\bar F (k)$ is regularly varying (**Frechet MDA**) if and only if $\lim_{k\rightarrow \infty}[b(k+1)-b(k)] = \nu >0$, in which case the tail index is $\lambda^*/\nu$ 
+>- $\bar F(k)$ is light-tailed (**Gumbel MDA**) if and only if $\lim_{k\rightarrow \infty}[b(k+1)-b(k)]=0$.
+
+- For degree distribution to be heavy tailed and be the result of a GPA model, preference must be eventually "linear" like in the BA model
+- Empirical degree distributions are heavy-tailed but exhibit more nuanced behaviour than obtained by BA model
+
+## Constructing a new preference function
+
+We require something that is eventually linear but is flexible enough for real networks
+
+
+::::::{.columns}
+
+:::::{.column width="50%"}
+
+::::{.r-stack}
+:::{.fragment .fade-out fragment-index=1}
+**Barabasi-Albert**
+$$
+b(k) = k+1
+$$
+:::
+
+:::{.fragment .fade-in fragment-index=1}
+**Proposed Model**
+$$
+b(k) = \begin{cases}
+k^\alpha + \varepsilon, &k\le k_0\\
+k_0^\alpha + \varepsilon + \beta(k-k_0), &k>k_0
+\end{cases}
+$$
+:::
+
+::::
+:::::
+
+
+:::::{.column width="50%"}
+::::{.r-stack height="50%"}
+:::{.fragment .fade-out fragment-index=1}
+```{r}
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+
+x = seq(0,10,l=100)
+y = x+1
+
+ggplot() + geom_line(aes(x=x,y=y), lwd=1)+ylim(0,10) + theme_classic() +theme(aspect.ratio = 1,plot.background = element_rect(fill=NA, color = NA),panel.background = element_rect(fill=NA, color = NA),axis.text.x=element_blank(),axis.ticks.x=element_blank(),axis.text.y=element_blank(),axis.ticks.y=element_blank(), axis.title = element_text(size=20)) + xlab('Degree') + ylab('Preference')
+```
+:::
+
+
+:::{.fragment .fade-in fragment-index=1}
+
+```{r}
+library(ggbrace)
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+k0=5
+a = 0.6
+b= 1
+eps = 2
+x = seq(0,10,l=100)
+y = ifelse(x<k0, x^a + eps, k0^a + eps + b*(x-k0))
+
+x = seq(0,10,l=100)
+k0 = 5
+a = 0.5
+eps = 0.5
+y2 = ifelse(x<=k0, (eps + x^1) , (x-k0) + k0^1 + eps) +  (k0^a - k0)
+y3 = ifelse(x<=k0, (eps + x^a), (x-k0) + k0^a + eps)
+y4 = eps + x^a
+
+textsize = 10
+lwd = 1
+ggplot() +
+  geom_line(aes(x=x,y= y3), lwd=lwd) + 
+  geom_segment(aes(x=k0, y=0.3,yend=eps + k0^a), lty=2, lwd=lwd)+
+  geom_text(aes(x=k0, y=0, label='k[0]'), parse = TRUE, size=textsize)+
+  geom_text(aes(x=6.3, y=4.3, label='beta'), parse=TRUE, size=textsize)+
+  stat_brace(aes(x=c(0, 0), y=c(0, eps)), rotate=90, width=0.2)+
+  geom_text(aes(x=2, y=2.3, label='alpha'), parse=TRUE, size=textsize)+
+  geom_text(aes(x=0.5, y=eps/2, label='epsilon'), parse=TRUE, size=textsize)+ theme_classic() +theme(aspect.ratio = 1,plot.background = element_rect(fill=NA, color = NA),panel.background = element_rect(fill=NA, color = NA),axis.text.x=element_blank(),axis.ticks.x=element_blank(),axis.text.y=element_blank(),axis.ticks.y=element_blank(), axis.title = element_text(size=20)) + xlab('Degree') + ylab('Preference')
+```
+:::
+::::
+:::::
+::::::
+
+::::{.r-stack}
+
+:::{.fragment .fade-out fragment-index=1}
+$$
+\bar F(k) = \frac{2}{(k+2)(k+3)}
+$$
+:::
+
+:::{.fragment .fade-in fragment-index=1}
+$$
+\bar F(k) = \begin{cases}
+\prod_{i=0}^{k}\frac{i^\alpha + \varepsilon}{\lambda^*+i^\alpha + \varepsilon},&k\le k_0,\\
+\left(\prod_{i=0}^{k_0-1}\frac{i^\alpha + \varepsilon}{\lambda^*+i^\alpha + \varepsilon}\right)\frac{\Gamma(\lambda^*+k_0^\alpha + \varepsilon)/\beta)}{\Gamma\left((k_0^\alpha + \varepsilon)/\beta\right)} \frac{\Gamma\left(k-k_0 + 1 +\frac{k_0^\alpha + \varepsilon}{\beta}\right)}{\Gamma\left(k-k_0 + 1 +\frac{\lambda^* +k_0^\alpha + \varepsilon}{\beta}\right)},&k > k_0,
+\end{cases}
+$$
+:::
+
+::::
+
+
+## Shape of degree distribution
+
+
+```{r}
+
+as = c(0.5,1,1.5)
+bs = c(0.5,1,1.5)
+eps = c(.5,1)
+k0s = 20
+x = 0:200
+pars = expand.grid(as,bs,eps,k0s,x)
+names(pars) = c('a','b','eps','k0','x')
+lambdas = numeric(nrow(pars))
+for(i in 1:nrow(pars)){
+  lambdas[i] = find_lambda2(polylin(pars$a[i], pars$eps[i]), pars$b[i], pars$k0[i])
+}
+pars = cbind(pars,lambdas)
+names(pars) = c('a', 'b', 'eps', 'k0','x','lambda')
+surv =numeric(nrow(pars))
+for(i in 1:nrow(pars)){
+  surv[i] = S(pars$x[i], polylin(pars$a[i], pars$eps[i]),pars$lambda[i], pars$k0[i],pars$b[i])
+}
+pars = cbind(pars,surv)
+names(pars) = c('a', 'b', 'eps', 'k0','x','lambda','surv')
+
+library(latex2exp)
+labeller = label_bquote(rows = `epsilon`==.(eps),cols = `alpha`==.(a))
+
+# pars[which.max(pars$b/lambdas),]
+# max(pars$b/lambdas)
+
+ggplot(data = pars) + geom_line(aes(x=(x+1),y=surv, linetype=as.character(b),colour =as.character(b))) +
+  scale_x_log10() + scale_y_log10(limits=c(1e-5,1))+theme(aspect.ratio = 1/2) + theme_bw()+
+  theme(panel.background = element_rect(fill=NA, color=NA), plot.background = element_rect(fill=NA, color=NA),
+  legend.background = element_rect(fill=NA, color=NA), legend.box.background = element_rect(fill=NA, color=NA))+
+   xlab('Degree')  +ylab('Survival') + labs(linetype=TeX('\\beta'), colour =TeX('\\beta')) + 
+  facet_grid(eps~a,labeller = labeller, scales='free')
+```
+
+## Tail behaviour
+
+```{r}
+#| fig-width: 8
+#| fig-height: 4
+
+rho_optim_ba= Vectorize(function(a,eps, b, k0){
+  return(abs(rho(2*b, polylin(a, eps), b, k0)-1))
+},vectorize.args = 'a')
+find_a_ba = Vectorize(function(b, eps, k0){
+  out = optimise(rho_optim_ba, c(0.00001,3), b=b, eps=eps, k0=k0)$minimum
+  return(out)
+}, vectorize.args = 'b')
+N =50
+as = seq(0,2,l=N+1)[-1]
+bs = seq(0,2,l=N+1)[-1]
+eps = c(.01,.1,.5,1)
+k0 = c(25,100)
+pars = expand.grid(as,bs,eps,k0)
+names(pars) = c('a', 'b', 'eps', 'k0')
+lambdas = numeric(nrow(pars))
+a_for_ba = numeric(nrow(pars))
+for(i in 1:nrow(pars)){
+  lambdas[i] = find_lambda2(polylin(pars$a[i], pars$eps[i]), pars$b[i], pars$k0[i])
+  a_for_ba[i] = find_a_ba(pars$b[i], pars$eps[i], pars$k0[i])
+}
+pars = cbind(pars,lambdas,a_for_ba)
+names(pars) = c('a', 'b', 'eps', 'k0','lambda','ba')
+labeller = label_bquote(cols = `epsilon`==.(eps),rows = ~k[0]==.(k0))
+
+ggplot(pars) + geom_raster(aes(x=a,y=b,fill=b/lambda)) +
+  geom_line(aes(x=ba, y=b),linetype='dashed', colour='red',lwd=1)+
+  scale_fill_paletteer_c(palette='grDevices::Blues',limits=c(0,1),direction=-1)+theme(aspect.ratio = 1)+ylim(min(bs), max(bs))+xlim(min(as), max(as))+
+  facet_grid(k0~eps,labeller = labeller) + labs(fill=TeX('\\lambda^*/\\beta')) + xlab(TeX('\\alpha')) + ylab(TeX('\\beta')) + theme_minimal() + theme(panel.background = element_rect(fill=NA, color=NA))
+```
+
+
+All limiting degree distributions produced by this model are Frechet with tail-index $\lambda^*/\beta$.
+
+## Simulation Study - set up
+ 
+1. Simulate networks
+2. Use likelihood to fit model
+3. Recover parameters
+
+### The simulated data
+
+- 100,000 nodes
+- 36 parameter combinations
+- $k_0$ fixed at $20$
+- Only using final degrees
+
+---
+
+### The likelihood
+
+$$
+\begin{aligned}
+L(\pmb n | \pmb \theta,l) = &\left(\frac{\lambda^*}{\lambda^*+\varepsilon}\right)^{n_0}\left(\prod_{j=l}^{k_0-1}\frac{j^\alpha +\varepsilon}{\lambda^* + j^\alpha +\varepsilon}\right)^{\left(\sum_{i\ge k_0}n_{i}\right)} \\ &\times \prod_{l \le i<k_0}\left(\frac{\lambda^*}{\lambda^* +i^\alpha + \varepsilon } \prod_{j=l}^{k_0-1}\frac{j^\alpha + \varepsilon}{\lambda^* + j^\alpha + \varepsilon}\right)^{n_i}\\ &\times \prod_{i\ge k_0}\left(\frac{\text{B}(i-k_0 + (k_0^\alpha + \varepsilon)/\beta,1+\lambda^*/\beta)}{\text{B}((k_0^\alpha + \varepsilon)/\beta,\lambda^*/\beta)}\right)^{n_i},
+\end{aligned}
+$$
+
+
+### Priors
+
+\begin{align*}
+\alpha&\sim \text{Gamma}(1,0.01),\\
+\beta &\sim  \text{Gamma}(1,0.01),\\
+k_0 &\sim \text{U}(1,10,000),\\
+\varepsilon &\sim \text{Gamma(1,0.01)},
+\end{align*}
+
+Now we use an adaptive Metropolis-Hastings to obtain posterior samples
+
+
+## Model fits
+
+
+```{r, cache=TRUE}
+
+surfit_list = list()
+pars = readRDS('results/recovery_pars.rds')
+recovery_list = readRDS('results/recovery_dat.rds')
+selected = c(1,27,14,35)
+# selected = 1:36
+for(k in 1:length(selected)){
+  j=selected[k]
+  x = recovery_list[[j]]$mcmc$dat[,1]
+  ls = c()
+
+  y_975 = recovery_list[[j]]$mcmc$surv$CI[2,][order(x)]
+  y_025 = recovery_list[[j]]$mcmc$surv$CI[1,][order(x)]
+  y_50 = recovery_list[[j]]$mcmc$surv$est[order(x)]
+  x = sort(x)
+  surfit_list[[k]] = ggplot() + geom_point(data=twbfn::deg_surv(recovery_list[[j]]$degs), aes(x=degree, y=surv)) +
+    geom_line(data=NULL, aes(x=!!x, y=!!y_975), colour = 'red', linetype='dashed')+
+    geom_line(data=NULL, aes(x=!!x, y=!!y_50),colour='red')+
+    geom_line(data=NULL, aes(x=!!x, y=!!y_025), colour = 'red', linetype='dashed')+
+    scale_x_log10(limits=c(1,1e5))  +scale_y_log10(limits = c(1/length(recovery_list[[j]]$degs),1))+theme_bw() + theme(aspect.ratio = 0.66,axis.title.y=element_blank(),                                                                   axis.text.y=element_blank(),                                                                     axis.ticks.y=element_blank()) + xlab('')+ylab('') +
+    ggtitle(TeX(paste0('$\\alpha = $',pars$a[j],
+                       ', $\\epsilon = $',pars$eps[j],
+                       ', $\\beta = $',pars$b[j]))) + theme(panel.background = element_rect(fill=NA, color=NA),
+                       plot.background = element_rect(fill=NA, color=NA))
+}
+
+fig = ggpubr::ggarrange(plotlist = surfit_list,
+          nrow=round(sqrt(length(surfit_list)),0),ncol=round(sqrt(length(surfit_list)),0),
+          label.x='Degree', label.y = 'Survival')
+
+
+ggpubr::annotate_figure(fig, bottom='Degree', left='Survival')
+```
+
+
+```{r, fig.asp=0.5, fig.dpi=100, cache=FALSE, out.width='75%', message=FALSE,dev = "png"}
+
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+
+
+
+library(ggridges)
+
+recover_pars = readRDS('results/recovery_pars.rds')
+recovery_list = readRDS('results/recovery_dat.rds')
+
+thin.by = 5
+selected = c(
+  which(recover_pars$a%in%c(0.5,1,1.5) & 
+          recover_pars$eps%in%c(0.1,0.5,1.0) &
+          recover_pars$b%in%c(0.1,0.5,1.0,1.5))
+)
+
+selected = unique(selected)
+full_pars = recovery_list[[1]]$mcmc$smps
+
+
+for(i in 2:length(recovery_list)){
+  full_pars = rbind(full_pars, recovery_list[[i]]$mcmc$smps)
+}
+newtheme =  theme(aspect.ratio = 1, axis.title.x = element_blank(), axis.title.y =element_blank(), legend.position = 'none',
+          text = element_text(size = 20),plot.background = element_rect(fill=NA, color = NA),
+          panel.background = element_rect(fill=NA, color = NA), legend.background = element_rect(fill=NA),
+          element_text(angle = 90, vjust = 0.5, hjust=1))
+library(latex2exp)
+library(ggridges)
+
+
+labeller = label_bquote(cols = `epsilon`==.(true_eps),rows = `alpha`==.(true_a))
+peps = ggplot(data=full_pars) + geom_density_ridges(aes(x=eps,y=as.character(true_b), fill = as.character(true_b))) +geom_point(aes(x=true_eps, y=as.character(true_b)))+
+  xlab(TeX('\\epsilon'))+ylab(TeX(''))+labs(fill=TeX('\\beta'))+
+  facet_grid(true_a~true_eps ,labeller=labeller, scales='fixed')+ theme(aspect.ratio = .3,axis.title.y=element_blank(),
+                                                                       axis.text.y=element_blank(),
+                                                                       axis.ticks.y=element_blank()) + theme_bw()+ newtheme+
+  scale_x_continuous(limits = c(0,1.5), breaks=c(0,0.5,1))
+  
+
+labeller = label_bquote(cols = `epsilon`==.(true_eps),rows = `alpha`==.(true_a))
+pk0 = ggplot(data=full_pars) + stat_binline(aes(x=k0,y=as.character(true_b), fill = as.character(true_b)),binwidth = 1) +geom_point(aes(x=true_k0, y=as.character(true_b)))+
+  xlab(TeX('$k_0$'))+ylab(TeX(''))+labs(fill=TeX('\\beta'))+xlim(0,200)+
+  facet_grid(true_a~true_eps ,labeller=labeller, scales='fixed')+ theme(aspect.ratio = 0.3,axis.title.y=element_blank(),
+                                                                       axis.text.y=element_blank(),
+                                                                       axis.ticks.y=element_blank()) + theme_bw()+ newtheme+
+  scale_x_continuous(limits = c(0,40), breaks=c(0,20,40))
+
+labeller = label_bquote(cols = `epsilon`==.(true_eps),rows = `alpha`==.(true_a))
+pb=ggplot(data=full_pars) + geom_density_ridges(aes(x=b,y=as.character(true_b), fill = as.character(true_b))) +geom_point(aes(x=true_b, y=as.character(true_b)))+
+  xlab(TeX('\\beta'))+ylab('')+labs(fill=TeX('\\beta'))+
+  facet_grid(true_a~true_eps ,labeller=labeller, scales='fixed') + theme(aspect.ratio = .3,axis.title.y=element_blank(),
+                                                                        axis.text.y=element_blank(),
+                                                                        axis.ticks.y=element_blank()) + theme_bw() + newtheme+
+  scale_x_continuous(limits = c(0,2), breaks=c(0,1,2))
+# full_plot = ggpubr::ggarrange(pa,peps,pk0,pb,common.legend = T, nrow=2,ncol=2,legend='bottom' ) + ggpubr::bgcolor('#f1f1f1')
+
+labeller = label_bquote(cols = `epsilon`==.(true_eps),rows = `alpha`==.(true_a))
+
+pa = ggplot(data=full_pars) + geom_density_ridges(aes(x=a,y=as.character(true_b), fill = as.character(true_b))) + geom_point(aes(x=true_a, y=as.character(true_b)))+xlim(0,2)+
+  xlab(TeX('\\alpha'))+ylab(TeX(''))+labs(fill=TeX('\\beta'))+
+  facet_grid(true_a~true_eps ,labeller=labeller, scales='fixed')+ theme(aspect.ratio = .3,axis.title.y=element_blank(),
+                                                                       axis.text.y=element_blank(),
+                                                                       axis.ticks.y=element_blank()) + theme_bw()+ newtheme+
+  scale_x_continuous(limits = c(0,2), breaks=c(0,1,2))
+
+
+```
+
+## The results
+
+#### Posterior of $\alpha$  {style="text-align: center;font-size: 200%  !important;"}
+
+```{r, fig.asp=.5, fig.dpi=100, cache=FALSE, out.width='75%', message=FALSE,dev = "png"}
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+
+pa
+```
+## The results
+
+#### Posterior of $\varepsilon$  {style="text-align: center;font-size: 200%  !important;"}
+
+```{r, fig.asp=.5, fig.dpi=100, cache=FALSE, out.width='75%', message=FALSE,dev = "png"}
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+
+peps
+```
+
+## The results
+
+#### Posterior of  $k_0$  {style="text-align: center;font-size: 200%  !important;"}
+
+
+```{r, fig.asp=.5, fig.dpi=100, cache=FALSE, out.width='75%', message=FALSE,dev = "png"}
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+
+pk0
+```
+
+## The results
+
+####  Posterior of $\beta$ {style="text-align: center;font-size: 200%  !important;"}
+
+```{r, fig.asp=.5, cache=FALSE,fig.dpi=100, out.width='75%', message=FALSE,dev = "png"}
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+
+pb
+```
+
+
+
+
+## Real Data
+
+:::{.columns}
+
+::::{.column style="width:33%;text-align:center;"}
+ {{< fa globe size=3x title=''>}}
+ 
+ Internet
+::::
+
+::::{.column style="width:33%;text-align:center;"}
+ {{< fa plane size=3x title=''>}}
+ 
+ Flights
+::::
+
+::::{.column style="width:33%;text-align:center;"}
+ {{< fa y size=3x title=''>}}
+ 
+ Proteins
+::::
+:::
+
+:::{style="text-align:center;"}
+
+Data sourced from [Network Data Repository](https://networkrepository.com/)[@nr]
+
+We will fit the model and compare it to the mixture model.
+:::
+
+
+
+
+## 95% CI of survival function
+
+```{r, warning=FALSE}
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+mixfits = readRDS('results/mixfits.rds')
+fits = readRDS('results/modelfits.rds')
+nms = readRDS('results/nms.rds')
+plots = list()
+selected = c(1,8,10)
+
+for(j in 1:length(selected)){
+  i = selected[j]
+  udf = as.data.frame(table(fits[[i]]$smps$k0))
+  udf$Var1 = as.numeric(as.character(udf$Var1))
+  sdf = twbfn::deg_surv(counts_to_degs(dat_list[[i]]))
+  ptrunc = sdf$surv[sdf$degree==min(fits[[i]]$dat[,1])]
+  ptrunc_mix = sdf$surv[sdf$degree==min(mixfits[[i]]$data[,1])]
+  plots[[j]] = ggplot() + scale_x_log10(limits = c(1, max(dat_list[[i]][,1]))) + scale_y_log10(limits=c(1/sum(dat_list[[i]][,2]),1)) +
+    geom_segment(aes(x = jitter(!!fits[[i]]$smps$k0[seq(1,length(fits[[i]]$smps$k0),by=20)]),yend=0.5,y=1, colour='GPA'), alpha=0.1)+
+    geom_segment(data=NULL,aes(x = jitter(mixfits[[i]]$pars$u[seq(1,length(mixfits[[i]]$pars$u),by=20)]),yend=0.5,y=1, colour='Discrete Piecewise '), alpha=0.5)+
+    geom_point(data = twbfn::deg_surv(counts_to_degs(dat_list[[i]])),aes(x=degree, y=surv))+
+    geom_line(aes(x=!!fits[[i]]$dat[,1],y=!!fits[[i]]$surv$est*!!ptrunc/fits[[i]]$surv$est[1], colour='GPA')) + 
+    geom_line(aes(x=!!fits[[i]]$dat[,1],y= !!fits[[i]]$surv$CI[1,]*!!ptrunc/fits[[i]]$surv$CI[1,1], colour='GPA'),linetype=2) + 
+    geom_line(aes(x=!!fits[[i]]$dat[,1],y= !!fits[[i]]$surv$CI[2,]*!!ptrunc/fits[[i]]$surv$CI[2,1], colour='GPA'),linetype=2)+
+    geom_line(data = mixfits[[i]]$fitted,aes(x=x, y=S_975*!!ptrunc_mix/S_975[1], colour='Discrete Piecewise '), lty=2)+
+    geom_line(data = mixfits[[i]]$fitted,aes(x=x, y=S_025*!!ptrunc_mix/S_025[1], colour='Discrete Piecewise '),lty=2)+
+    geom_line(data = mixfits[[i]]$fitted,aes(x=x, y=S_med*!!ptrunc_mix/S_med[1], colour='Discrete Piecewise '))+
+    theme_minimal()+
+    labs(colour='Model')+theme(legend.position="bottom",legend.title=element_blank())
+ leg = get_legend(plots[[j]])
+ legplot = ggpubr::as_ggplot(leg)
+ plots[[j]] = plots[[j]] + theme(aspect.ratio = 1, axis.title.x = element_blank(), axis.title.y =element_blank(), legend.position = 'none',
+                      text = element_text(size = 20),plot.background = element_rect(fill=NA, color = NA), panel.background = element_rect(fill=NA, color = NA), plot.margin=grid::unit(c(0,0,0,0), "mm"))
+    
+}
+
+
+# comp_plot = ggpubr::ggarrange(plotlist = plots,common.legend = T,label.x = 'Degree', label.y = 'Survival',legend = 'bottom', nrow=1)
+
+```
+
+
+:::{.columns}
+
+::::{.column style="text-align: center; width:33%;"}
+
+{{<fa globe>}}
+```{r, warning=FALSE, fig.asp=1, fig.dpi=30}
+plots[[1]]
+```
+::::
+::::{.column style="text-align: center;width:33%;"}
+{{<fa plane>}}
+```{r, warning=FALSE, fig.asp=1, fig.dpi=30}
+plots[[2]]
+```
+
+```{r, fig.asp=0.5, fig.dpi=30}
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
+legplot = ggplot(data.frame(x = c(1,1), y = c(1,1), colour = c('PA', 'Discrete Piecewise ')),
+       aes(x, y, fill = colour)) +
+  geom_point(shape = 21, size = 0) +  # use a shape that uses fill
+  guides(fill = guide_legend(override.aes = list(size = 10)))  +
+  theme(
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    legend.position = c(.5, .5),
+    legend.direction = 'horizontal',
+    legend.title = element_blank(),
+    legend.text = element_text(size = 30),
+    legend.key = element_rect(fill = NA),
+    panel.grid = element_blank(),
+    plot.background = element_rect(fill=NA),
+    panel.background = element_rect(fill=NA),
+    plot.margin=grid::unit(c(0,0,0,0), "mm"),
+    panel.border = element_rect(colour = "black", fill = NA, size = 0),
+    legend.background = element_rect(fill=NA)
+  )
+```
+
+::::
+::::{.column style="text-align: center;width:33%;"}
+{{<fa y>}}
+```{r, warning=FALSE, fig.asp=1, fig.dpi=30}
+plots[[3]]
+```
+::::
+:::
+
+```{r, fig.dpi=70}
+legplot
+```
+
+## 95% CI of preference function
+
+```{r, warning=FALSE}
+pref = function(pars,x){
+  return(ifelse(x<=pars[3], x^pars[1] + pars[2], pars[3]^pars[1] + pars[2] + pars[4]*(x-pars[3])))
+}
+plts = list()
+for(j in 1:length(selected)){
+  i = selected[j]
+  pars = fits[[i]]$smps
+  x = fits[[i]]$dat$x
+  
+  plots  = list()
+  PA_overlay = ggplot()
+  
+  pref_mat = apply(pars, 1, pref, x = x)
+  pref_CI = apply(pref_mat, 1, quantile, prob =c(0.025, 0.5, 0.975))
+  
+  plts[[j]] = ggplot() +
+    geom_line(aes(x=!!x, y=!!pref_CI[3,]), lty=2)+
+    geom_line(aes(x=!!x, y=!!pref_CI[2,]))+
+    geom_line(aes(x=!!x, y=!!pref_CI[1,]), lty=2)+
+    theme(aspect.ratio = 1, axis.title.x = element_blank(), axis.title.y =element_blank(), legend.position = 'none',
+          text = element_text(size = 20),plot.background = element_rect(fill=NA, color = NA),
+          panel.background = element_rect(fill=NA, color = NA),
+          plot.margin=grid::unit(c(0,0,0,0), "mm"))
+}
+
+
+```
+
+:::{.columns}
+
+::::{.column style="text-align: center; width:33%;"}
+{{<fa globe>}}
+
+```{r, warning=FALSE, fig.asp=1, fig.dpi=30}
+plts[[1]]
+```
+
+::::
+
+::::{.column style="text-align: center; width:33%;"}
+{{<fa plane>}}
+
+```{r, warning=FALSE, fig.asp=1, fig.dpi=30}
+plts[[2]]
+```
+::::
+
+::::{.column style="text-align: center; width:33%;"}
+{{<fa y>}}
+
+```{r, warning=FALSE, fig.asp=1, fig.dpi=30}
+plts[[3]]
+```
+::::
+
+:::
+
+## Key Results
+
+- Characterisation of degree distribution from preference function
+  - Eventually linear $\rightarrow$ Frechet (heavy tail)
+  - Sublinear and unbounded $\rightarrow$ Gumbel (light tail)
+  - Bounded $\rightarrow$ recoverable to Gumbel (light tail)
+- Proposed preference function gives tail-realistic degree distributions
+- Parameters recovered from degrees alone in simulated networks
+- Can learn about real networks growth from snapshot of degrees
+
+## Limitations and Future work
+
+- Theory based on trees, which real networks rarely are
+- Only consider degrees in the snapshot
+- Assume a fairly restrictive model (pure birth)
+
+- Look beyond just the degrees
+- Incorporate more complex behaviour into the growth model
+- Extend theory beyond that of trees
+
+
+## Thank you
+
+### arXiv pre-print 
+```{r, out.width="20%"}
+plot(qrcode::qr_code("https://arxiv.org/abs/2506.18726"), col=c(NA,"#432534"))
+```
+
+### References
+
+
+
+

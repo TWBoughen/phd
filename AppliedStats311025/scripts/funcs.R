@@ -1,7 +1,16 @@
 require(Rcpp)
 require(RcppArmadillo)
 
-sourceCpp('phd/AppliedStats311025/scripts/cpp_funcs.cpp')
+
+if(file.exists('phd/AppliedStats311025/scripts/cpp_funcs.cpp')){
+  sourceCpp('phd/AppliedStats311025/scripts/cpp_funcs.cpp')
+}else if(file.exists('scripts/cpp_funcs.cpp')){
+  sourceCpp('scripts/cpp_funcs.cpp')
+}
+
+
+
+
 
 f = Vectorize(function(x, g, lambda, k0, b){
   if(x>=k0){

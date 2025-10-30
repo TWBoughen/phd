@@ -7,6 +7,7 @@ date: 2025/10/31
 date-format: long
 format: 
   revealjs:
+    self_contained: true
     embed-resources: true
     mathjax: 
       extensions: ["AMScd", "centernot"]
@@ -38,5 +39,16 @@ from: markdown+emoji
 execute:
   fig-format: svg
   fig-bg: "transparent"
+bibliography: refs.bib
+include-in-header: 
+  text: |
+        <style>
+        .v-center-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 90%;
+        }
+        </style>
 
 

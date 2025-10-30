@@ -3,3 +3,15 @@ RcppArmadillo
 ggplot2
 igraph
 crandep
+cowplot
+network
+networkDynamic
+animation
+statnet.common
+sna
+ndtv
+ggraph
+intergraph
+paletteer
+ggbrace
+latex2exp
