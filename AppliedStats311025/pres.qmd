@@ -513,7 +513,7 @@ but
 :::{.notes}
 
 Now lets take a look at that preferential attachment model so many love to claim
-- Usually called the Barabasi-Albert model or Yule-Simon
+- Usually called the Barabási-Albert model or Yule-Simon
 - Features a rich-get-richer mechanism 
   - The higher your degree the more likely you are to get more connections
 
@@ -840,7 +840,7 @@ As this is a discrete distribution we need some new machinery.
 
 :::{.columns}
 ::::{.column width="50%"}
-[**Frechet (heavy tailed)**]{.r-stack}
+[** Fréchet (heavy tailed)**]{.r-stack}
 
 >$$
 \bar F(x) = x^{-\gamma} \mathcal L(x)
@@ -860,8 +860,8 @@ e.g. Exponential, Normal, Gamma
 ::::
 
 
-- The Frechet is equivalent to regular variation with tail-index $\gamma$
-- Power-law falls into the Frechet MDA with $\mathcal L(x)=1$
+- The  Fréchet is equivalent to regular variation with tail-index $\gamma$
+- Power-law falls into the  Fréchet MDA with $\mathcal L(x)=1$
 
 *All continuous distributions with infinite right endpoint fall into one of these.*
 
@@ -891,7 +891,7 @@ $$
 
 :::{.columns}
 ::::{.column width="33%"}
- [**Frechet**]{.r-stack}
+ [** Fréchet**]{.r-stack}
 
 >$$
 \lim_{k\rightarrow\infty} \Omega(F,k) = 1/\alpha
@@ -936,7 +936,7 @@ $$
 Plugging in the limitng survival from earlier can an show that:
 
 - Provided the preference is unbounded
-  - falls in the Frechet if and only if "eventually linear"
+  - falls in the  Fréchet if and only if "eventually linear"
   - falls into the Gumbel if and only if this limit goes to zero
 - If it is indeed bounded then it falls into neither but is recoverable to the Gumbel
   - i.e. it is close to being in the Gumbel
@@ -959,7 +959,7 @@ $$
 
 and therefore for $b(k)\rightarrow\infty$ as $k\rightarrow\infty$
 
->- $\bar F (k)$ is regularly varying (**Frechet MDA**) if and only if $\lim_{k\rightarrow \infty}[b(k+1)-b(k)] = \nu >0$, in which case the tail index is $\lambda^*/\nu$ 
+>- $\bar F (k)$ is regularly varying (** Fréchet MDA**) if and only if $\lim_{k\rightarrow \infty}[b(k+1)-b(k)] = \nu >0$, in which case the tail index is $\lambda^*/\nu$ 
 >- $\bar F(k)$ is light-tailed (**Gumbel MDA**) if and only if $\lim_{k\rightarrow \infty}[b(k+1)-b(k)]=0$.
 
 
@@ -987,7 +987,7 @@ p3 = ggplot(data=df, aes(x=x)) + geom_line(aes(y=y3), colour='darkred',linewidth
 :::{.columns}
 ::::{.column width="33%"}
 
->**Barabasi-Albert (BA)**
+>**Barabási-Albert (BA)**
 >$$
 b(k) = k+1
 >$$
@@ -1000,7 +1000,7 @@ b(k) = k+1
 >$$
 \lim_{k\rightarrow\infty} \frac{\bar F(k+1)}{\bar F(k)} = 1
 >$$
->Frechet, with index 2
+> Fréchet, with index 2
 ::::
 ::::{.column width="33%"}
 
@@ -1046,7 +1046,7 @@ $$
 
 ### Main result
 
->- $\bar F (k)$ is regularly varying (**Frechet MDA**) if and only if $\lim_{k\rightarrow \infty}[b(k+1)-b(k)] = \nu >0$, in which case the tail index is $\lambda^*/\nu$ 
+>- $\bar F (k)$ is regularly varying (** Fréchet MDA**) if and only if $\lim_{k\rightarrow \infty}[b(k+1)-b(k)] = \nu >0$, in which case the tail index is $\lambda^*/\nu$ 
 >- $\bar F(k)$ is light-tailed (**Gumbel MDA**) if and only if $\lim_{k\rightarrow \infty}[b(k+1)-b(k)]=0$.
 
 - For degree distribution to be heavy tailed and be the result of a GPA model, preference must be eventually "linear" like in the BA model
@@ -1072,7 +1072,7 @@ We require something that is eventually linear but is flexible enough for real n
 
 ::::{.r-stack}
 :::{.fragment .fade-out fragment-index=1}
-**Barabasi-Albert**
+**Barabási-Albert**
 $$
 b(k) = k+1
 $$
@@ -1167,7 +1167,7 @@ $$
 :::{.notes}
 Shown here are some examples of the shape of distributions from the model with various parameter choices
 
-All guaranteed to be in the Frechet, aligning with resultsf from @Lee24
+All guaranteed to be in the  Fréchet, aligning with resultsf from @Lee24
 :::
 
 
@@ -1249,7 +1249,7 @@ ggplot(pars) + geom_raster(aes(x=a,y=b,fill=b/lambda)) +
 ```
 
 
-All limiting degree distributions produced by this model are Frechet with tail-index $\lambda^*/\beta$.
+All limiting degree distributions produced by this model are  Fréchet with tail-index $\lambda^*/\beta$.
 
 ## Simulation Study - set up
 
@@ -1686,7 +1686,7 @@ plts[[3]] + theme(text=element_text(size=35))
 ## Key Results
 
 - Characterisation of degree distribution from preference function
-  - Eventually linear $\rightarrow$ Frechet (heavy tail)
+  - Eventually linear $\rightarrow$  Fréchet (heavy tail)
   - Sublinear and unbounded $\rightarrow$ Gumbel (light tail)
   - Bounded $\rightarrow$ recoverable to Gumbel (light tail)
 - Proposed preference function gives tail-realistic degree distributions
