@@ -840,7 +840,7 @@ As this is a discrete distribution we need some new machinery.
 
 :::{.columns}
 ::::{.column width="50%"}
-[** Fréchet (heavy tailed)**]{.r-stack}
+[**Fréchet (heavy tailed)**]{.r-stack}
 
 >$$
 \bar F(x) = x^{-\gamma} \mathcal L(x)
@@ -891,7 +891,7 @@ $$
 
 :::{.columns}
 ::::{.column width="33%"}
- [** Fréchet**]{.r-stack}
+ [**Fréchet**]{.r-stack}
 
 >$$
 \lim_{k\rightarrow\infty} \Omega(F,k) = 1/\alpha
@@ -959,7 +959,7 @@ $$
 
 and therefore for $b(k)\rightarrow\infty$ as $k\rightarrow\infty$
 
->- $\bar F (k)$ is regularly varying (** Fréchet MDA**) if and only if $\lim_{k\rightarrow \infty}[b(k+1)-b(k)] = \nu >0$, in which case the tail index is $\lambda^*/\nu$ 
+>- $\bar F (k)$ is regularly varying (**Fréchet MDA**) if and only if $\lim_{k\rightarrow \infty}[b(k+1)-b(k)] = \nu >0$, in which case the tail index is $\lambda^*/\nu$ 
 >- $\bar F(k)$ is light-tailed (**Gumbel MDA**) if and only if $\lim_{k\rightarrow \infty}[b(k+1)-b(k)]=0$.
 
 
@@ -1046,7 +1046,7 @@ $$
 
 ### Main result
 
->- $\bar F (k)$ is regularly varying (** Fréchet MDA**) if and only if $\lim_{k\rightarrow \infty}[b(k+1)-b(k)] = \nu >0$, in which case the tail index is $\lambda^*/\nu$ 
+>- $\bar F (k)$ is regularly varying (**Fréchet MDA**) if and only if $\lim_{k\rightarrow \infty}[b(k+1)-b(k)] = \nu >0$, in which case the tail index is $\lambda^*/\nu$ 
 >- $\bar F(k)$ is light-tailed (**Gumbel MDA**) if and only if $\lim_{k\rightarrow \infty}[b(k+1)-b(k)]=0$.
 
 - For degree distribution to be heavy tailed and be the result of a GPA model, preference must be eventually "linear" like in the BA model
