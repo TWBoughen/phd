@@ -469,7 +469,7 @@ $$
 **Integer Generalised Pareto**
 
 >$$
-F(k)= 1-\left(1+\frac{\xi(k-u)}{\sigma +\xi u}\right)_+^{-1/\xi}, \qquad x=u+1,\ldots
+F(k)= 1-\left(1+\frac{\xi(k-u)}{\sigma +\xi u}\right)_+^{-1/\xi}, \qquad k=u+1,\ldots
 $$
 ::::
 :::
@@ -755,7 +755,7 @@ Rudas studied this and with results from CTBP established the following result
 @rudas07 states that for a given characteristc function $\phi(\cdot)$
 
 $$
-\lim_{t\rightarrow\infty} \frac{1}{\left|\Upsilon(r)\right|}\sum_{x\in\Upsilon(t)}\phi(\Upsilon(t)_{\downarrow x}) = \lambda^* \int_0^\infty e^{-\lambda^*}\mathbb E \left[\phi(\Upsilon(t))\right]\text{d}t
+\lim_{t\rightarrow\infty} \frac{1}{\left|\Upsilon(t)\right|}\sum_{x\in\Upsilon(t)}\phi(\Upsilon(t)_{\downarrow x}) = \lambda^* \int_0^\infty e^{-\lambda^*}\mathbb E \left[\phi(\Upsilon(t))\right]\text{d}t
 $$
 
 where $\lambda^*$ satisfies
@@ -788,13 +788,13 @@ $$
 and so the tail of the limiting degree distribution as $t\rightarrow \infty$ is:
 
 $$
-\bar F(k) = \lim_{t\rightarrow\infty} \frac{\sum_{x\in\Upsilon(t)} \mathbb I\left\{\text{deg}(x, \Upsilon(t)\downarrow x)>k \right\} }{\left|\Upsilon(t)\right|}
+\bar F(k) = \lim_{t\rightarrow\infty} \frac{\sum_{x\in\Upsilon(t)} \mathbb I\left\{\text{deg}(x, \Upsilon(t)_{\downarrow x})>k \right\} }{\left|\Upsilon(t)\right|}
 $$
 
 So we can now use the previous result to obtain:
 
 $$
-\bar F(k) = \lambda^* \int_0^\infty e^{-\lambda^*t}\mathbb E\left[\mathbb I\left\{\text{deg}(x, \Upsilon(t)\downarrow x)>k \right\}\right]\text{d}x
+\bar F(k) = \lambda^* \int_0^\infty e^{-\lambda^*t}\mathbb E\left[\mathbb I\left\{\text{deg}(x, \Upsilon(t)_{\downarrow x})>k \right\}\right]\text{d}x
 $$
 
 
@@ -963,7 +963,7 @@ and therefore for $b(k)\rightarrow\infty$ as $k\rightarrow\infty$
 >- $\bar F(k)$ is light-tailed (**Gumbel MDA**) if and only if $\lim_{k\rightarrow \infty}[b(k+1)-b(k)]=0$.
 
 
-*Note that if $\lim_{k\rightarrow\infty} b(k)<\infty$, then $\bar F(k)$ is recoverable to the Gubmel MDA.*
+*Note that if $\lim_{k\rightarrow\infty} b(k)<\infty$, then $\bar F(k)$ is recoverable to the Gumbel MDA.*
 
 
 --- 
@@ -1012,7 +1012,7 @@ b(k) = (k+1)^\alpha, \quad \alpha\in (0,1)
 >p1
 >```
 >$$
-\lim_{k\rightarrow\infty} \Omega(F,k) = = 0
+\lim_{k\rightarrow\infty} \Omega(F,k) = 0
 >$$
 >$$
 \lim_{k\rightarrow\infty} \frac{\bar F(k+1)}{\bar F(k)} = 1
