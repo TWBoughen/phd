@@ -86,6 +86,20 @@ theme_presentation <- function() {
 
 ## Networks
 
+:::{.notes}
+
+- Networks are everywhere
+- Fairly simple and can represent complex systems
+- Objects represented by the nodes
+- Relationships represented by edges
+
+- Key feature is the degree
+- Each node has in/out-degree representing the number of incoming and outgoing edges
+
+:::
+
+
+
 :::{.columns}
 
 ::::{.column width="50%"}
@@ -135,6 +149,16 @@ knitr::kable(df1)
 :::
 
 ## Network Data
+
+:::{.notes}
+
+- Rarely have full temporal data, usually only a snapshot
+- Full evolution is too constly or impossible to observe
+- We often instead choose to study properties of these snapshots
+- e.g. the degrees
+
+
+:::
 
 :::{.columns}
 ::::{.column width="50%" height="50%"}
@@ -216,6 +240,15 @@ ggraph(g_igraph, layout='stress') + geom_edge_link2(color='#efd6ac') + geom_edge
 
 ## The scale-free debate
 
+:::{.notes}
+- A lot of discussion over the shape of real degree distributions
+- Many claim a lot of real networks are "scale-free"
+- Others disagree, claiming unrealistic expectations
+- Literature doesn't even agree on the definition of scale-free
+
+- We will be using the most general definition, regular variation
+:::
+
 **There has been a *heated* debate over the presence of scale-free networks in reality.**
 
 ::::{.columns}
@@ -257,7 +290,7 @@ Several definitions of scale-free in the literature
 
 :::{.columns}
 ::::{.column width="33%"}
-**Heavier than exponential**
+[**Heavier than exponential**]{.r-stack}
 
 $$
 \bar F (k) \gg e^{-ck}
@@ -265,14 +298,14 @@ $$
 
 ::::
 ::::{.column width="34%"}
-**Power-law**
+[**Power-law**]{.r-stack}
 $$
 \bar F(k) \sim k^{-\gamma}
 $$
 
 ::::
 ::::{.column width="33%"}
-**Regularly varying tail**
+[**Regularly varying tail**]{.r-stack}
 $$
  \bar F(k) = k^{-\gamma}\mathcal L (k)
 $$
@@ -286,11 +319,30 @@ $$
 
 ## Modelling the degrees
 
+:::{.notes}
+
+- Lots of methods used to study these degrees
+
+1. Power law i.e. straight line on a log-log plot
+  - Simple, Easy to do
+  - Quite restrictive
+2. Modelling the tail using a Generalised Pareto
+  - Much more flexible but only gain information about the tail
+  - How do we pick the threshold?
+3. Piecewise model
+  - Power-law like for the body
+  - Generalised Pareto for the tail
+  - Lets you model the whole distribution and $u$ becomes an actual parameter
+
+Let's look at one of those methods.
+:::
+
 
 :::{.columns}
 ::::{.column width=33%}
 #### Power Law
 ```{r, fig.asp=1, out.width="75%", fig.dpi=50, cache=TRUE}
+#| fig-width: 4
 knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
 
 
@@ -303,7 +355,7 @@ a = 1.8
 x = 1:40
 y = x^-a / (sum((1:1e4)^-a))
 
-asc_plt = ggplot()+ geom_line(data=NULL,aes(x=x, y=y), colour='red') + geom_point(data=asc_surv,aes(x=degree, y=surv)) + scale_x_log10() + scale_y_log10(limits=c(min(asc_surv[-nrow(asc_surv),2]),1))+theme_presentation()
+asc_plt = ggplot()+ geom_line(data=NULL,aes(x=x, y=y), colour='red') + geom_point(data=asc_surv,aes(x=degree, y=surv)) + scale_x_log10() + scale_y_log10(limits=c(min(asc_surv[-nrow(asc_surv),2]),1))+theme_presentation() + xlab('Degree') + ylab('Survival')
 
 
 print(asc_plt)
@@ -311,6 +363,9 @@ print(asc_plt)
 
 >$$
 K\sim \text{Pareto}(\gamma)
+$$
+>$$
+~
 $$
 > Estimate $\gamma$
 
@@ -320,6 +375,8 @@ $$
 #### Tail Estimation
 
 ```{r, fig.asp=1, out.width="75%", fig.dpi=50, cache=TRUE}
+#| fig-width: 4
+
 knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
 
 fl = dat_list[[8]]
@@ -328,12 +385,15 @@ fl_plt = ggplot() + geom_point(data=fl_surv,aes(x=degree, y=surv)) + scale_x_log
 
 x = 50:500
 y = evd::pgpd(x, loc=50, scale=43.8, shape = -0.1157, lower.tail=F)*fl_surv$surv[fl_surv$degree>=50][1]
-fl_plt = fl_plt + geom_line(data=NULL,aes(x=x, y=y), colour='red')+theme_presentation()
+fl_plt = fl_plt + geom_line(data=NULL,aes(x=x, y=y), colour='red')+theme_presentation() + xlab('Degree') + ylab('Survival')
 fl_plt
 ```
 
 >$$
 K|K>u \sim \text{GP}(\xi, \sigma)
+$$
+>$$
+~
 $$
 > Estimate $(\xi,\sigma)$
 
@@ -341,6 +401,7 @@ $$
 ::::{.column width=33%}
 #### Piecewise Model
 ```{r, fig.asp=1, cache=TRUE, echo=FALSE,results='hide',fig.keep='all', out.width="75%", fig.dpi=50}
+#| fig-width: 4
 library(crandep)
 knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
 
@@ -354,17 +415,17 @@ rea_counts$count = as.integer(rea_counts$count)
 names(rea_counts) = c('x','count')
 rea_fit = mcmc_mix2_wrapper(rea_counts, seed=3234L,iter=1000L, u_max=100L, burn=1000L)
 
-rea_plt  = rea_plt + geom_line(data=rea_fit$fitted, aes(x=x, y=S_med), col='red') + geom_vline(aes(xintercept = median(rea_fit$pars$u)), lty=2, col='red')
+rea_plt  = rea_plt + geom_line(data=rea_fit$fitted, aes(x=x, y=S_med), col='red') + geom_vline(aes(xintercept = median(rea_fit$pars$u)), lty=2, col='red') + xlab('Degree') + ylab('Survival')
 
 rea_plt+theme_presentation()
 
 ```
 
 >$$
-\begin{aligned}
-K|K< u &\sim \text{Pareto}(\gamma)\\
-K|K>u &\sim \text{GP}(\xi, \sigma)
-\end{aligned}
+K|K< u \sim \text{Pareto}(\gamma)
+$$
+>$$
+K|K>u \sim \text{GP}(\xi, \sigma)
 $$
 > Estimate $(\gamma, u, \xi, \sigma)$
 ::::
@@ -376,12 +437,21 @@ $$
 
 ## Discrete Piecewise Model
 
+:::{.notes}
+This model, used by Clement and some collaborators
+
+- Uses something like a power law for the body but with some added flexibility
+  - $\theta$ measures how straight the line is i.e. how close to power-law the body is
+- Uses a discretisation of the GP for the tail
+
+:::
 
 :::{.columns}
 
 
 ::::{.column width=25%}
 ```{r, fig.asp=1, cache=TRUE, echo=FALSE,results='hide',fig.keep='all', out.width="90%", fig.dpi=50}
+#| fig-width: 4
 rea_plt+theme_presentation()
 ```
 ::::
@@ -393,7 +463,7 @@ rea_plt+theme_presentation()
 **Zipf-Polylog**
 
 >$$
-f(k) \propto x^{-\alpha} \theta^x, \qquad x=1, 2, \ldots, u
+f(k) \propto k^{-\alpha} \theta^k, \qquad k=1, 2, \ldots, u
 $$
 
 **Integer Generalised Pareto**
@@ -407,6 +477,19 @@ $$
 Using this model @Lee24 found that networks often have a heavy tail but not quite as heavy as implied by the body.
 
 ## Why care about scale-freeness?
+
+:::{.notes}
+
+- Why this obsession with scale-freeness and power-laws
+- People jump from 'looks like a power law' to claiming preferential attachment
+  - rich-get-richer
+- This only works one way PA -> power law not the other way round
+
+- Other than these claims the modelling of degrees is usually descriptive
+- We learn nothing about how the network grew.
+
+
+:::
 
 **Many use *scale-freeness* of a network to justify the mechanics behind the network's growth.**
 
@@ -426,6 +509,20 @@ but
 
 
 ## Preferential Attachment
+
+:::{.notes}
+
+Now lets take a look at that preferential attachment model so many love to claim
+- Usually called the Barabasi-Albert model or Yule-Simon
+- Features a rich-get-richer mechanism 
+  - The higher your degree the more likely you are to get more connections
+
+- This produces a power law with exponent 2, explaining why so many people like to claim a power law so they can use this model
+
+- However, in reality the behaviour of degree distributions is much more nuanced
+- We look to make this model more general
+
+:::
 
 :::::{.columns}
 ::::{.column width=30%}
@@ -490,7 +587,7 @@ render.d3movie(pag,
 2. Connects to $m$ existing nodes with weights $\pi_i$:
 
 $$
-\pi_i = \left. k_i \middle/ \sum k_j \right.
+\pi_i = \left. k_i \middle/ \sum_j k_j \right.
 $$
 where $k_i$ is degree of node $i$.
 :::
@@ -507,6 +604,14 @@ $$
 
 
 ## General Preferential Attachment
+
+:::{.notes}
+- We make it more general by simply changing the $k+1$ to be instead a general function of the in-degree.
+- This should allow for much more flexible behaviour that can potentially match that of real networks
+
+- But, how do we study this given how general it is
+
+:::
 
 :::::{.columns}
 ::::{.column width=30%}
@@ -573,7 +678,7 @@ render.d3movie(pag,
 2. Connects to $m$ existing nodes with weights $\pi_i$:
 
 $$
-\pi_i = \left. b(k_i) \middle/ \sum b(k_j) \right.
+\pi_i = \left. b(k_i) \middle/ \sum_j b(k_j) \right.
 $$
 where $k_i$ is degree of node $i$.
 :::
@@ -586,14 +691,24 @@ How do we study the degree distribution of this?
 
 ## Aims
 
+:::{.notes}
+Let us first go over what we want to do
+:::
 
 :::{.v-center-container}
-- Propose a flexible  tail-realisitic model for network degrees
-- Connect preference function to tail behaviour
-- Obtain information about network growth from degrees alone
+- Connect preference function to tail behaviour of limiting degree distribution
+- Propose a flexible tail-realistic model for networks degrees
+- Obtain information about network growth from degrees alone of real data
 :::
 
 ## Starting with a branching process
+
+:::{.notes}
+To study the generalised model
+
+- we can consider the following branching process
+
+:::
 
 Consider the GPA model when $m=1$, and a continuous time branching process $\zeta(t)$ where:
 
@@ -609,6 +724,15 @@ This pure birth process corresponds to the growth of an individual nodes degree.
 
 ## Equivalence to GPA
 
+:::{.notes}
+
+We can show that this is equivalent to the GPA when m=1 by:
+
+- constructing a tree
+- each node gives birth at rate according to b of its in-degree
+
+:::
+
 Construct the tree $\Upsilon(t)$ determined by $\zeta(t)$ such that:
 
 - $\Upsilon(0)=\left\{\emptyset\right\}$
@@ -619,6 +743,14 @@ Denote $\Upsilon(t)_{\downarrow x}$ the tree when treating $x$ as the root.
 **This construction is equivalent to the GPA model with $m=1$ and preference function $b(\cdot)$**
 
 ## A limiting result
+
+
+:::{.notes}
+
+Rudas studied this and with results from CTBP established the following result
+  - for some characeteristic function, phi, we have that
+  - where rho hat is the laplace transform of the density of the point process associated with the CTBP
+:::
 
 @rudas07 states that for a given characteristc function $\phi(\cdot)$
 
@@ -635,6 +767,17 @@ $$
 and $\rho(t)$ is the density of the point process associated with $\zeta(t)$.
 
 ## Getting the degree distribution
+
+:::{.notes}
+
+Using the fact that we can write the empirical tail of the degrees as
+- In the limit of time going to infinity this empirical distribution we can get the tail of the limiting degree distribution
+
+This gets us quite an elegant form, which looks fairly simple
+
+how do we study this
+
+:::
 
 We can write the tail of the degree distribution at time $t$ as:
 
@@ -672,6 +815,18 @@ $$
 **What effect does $b(\cdot)$ have on this degree distribution, particularly in the tail?**
 
 ## Studying the tail{.r-fit-text}
+
+:::{.notes}
+
+We would like to pay close attention to the largest degrees as in many networks these happen to be very influential
+- The perfect application of extreme value theory
+
+Often people will just use continuous methods to study these dergee distributions either by assuming they will just work
+- or adding a jiggle to the points and then applying the continuous methods
+
+We want to be more precise and use machinery made for discrete data
+
+:::
 
 **We want to pay careful attention to the extreme values**
 
@@ -716,6 +871,18 @@ e.g. Exponential, Normal, Gamma
 
 ## Discrete Extremes
 
+:::{.notes}
+When we enter the field of discrete data things become harder so
+
+- Shimura provides us with this result regarding the MDA of discrete distributions
+
+- We can still use the previous methods to categorise the distributions (if they can be)
+  - this is often difficult or unattainable
+  - and quite often a discrete distribution cannot be categorised using these methods
+
+
+
+:::
 
 @shimura12 uses the following quantity to categorise discrete distributions
 $$
@@ -764,6 +931,23 @@ $$
 :::
 
 ## Analysing GPA degrees
+
+:::{.notes}
+Plugging in the limitng survival from earlier can an show that:
+
+- Provided the preference is unbounded
+  - falls in the Frechet if and only if "eventually linear"
+  - falls into the Gumbel if and only if this limit goes to zero
+- If it is indeed bounded then it falls into neither but is recoverable to the Gumbel
+  - i.e. it is close to being in the Gumbel
+
+
+**Examples**
+
+We look at three possible simple forms of preference function
+- The first we have seen before and know how it behaves, we can see that this agrees
+
+:::
 
 Now we can use the limiting survival function of a GPA model to show that:
 
@@ -828,7 +1012,7 @@ b(k) = (k+1)^\alpha, \quad \alpha\in (0,1)
 >p1
 >```
 >$$
-\lim_{k\rightarrow\infty} \Omega(F,k) = 1/\lambda^* = 0
+\lim_{k\rightarrow\infty} \Omega(F,k) = = 0
 >$$
 >$$
 \lim_{k\rightarrow\infty} \frac{\bar F(k+1)}{\bar F(k)} = 1
@@ -851,7 +1035,7 @@ $$
 \lim_{k\rightarrow\infty} \Omega(F,k) = 0
 $$
 >$$
-\lim_{k\rightarrow\infty} \frac{\bar F(k+1)}{\bar F(k)} = 0
+\lim_{k\rightarrow\infty} \frac{\bar F(k+1)}{\bar F(k)} \neq 0
 $$
 >Recoverable to Gumbel 
 ::::
@@ -869,6 +1053,15 @@ $$
 - Empirical degree distributions are heavy-tailed but exhibit more nuanced behaviour than obtained by BA model
 
 ## Constructing a new preference function
+
+:::{.notes}
+So clearly we need to move beyond the standard preferential attachment or BA model
+- Inspired by the piecewise model from earlier which showed promising results for modelling empirical degrees
+
+We propose a piecewise preference function that
+- Incorporates the polynomial behaviour from earlier
+- But is guaranteed the be linear in the limit
+:::
 
 We require something that is eventually linear but is flexible enough for real networks
 
@@ -971,6 +1164,12 @@ $$
 
 ## Shape of degree distribution
 
+:::{.notes}
+Shown here are some examples of the shape of distributions from the model with various parameter choices
+
+All guaranteed to be in the Frechet, aligning with resultsf from @Lee24
+:::
+
 
 ```{r}
 
@@ -1010,6 +1209,11 @@ ggplot(data = pars) + geom_line(aes(x=(x+1),y=surv, linetype=as.character(b),col
 
 ## Tail behaviour
 
+:::{.notes}
+Here are some heatmaps of the tail indices for various parameter choices and how they change with respect to (,)
+- the red line indicates those parameter choices that give the same tail index as the BA model
+:::
+
 ```{r}
 #| fig-width: 8
 #| fig-height: 4
@@ -1048,6 +1252,13 @@ ggplot(pars) + geom_raster(aes(x=a,y=b,fill=b/lambda)) +
 All limiting degree distributions produced by this model are Frechet with tail-index $\lambda^*/\beta$.
 
 ## Simulation Study - set up
+
+:::{.notes}
+To investigate the link betweent he preference function and the degrees
+
+- Do a simulation study to establish if the parameters are identifiable from only the degrees
+
+:::
  
 1. Simulate networks
 2. Use likelihood to fit model
@@ -1084,6 +1295,14 @@ Now we use an adaptive Metropolis-Hastings to obtain posterior samples
 
 
 ## Model fits
+
+:::{.notes}
+ Here are some example of the model fitted to some of the simulated data
+
+ - This is the posterior survival obtained from the posterior samples of the parameters
+ - 95% CI is very narrow and almost not visible
+
+:::
 
 
 ```{r, cache=TRUE}
@@ -1195,6 +1414,13 @@ pa = ggplot(data=full_pars) + geom_density_ridges(aes(x=a,y=as.character(true_b)
 
 ## The results
 
+:::{.notes}
+In the following slides we show that the model parameters are recovered well from the degrees
+- In most cases highly concentrated around the true values
+- Cases where they are not are either because the threshold value is not reached in the simulation or an identifiability issue
+  - alpha=beta=1 can identify the threshold or it goes to zero/max(data) and alpha/beta becomes a free parameter
+:::
+
 #### Posterior of $\alpha$  {style="text-align: center;font-size: 200%  !important;"}
 
 ```{r, fig.asp=.5, fig.dpi=100, cache=FALSE, out.width='75%', message=FALSE,dev = "png"}
@@ -1238,6 +1464,14 @@ pb
 
 ## Real Data
 
+
+:::{.notes}
+Given the promising results from the sim study showing that parameters can be recovered from the degrees alone
+- we now apply to empirical networks
+
+We compare the performance of this model to that of the discrete pw model.
+:::
+
 :::{.columns}
 
 ::::{.column style="width:33%;text-align:center;"}
@@ -1271,7 +1505,12 @@ We will fit the model and compare it to the mixture model.
 
 ## 95% CI of survival function
 
+:::{.notes}
+we can see that the model performs similarly and sometimes better than the pw model and captures the tail especially well
+:::
+
 ```{r, warning=FALSE}
+#| fig-width: 4
 knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
 mixfits = readRDS('results/mixfits.rds')
 fits = readRDS('results/modelfits.rds')
@@ -1316,17 +1555,20 @@ for(j in 1:length(selected)){
 ::::{.column style="text-align: center; width:33%;"}
 
 {{<fa globe>}}
-```{r, warning=FALSE, fig.asp=1, fig.dpi=30}
-plots[[1]]
+```{r, warning=FALSE, fig.asp=1 }
+
+plots[[1]]+ theme(text=element_text(size=35))
 ```
 ::::
 ::::{.column style="text-align: center;width:33%;"}
 {{<fa plane>}}
-```{r, warning=FALSE, fig.asp=1, fig.dpi=30}
-plots[[2]]
+```{r, warning=FALSE, fig.asp=1 }
+
+plots[[2]]+ theme(text=element_text(size=35))
 ```
 
-```{r, fig.asp=0.5, fig.dpi=30}
+```{r, fig.asp=0.5 }
+
 knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
 legplot = ggplot(data.frame(x = c(1,1), y = c(1,1), colour = c('PA', 'Discrete Piecewise ')),
        aes(x, y, fill = colour)) +
@@ -1353,8 +1595,9 @@ legplot = ggplot(data.frame(x = c(1,1), y = c(1,1), colour = c('PA', 'Discrete P
 ::::
 ::::{.column style="text-align: center;width:33%;"}
 {{<fa y>}}
-```{r, warning=FALSE, fig.asp=1, fig.dpi=30}
-plots[[3]]
+```{r, warning=FALSE, fig.asp=1}
+
+plots[[3]]+ theme(text=element_text(size=35))
 ```
 ::::
 :::
@@ -1364,6 +1607,19 @@ legplot
 ```
 
 ## 95% CI of preference function
+
+:::{.notes}
+But we know now that by fitting this model we not only model the degree distribution
+- We are also getting estimates for the model parameters and therefore the preference function
+- The credible intervals are quite large but it is more information that simply the pw model
+
+Interpretation
+
+- Levelling off may suggest diminishing returns behaviour
+- Internet seems to be essentially a linear function and any gain in number of connections gives the same benefit no matter what
+- This lines up with existing literature on the structure of the internet.
+
+:::
 
 ```{r, warning=FALSE}
 pref = function(pars,x){
@@ -1399,25 +1655,29 @@ for(j in 1:length(selected)){
 ::::{.column style="text-align: center; width:33%;"}
 {{<fa globe>}}
 
-```{r, warning=FALSE, fig.asp=1, fig.dpi=30}
-plts[[1]]
+```{r, warning=FALSE, fig.asp=1 }
+
+plts[[1]] + theme(text=element_text(size=35))
 ```
 
 ::::
 
 ::::{.column style="text-align: center; width:33%;"}
+
 {{<fa plane>}}
 
-```{r, warning=FALSE, fig.asp=1, fig.dpi=30}
-plts[[2]]
+```{r, warning=FALSE, fig.asp=1 }
+
+plts[[2]]+ theme(text=element_text(size=35))
 ```
 ::::
 
 ::::{.column style="text-align: center; width:33%;"}
 {{<fa y>}}
 
-```{r, warning=FALSE, fig.asp=1, fig.dpi=30}
-plts[[3]]
+```{r, warning=FALSE, fig.asp=1 }
+
+plts[[3]] + theme(text=element_text(size=35))
 ```
 ::::
 
